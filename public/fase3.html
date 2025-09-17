@@ -926,7 +926,7 @@
                 style="width: 0%"
               ></div>
             </div>
-            <p><span id="activities-placed">0</span>/8 atividades</p>
+            <p><span id="activities-placed">0</span>/10 atividades</p>
           </div>
 
           <div class="progress-item">
@@ -960,6 +960,8 @@
     </div>
 
     <script src="js/shared.js"></script>
+    <script src="js/modal-system.js"></script>
+    <script src="js/phase3-engine.js"></script>
     <script>
       // IMPLEMENTAÇÃO COMPLETA CONFORME ESPECIFICAÇÃO DETALHADA
 
@@ -1169,6 +1171,30 @@
           pontos: 3,
         },
         {
+          id: "rvcc_desenvolvimento",
+          nome: "Desenvolvimento do RVCC 12º ano",
+          mes: 3,
+          pontos: 4,
+        },
+        {
+          id: "acompanhamento_grupo_apoio",
+          nome: "Acompanhamento em grupos de apoio",
+          mes: 3,
+          pontos: 3,
+        },
+        {
+          id: "formacao_competencias_profissionais",
+          nome: "Formação em competências profissionais",
+          mes: 4,
+          pontos: 4,
+        },
+        {
+          id: "avaliacao_intermedia",
+          nome: "Avaliação intermédia do progresso",
+          mes: 4,
+          pontos: 3,
+        },
+        {
           id: "estagio_profissional",
           nome: "Estágio profissional (Qualifica)",
           mes: 5,
@@ -1221,13 +1247,25 @@
         // Inicializar estado específico
         switch (newState) {
           case "programa-selecao":
-            initProgramSelection();
+            if (phase3EngineEnhanced) {
+              phase3EngineEnhanced.initializeProgramSelection();
+            } else {
+              initProgramSelection();
+            }
             break;
           case "entidades-articulacao":
-            initEntityArticulation();
+            if (phase3EngineEnhanced) {
+              phase3EngineEnhanced.initializeEntityArticulation();
+            } else {
+              initEntityArticulation();
+            }
             break;
           case "cronograma-timeline":
-            initTimelineBuilder();
+            if (phase3EngineEnhanced) {
+              phase3EngineEnhanced.initializeTimelineBuilder();
+            } else {
+              initTimelineBuilder();
+            }
             break;
           case "conclusao":
             showConclusion();
@@ -1279,62 +1317,104 @@
           : "0,0,0";
       }
 
-      // PUZZLE 1: Toggle seleção de programa
-      function toggleProgram(programId) {
+      // PUZZLE 1: Toggle seleção de programa - FIXED VERSION
+      async function toggleProgram(programId) {
         const program = programsData.find((p) => p.id === programId);
         const card = document.querySelector(`[data-program-id="${programId}"]`);
 
-        if (gameState.programsSelected.includes(programId)) {
-          // Remover seleção
+        // Always allow re-selection - show current status and allow change
+        let currentStatus = "none";
+        if (gameState.programsSelected.includes(programId))
+          currentStatus = "selected";
+        if (gameState.programsRejected.includes(programId))
+          currentStatus = "rejected";
+
+        // Create message and button text based on current status
+        let message = "";
+        let okText = "";
+        let cancelText = "";
+
+        if (currentStatus === "selected") {
+          message = `Programa <strong>SELECIONADO</strong> atualmente.<br><br>Deseja <strong>ALTERAR</strong> para REJEITAR?<br><br>Clique <strong>SIM</strong> para REJEITAR<br>Clique <strong>NÃO</strong> para manter SELECIONADO`;
+          okText = "Sim, rejeitar";
+          cancelText = "Não, manter atual";
+        } else if (currentStatus === "rejected") {
+          message = `Programa <strong>REJEITADO</strong> atualmente.<br><br>Deseja <strong>ALTERAR</strong> para SELECIONAR?<br><br>Clique <strong>SIM</strong> para SELECIONAR<br>Clique <strong>NÃO</strong> para manter REJEITADO`;
+          okText = "Sim, selecionar";
+          cancelText = "Não, manter atual";
+        } else {
+          message = `Deseja <strong>SELECIONAR</strong> este programa para a Felisbina?<br><br>Clique <strong>SIM</strong> para SELECIONAR<br>Clique <strong>NÃO</strong> para REJEITAR`;
+          okText = "Sim, selecionar";
+          cancelText = "Não, rejeitar";
+        }
+
+        const selectProgram = await ModalSystem.confirm(message, {
+          title: "🤔 Decisão sobre Programa",
+          okText: okText,
+          cancelText: cancelText,
+          type: "confirm",
+        });
+
+        // Remove from both lists first (reset state)
+        const wasSelected = gameState.programsSelected.includes(programId);
+        const wasRejected = gameState.programsRejected.includes(programId);
+
+        if (wasSelected) {
           gameState.programsSelected = gameState.programsSelected.filter(
             (id) => id !== programId
           );
-          card.classList.remove("selected");
-          card.querySelector(".program-status").textContent = "";
-          // Remover pontos da seleção
-          if (program.adequado_felisbina) {
-            gameState.puzzle1Score -= program.pontos_se_selecionado;
-          } else {
-            gameState.puzzle1Score -= program.pontos_se_selecionado; // Negativo, então subtrai negativo = soma
-          }
-        } else if (gameState.programsRejected.includes(programId)) {
-          // Remover rejeição
+          gameState.puzzle1Score -= program.pontos_se_selecionado;
+        }
+
+        if (wasRejected) {
           gameState.programsRejected = gameState.programsRejected.filter(
             (id) => id !== programId
           );
-          card.classList.remove("rejected");
-          card.querySelector(".program-status").textContent = "";
-          // Remover pontos da rejeição
-          if (!program.adequado_felisbina) {
-            gameState.puzzle1Score -= program.pontos_se_rejeitado;
-          } else {
-            gameState.puzzle1Score -= program.pontos_se_rejeitado; // Negativo, então subtrai negativo = soma
-          }
+          gameState.puzzle1Score -= program.pontos_se_rejeitado;
+        }
+
+        // Clear visual state
+        card.classList.remove("selected", "rejected");
+        card.querySelector(".program-status").textContent = "";
+
+        // Apply new state based on decision
+        if (
+          (currentStatus === "none" && selectProgram) ||
+          (currentStatus === "rejected" && selectProgram) ||
+          (currentStatus === "selected" && !selectProgram)
+        ) {
+          // SELECT the program
+          gameState.programsSelected.push(programId);
+          card.classList.add("selected");
+          card.querySelector(".program-status").textContent = "✅";
+          gameState.puzzle1Score += program.pontos_se_selecionado;
+
+          showToast(
+            `✅ ${program.nome} SELECIONADO (+${program.pontos_se_selecionado} pontos)`,
+            "success",
+            2000
+          );
         } else {
-          // Permitir seleção ou rejeição de qualquer programa
-          // Mas a pontuação depende se a escolha é correta
-          if (
-            confirm(
-              `Deseja SELECIONAR este programa para a Felisbina?\n\nClique OK para SELECIONAR\nClique Cancelar para REJEITAR`
-            )
-          ) {
-            // SELECIONADO
-            gameState.programsSelected.push(programId);
-            card.classList.add("selected");
-            card.querySelector(".program-status").textContent = "✅";
-            gameState.puzzle1Score += program.pontos_se_selecionado;
-          } else {
-            // REJEITADO
-            gameState.programsRejected.push(programId);
-            card.classList.add("rejected");
-            card.querySelector(".program-status").textContent = "❌";
-            gameState.puzzle1Score += program.pontos_se_rejeitado;
-          }
+          // REJECT the program
+          gameState.programsRejected.push(programId);
+          card.classList.add("rejected");
+          card.querySelector(".program-status").textContent = "❌";
+          gameState.puzzle1Score += program.pontos_se_rejeitado;
+
+          showToast(
+            `❌ ${program.nome} REJEITADO (+${program.pontos_se_rejeitado} pontos)`,
+            "warning",
+            2000
+          );
         }
 
         updateProgress();
+        checkPuzzle1Completion();
+      }
 
-        // Verificar critérios de sucesso CONFORME ESPECIFICAÇÃO
+      // Separate function to check puzzle 1 completion
+      function checkPuzzle1Completion() {
+        // Verificar critérios de sucesso - RELAXED CRITERIA
         const adequateSelected = gameState.programsSelected.filter(
           (id) => programsData.find((p) => p.id === id).adequado_felisbina
         ).length;
@@ -1343,10 +1423,25 @@
           (id) => !programsData.find((p) => p.id === id).adequado_felisbina
         ).length;
 
-        // Critério: min 3 adequados selecionados, min 2 inadequados rejeitados
-        if (adequateSelected >= 3 && inadequateRejected >= 2) {
+        const totalDecisions =
+          gameState.programsSelected.length + gameState.programsRejected.length;
+
+        // More relaxed criteria: at least 4 total decisions with good balance
+        if (
+          totalDecisions >= 4 &&
+          adequateSelected >= 2 &&
+          inadequateRejected >= 2
+        ) {
           document.getElementById("btn-continue-entities").style.display =
             "block";
+          showToast(
+            "🎯 Critérios de seleção atingidos! Pode continuar para a próxima fase.",
+            "success",
+            3000
+          );
+        } else {
+          document.getElementById("btn-continue-entities").style.display =
+            "none";
         }
       }
 
@@ -1514,7 +1609,7 @@
           gameState.entitiesContacted.length;
 
         const activitiesProgress =
-          (Object.keys(gameState.activitiesPlaced).length / 8) * 100;
+          (Object.keys(gameState.activitiesPlaced).length / 10) * 100;
         document.getElementById(
           "progress-timeline"
         ).style.width = `${activitiesProgress}%`;
@@ -1538,16 +1633,42 @@
         document.getElementById("validations-completed").textContent =
           validationsCompleted;
 
-        // Atualizar pontuações dos puzzles
+        // Atualizar pontuações dos puzzles - FIXED VERSION
         const puzzleScores = document.querySelectorAll(".puzzle-score");
         if (puzzleScores[0])
-          puzzleScores[0].textContent = `${gameState.puzzle1Score}/25 pontos`;
+          puzzleScores[0].textContent = `${Math.max(
+            0,
+            gameState.puzzle1Score
+          )}/25 pontos`;
         if (puzzleScores[1])
-          puzzleScores[1].textContent = `${gameState.puzzle2Score}/25 pontos`;
+          puzzleScores[1].textContent = `${Math.max(
+            0,
+            gameState.puzzle2Score
+          )}/25 pontos`;
         if (puzzleScores[2])
-          puzzleScores[2].textContent = `${gameState.puzzle3Score}/30 pontos`;
+          puzzleScores[2].textContent = `${Math.max(
+            0,
+            gameState.puzzle3Score
+          )}/30 pontos`;
         if (puzzleScores[3])
-          puzzleScores[3].textContent = `${gameState.puzzle4Score}/20 pontos`;
+          puzzleScores[3].textContent = `${Math.max(
+            0,
+            gameState.puzzle4Score
+          )}/20 pontos`;
+
+        // Also update puzzle-specific score display if visible
+        const currentPuzzleScore = document.querySelector(
+          "#state-programa-selecao .puzzle-score"
+        );
+        if (
+          currentPuzzleScore &&
+          gameState.currentState === "programa-selecao"
+        ) {
+          currentPuzzleScore.textContent = `${Math.max(
+            0,
+            gameState.puzzle1Score
+          )}/25 pontos`;
+        }
       }
 
       // Mostrar conclusão
@@ -1765,6 +1886,19 @@
       // Inicialização
       document.addEventListener("DOMContentLoaded", function () {
         loadPreviousPhases();
+
+        // Initialize enhanced Phase 3 Engine
+        if (
+          phase3EngineEnhanced &&
+          gameState.phase1Data &&
+          gameState.phase2Data
+        ) {
+          phase3EngineEnhanced.initialize(
+            gameState.phase1Data,
+            gameState.phase2Data
+          );
+        }
+
         updateProgress();
       });
     </script>

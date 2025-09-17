@@ -12,6 +12,7 @@
         right: 20px;
         z-index: 10000;
         max-width: 400px;
+        pointer-events: none; /* Allow clicking through container */
       }
 
       .toast {
@@ -26,6 +27,7 @@
         transition: all 0.3s ease;
         position: relative;
         padding-right: 50px;
+        pointer-events: auto; /* Allow clicking on toasts */
       }
 
       .toast.show {
@@ -68,6 +70,172 @@
 
       .toast-close:hover {
         opacity: 1;
+      }
+
+      /* Custom Dialog System */
+      .custom-dialog-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 15000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .custom-dialog-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .custom-dialog {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        transform: scale(0.8) translateY(-50px);
+        transition: all 0.3s ease;
+      }
+
+      .custom-dialog-overlay.show .custom-dialog {
+        transform: scale(1) translateY(0);
+      }
+
+      .custom-dialog-header {
+        padding: 20px 24px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .custom-dialog-icon {
+        font-size: 24px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .custom-dialog-icon.confirm {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .custom-dialog-icon.prompt {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+
+      .custom-dialog-icon.alert {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .custom-dialog-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+      }
+
+      .custom-dialog-body {
+        padding: 20px 24px;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      .custom-dialog-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-top: 15px;
+        transition: border-color 0.3s ease;
+        outline: none;
+      }
+
+      .custom-dialog-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .custom-dialog-buttons {
+        padding: 15px 24px 20px;
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .custom-dialog-btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 80px;
+      }
+
+      .custom-dialog-btn.primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .custom-dialog-btn.primary:hover {
+        background: #5a6fd8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .custom-dialog-btn.secondary {
+        background: #f5f5f5;
+        color: #666;
+        border: 1px solid #ddd;
+      }
+
+      .custom-dialog-btn.secondary:hover {
+        background: #eeeeee;
+        color: #333;
+      }
+
+      /* Mobile dialog adjustments */
+      @media (max-width: 480px) {
+        .custom-dialog {
+          width: 95%;
+          margin: 20px;
+        }
+
+        .custom-dialog-header,
+        .custom-dialog-body,
+        .custom-dialog-buttons {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .custom-dialog-buttons {
+          flex-direction: column-reverse;
+        }
+
+        .custom-dialog-btn {
+          width: 100%;
+          margin: 4px 0;
+        }
       }
 
       /* ESCAPE ROOM ENHANCEMENTS */
@@ -580,6 +748,22 @@
           padding: 18px;
         }
       }
+      /* Pulse animation for newly unlocked objects */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 0 10px rgba(76, 175, 80, 0.3);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 20px rgba(76, 175, 80, 0);
+        }
+      }
+
       /* Touch-friendly improvements */
       @media (hover: none) and (pointer: coarse) {
         .drag-item {
@@ -599,6 +783,136 @@
           padding: 15px 25px;
         }
       }
+
+      /* ESCAPE ROOM SPECIFIC STYLES */
+      .office-object {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .office-object:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .office-object:active {
+        transform: translateY(-2px);
+      }
+
+      .clue-indicator.hidden {
+        display: none !important;
+      }
+
+      .meeting-door {
+        transition: all 0.5s ease;
+      }
+
+      .office-grid {
+        position: relative;
+      }
+
+      @media (max-width: 768px) {
+        .office-reception {
+          padding: 20px !important;
+          min-height: auto !important;
+        }
+
+        .office-grid {
+          grid-template-columns: 1fr 1fr !important; /* Force 2 columns on mobile */
+          gap: 15px !important;
+          height: auto !important;
+        }
+
+        .office-object {
+          padding: 15px;
+          min-height: 120px; /* Equal height for all objects */
+          aspect-ratio: 1; /* Square aspect ratio for consistency */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          font-size: 14px;
+        }
+
+        .office-object div:first-child {
+          font-size: 32px !important;
+          margin-bottom: 8px;
+        }
+
+        .office-object div:last-child {
+          font-size: 13px !important;
+          font-weight: bold;
+          line-height: 1.2;
+        }
+
+        .meeting-door {
+          position: static !important;
+          margin: 20px auto 0 auto;
+          text-align: center;
+          width: 200px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .office-reception {
+          padding: 15px !important;
+        }
+
+        .office-grid {
+          grid-template-columns: 1fr 1fr !important; /* Force 2 columns on mobile */
+          gap: 12px !important;
+          height: auto !important;
+        }
+
+        .office-object {
+          padding: 12px;
+          min-height: 100px; /* Slightly smaller but still equal */
+          aspect-ratio: 1; /* Keep square shape */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          font-size: 14px;
+        }
+
+        .office-object div:first-child {
+          font-size: 28px !important;
+          margin-bottom: 6px;
+        }
+
+        .office-object div:last-child {
+          font-size: 12px !important;
+          font-weight: bold;
+          line-height: 1.2;
+        }
+
+        /* Mobile toast positioning */
+        .toast-container {
+          top: 10px !important;
+          right: 10px !important;
+          left: 10px !important;
+          max-width: none !important;
+        }
+
+        .toast {
+          font-size: 14px;
+          padding: 12px 16px !important;
+          margin-bottom: 8px;
+        }
+
+        .meeting-door {
+          position: static !important;
+          margin: 15px auto;
+          width: 180px;
+          padding: 12px;
+        }
+
+        .meeting-door div:first-child {
+          font-size: 24px !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -615,7 +929,7 @@
 
     <!-- PUZZLE COUNTER -->
     <div class="puzzle-counter" id="puzzle-counter">
-      🧩 PUZZLE <span id="current-puzzle">1</span>/4
+      🧩 PUZZLE <span id="current-puzzle">1</span>/5
     </div>
 
     <a href="index.html" class="back-button">← Voltar ao Menu</a>
@@ -701,6 +1015,403 @@
 
           <button class="btn" onclick="startEscapeRoom()">
             🚀 Iniciar Missão
+          </button>
+        </div>
+
+        <!-- PUZZLE 1: RECEPTION DESK MYSTERY -->
+        <div id="state-reception" class="state">
+          <h1>🧩 PUZZLE 1: O MISTÉRIO DA RECEÇÃO</h1>
+          <h2>🕵️ Investigate the SAASI Office Reception</h2>
+
+          <div
+            class="metrics"
+            style="
+              background: rgba(255, 243, 224, 0.9);
+              border-left: 4px solid #ff9800;
+            "
+          >
+            <strong>🔍 Pistas Descobertas:</strong>
+            <span id="clues-found">0</span>/5 | <strong>⚡ Energia:</strong>
+            <span id="energy-level">50</span>/100 |
+            <strong>🎯 Progresso:</strong> <span id="puzzle1-progress">0</span>%
+          </div>
+
+          <div
+            class="office-reception"
+            style="
+              background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+              padding: 30px;
+              border-radius: 15px;
+              margin: 20px 0;
+              position: relative;
+              min-height: 400px;
+            "
+          >
+            <h3 style="text-align: center; margin-bottom: 20px">
+              🏢 Receção do SAASI
+            </h3>
+            <p style="text-align: center; color: #666; margin-bottom: 30px">
+              Clique nos objetos para investigar e descobrir pistas sobre o caso
+              da Felisbina
+            </p>
+
+            <!-- Interactive Office Objects -->
+            <div
+              class="office-grid"
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 20px;
+                height: 300px;
+              "
+            >
+              <!-- Computer Screen -->
+              <div
+                class="office-object"
+                id="computer-screen"
+                onclick="investigateObject('computer')"
+                style="
+                  background: #34495e;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">🖥️</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Computador
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="computer-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+
+              <!-- File Cabinet -->
+              <div
+                class="office-object"
+                id="file-cabinet"
+                onclick="investigateObject('cabinet')"
+                style="
+                  background: #8e44ad;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">🗄️</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Arquivo
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="cabinet-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+
+              <!-- Reception Clipboard -->
+              <div
+                class="office-object"
+                id="clipboard"
+                onclick="investigateObject('clipboard')"
+                style="
+                  background: #2980b9;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">📋</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Prancheta
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="clipboard-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+
+              <!-- Coffee Machine -->
+              <div
+                class="office-object"
+                id="coffee-machine"
+                onclick="investigateObject('coffee')"
+                style="
+                  background: #c0392b;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">☕</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Café
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="coffee-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+
+              <!-- Office Phone -->
+              <div
+                class="office-object"
+                id="office-phone"
+                onclick="investigateObject('phone')"
+                style="
+                  background: #27ae60;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">📞</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Telefone
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="phone-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+
+              <!-- Notice Board -->
+              <div
+                class="office-object"
+                id="notice-board"
+                onclick="investigateObject('board')"
+                style="
+                  background: #f39c12;
+                  border-radius: 10px;
+                  padding: 15px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div style="font-size: 40px">📌</div>
+                <div style="color: white; font-weight: bold; margin-top: 10px">
+                  Quadro
+                </div>
+                <div
+                  class="clue-indicator hidden"
+                  id="board-clue"
+                  style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: #ffd700;
+                    color: #333;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: glow 2s infinite;
+                  "
+                >
+                  !
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meeting Room Door (moved outside grid for better responsive layout) -->
+          <div
+            id="meeting-door"
+            class="meeting-door"
+            style="
+              background: #95a5a6;
+              padding: 15px;
+              border-radius: 10px;
+              cursor: not-allowed;
+              opacity: 0.5;
+              transition: all 0.3s ease;
+              margin: 20px auto;
+              text-align: center;
+              max-width: 200px;
+            "
+          >
+            <div style="font-size: 30px">🚪</div>
+            <div style="font-weight: bold; margin-top: 5px">
+              Sala de Reunião
+            </div>
+            <div style="font-size: 12px; color: #7f8c8d">🔒 Bloqueada</div>
+          </div>
+
+          <!-- Investigation Results Panel -->
+          <div
+            id="investigation-panel"
+            class="investigation-panel"
+            style="
+              background: rgba(255, 255, 255, 0.9);
+              padding: 20px;
+              border-radius: 10px;
+              margin: 20px 0;
+              min-height: 100px;
+              border: 2px solid #bdc3c7;
+            "
+          >
+            <h4>🔍 Resultados da Investigação:</h4>
+            <div
+              id="investigation-content"
+              style="font-style: italic; color: #7f8c8d"
+            >
+              Selecione um objeto no escritório para investigar...
+            </div>
+          </div>
+
+          <!-- Discovered Clues -->
+          <div
+            id="clues-display"
+            class="clues-display"
+            style="
+              background: rgba(232, 245, 233, 0.9);
+              padding: 20px;
+              border-radius: 10px;
+              margin: 20px 0;
+              border-left: 4px solid #4caf50;
+            "
+          >
+            <h4>✅ Pistas Descobertas:</h4>
+            <div id="clues-list" style="margin-top: 15px">
+              <p style="font-style: italic; color: #666">
+                Nenhuma pista descoberta ainda...
+              </p>
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            id="next-reception"
+            onclick="nextState()"
+            style="
+              display: none;
+              background: linear-gradient(135deg, #4caf50, #45a049);
+            "
+          >
+            🔓 Entrar na Sala de Reunião
           </button>
         </div>
 
@@ -1017,7 +1728,31 @@
       </div>
     </div>
 
+    <!-- Load existing systems for compatibility -->
+    <script src="js/scoring-system.js"></script>
+    <script src="js/assessment-logic.js"></script>
+    <script src="js/case-data-felisbina.js"></script>
+    <script src="js/modal-system.js"></script>
+    <script src="js/shared.js"></script>
+
     <script>
+      // Simple function to create native-style dialogs
+      function showNativePrompt(message) {
+        // Create a simple input dialog
+        const result = window._originalPrompt
+          ? window._originalPrompt(message)
+          : prompt(message);
+        return result;
+      }
+
+      function showNativeConfirm(message) {
+        // Create a simple confirm dialog
+        const result = window._originalConfirm
+          ? window._originalConfirm(message)
+          : confirm(message);
+        return result;
+      }
+
       // ESCAPE ROOM GAME STATE
       let escapeRoomState = {
         startTime: null,
@@ -1319,10 +2054,10 @@
       function startEscapeRoom() {
         escapeRoomState.startTime = Date.now();
         startTimer();
-        changeState("conversa");
-        showDialogue();
+        changeState("reception"); // Start with reception puzzle
+        initReceptionPuzzle();
         updatePuzzleCounter(1);
-        showToast("🚀 Missão iniciada! Boa sorte, detetive!", "info", 3000);
+        showToast("🚀 Missão iniciada! Investigue a receção!", "info", 5000);
       }
 
       function startTimer() {
@@ -1389,7 +2124,7 @@
       function addBonusPoints(points, reason) {
         escapeRoomState.bonusPoints += points;
         gameState.score += points;
-        showToast(`🎉 Bonus: +${points} pontos! ${reason}`, "success", 3000);
+        showToast(`🎉 Bonus: +${points} pontos! ${reason}`, "success", 5000);
         updateScoreDisplay();
       }
 
@@ -1481,7 +2216,7 @@
       }
 
       // Toast System
-      function showToast(message, type = "info", duration = 5000) {
+      function showToast(message, type = "info", duration = 7000) {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
         toast.className = `toast ${type}`;
@@ -1502,6 +2237,173 @@
           setTimeout(() => toast.remove(), 300);
         }, duration);
       }
+
+      // Custom Dialog System
+      class CustomDialog {
+        constructor() {
+          this.overlay = null;
+          this.currentDialog = null;
+          this.createOverlay();
+        }
+
+        createOverlay() {
+          this.overlay = document.createElement("div");
+          this.overlay.className = "custom-dialog-overlay";
+          this.overlay.addEventListener("click", (e) => {
+            if (e.target === this.overlay) {
+              this.close(null);
+            }
+          });
+          document.body.appendChild(this.overlay);
+        }
+
+        show(options) {
+          const {
+            type = "confirm",
+            title = "Confirmação",
+            message = "Tem a certeza?",
+            okText = "OK",
+            cancelText = "Cancelar",
+            hasInput = false,
+            inputPlaceholder = "Digite aqui...",
+            inputValue = "",
+          } = options;
+
+          return new Promise((resolve) => {
+            this.currentResolve = resolve;
+
+            const iconMap = {
+              confirm: "❓",
+              prompt: "📝",
+              alert: "ℹ️",
+            };
+
+            const dialog = document.createElement("div");
+            dialog.className = "custom-dialog";
+
+            dialog.innerHTML = `
+              <div class="custom-dialog-header">
+                <div class="custom-dialog-icon ${type}">${
+              iconMap[type] || "❓"
+            }</div>
+                <h3 class="custom-dialog-title">${title}</h3>
+              </div>
+              <div class="custom-dialog-body">
+                <div>${message}</div>
+                ${
+                  hasInput
+                    ? `<input type="text" class="custom-dialog-input" placeholder="${inputPlaceholder}" value="${inputValue}">`
+                    : ""
+                }
+              </div>
+              <div class="custom-dialog-buttons">
+                ${
+                  type !== "alert"
+                    ? `<button class="custom-dialog-btn secondary" data-action="cancel">${cancelText}</button>`
+                    : ""
+                }
+                <button class="custom-dialog-btn primary" data-action="ok">${okText}</button>
+              </div>
+            `;
+
+            this.overlay.innerHTML = "";
+            this.overlay.appendChild(dialog);
+            this.currentDialog = dialog;
+
+            // Add button event listeners
+            dialog.querySelectorAll(".custom-dialog-btn").forEach((btn) => {
+              btn.addEventListener("click", (e) => {
+                const action = e.target.dataset.action;
+                if (action === "ok") {
+                  if (hasInput) {
+                    const input = dialog.querySelector(".custom-dialog-input");
+                    this.close(input.value.trim() || null);
+                  } else {
+                    this.close(true);
+                  }
+                } else {
+                  this.close(hasInput ? null : false);
+                }
+              });
+            });
+
+            // Handle Enter key for input
+            if (hasInput) {
+              const input = dialog.querySelector(".custom-dialog-input");
+              input.focus();
+              input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                  this.close(input.value.trim() || null);
+                }
+              });
+            }
+
+            // Handle Escape key
+            const handleEscape = (e) => {
+              if (e.key === "Escape") {
+                this.close(hasInput ? null : false);
+                document.removeEventListener("keydown", handleEscape);
+              }
+            };
+            document.addEventListener("keydown", handleEscape);
+
+            // Show dialog
+            this.overlay.classList.add("show");
+          });
+        }
+
+        close(result) {
+          this.overlay.classList.remove("show");
+          setTimeout(() => {
+            if (this.currentResolve) {
+              this.currentResolve(result);
+              this.currentResolve = null;
+            }
+          }, 300);
+        }
+
+        // Convenience methods
+        async confirm(message, title = "Confirmação") {
+          return await this.show({
+            type: "confirm",
+            title,
+            message,
+            okText: "Sim",
+            cancelText: "Não",
+          });
+        }
+
+        async alert(message, title = "Informação") {
+          return await this.show({
+            type: "alert",
+            title,
+            message,
+            okText: "OK",
+          });
+        }
+
+        async prompt(message, title = "Input Necessário", defaultValue = "") {
+          return await this.show({
+            type: "prompt",
+            title,
+            message,
+            hasInput: true,
+            inputPlaceholder: "Digite sua resposta...",
+            inputValue: defaultValue,
+            okText: "OK",
+            cancelText: "Cancelar",
+          });
+        }
+      }
+
+      // Global dialog instance
+      const customDialog = new CustomDialog();
+
+      // Override native dialogs with async versions
+      window.customConfirm = (message) => customDialog.confirm(message);
+      window.customAlert = (message) => customDialog.alert(message);
+      window.customPrompt = (message, defaultValue = "") =>
+        customDialog.prompt(message, "Input Necessário", defaultValue);
 
       function continueToPhase2() {
         // Verificar se pontuação é suficiente
@@ -1582,10 +2484,11 @@
 
         // Atualizar contador de puzzle
         const puzzleMap = {
-          conversa: 1,
-          analise: 2,
-          documentacao: 3,
-          avaliacao: 4,
+          reception: 1,
+          conversa: 2,
+          analise: 3,
+          documentacao: 4,
+          avaliacao: 5,
         };
 
         if (puzzleMap[newState]) {
@@ -1596,6 +2499,7 @@
       function updateProgress() {
         const states = [
           "inicio",
+          "reception",
           "conversa",
           "analise",
           "documentacao",
@@ -1611,6 +2515,7 @@
       function nextState() {
         const states = [
           "inicio",
+          "reception",
           "conversa",
           "analise",
           "documentacao",
@@ -1625,6 +2530,9 @@
 
           // Inicializar estado específico
           switch (nextState) {
+            case "conversa":
+              showDialogue();
+              break;
             case "analise":
               initAnalysis();
               break;
@@ -1635,6 +2543,600 @@
               showConclusion();
               break;
           }
+        }
+      }
+
+      // ===== PUZZLE 1: RECEPTION DESK MYSTERY IMPLEMENTATION =====
+
+      let receptionState = {
+        cluesFound: 0,
+        requiredClues: 5, // Exactly 5 clues total
+        energyLevel: 50,
+        investigatedObjects: new Set(),
+        unlockedObjects: new Set(), // Track objects that are successfully unlocked
+        discoveredClues: [],
+        bonusEarned: false,
+        contextPhase: "preparation", // preparation -> investigation -> completion
+      };
+
+      // Reception puzzle clues data - WITH DISCOVERABLE CLUES EMBEDDED
+      const receptionClues = {
+        // STARTER CLUE - Always available, contains clue for first code
+        computer: {
+          title: "Agendamento da Felisbina",
+          content:
+            "📅 <strong>Consulta agendada:</strong> Felisbina Santos, 56 anos, 9º ano escolaridade<br>🔍 <strong>Motivo:</strong> Avaliação DLD - Primeira consulta<br>📝 <strong>Observações:</strong> Cliente nervosa, menciona dependência do pai frequentemente<br>🏠 <strong>Habitação:</strong> Vive sozinha numa pensão<br><br>💰 <strong>Benefício Ativo:</strong> <span style='color: #e74c3c; font-weight: bold;'>RSI</span> desde Março <span style='color: #e74c3c; font-weight: bold;'>2025</span><br><br>🔑 <em>Para acessar os arquivos dos beneficiários, use o código do benefício + ano</em>",
+          discovered: false,
+          required: true,
+          unlockRequirement: null, // Always available
+          requiresCodeEntry: true,
+          expectedCode: "RSI2025",
+          hint: "Benefício + Ano visível no ecrã do computador",
+          unlocksAccess: ["cabinet"],
+        },
+
+        // UNLOCKED BY: RSI2025 - Contains clue for next code
+        cabinet: {
+          title: "Pasta de Beneficiários",
+          content:
+            "📂 <strong>Felisbina Santos - Dados Oficiais:</strong><br>💰 <strong>RSI:</strong> Ativo desde Março 2025 (valor: 253.20€)<br>💊 <strong>PSI:</strong> Prestação Social para Inclusão ativa<br>🏠 <strong>Morada:</strong> Pensão - Rua da Esperança, nº 45<br>📊 <strong>Gestão Financeira:</strong> Anteriormente pelo irmão, agora independente<br><br>📋 <strong>Nota anexa:</strong> <em>\"Para orientação técnica, contactar linha de <span style='color: #27ae60; font-weight: bold;'>APOIO</span> - Extensão <span style='color: #27ae60; font-weight: bold;'>123</span>\"</em><br><br>🔑 <em>Use o contacto de apoio para aceder ao telefone</em>",
+          discovered: false,
+          required: true,
+          unlockRequirement: "RSI2025",
+          requiresCodeEntry: true,
+          expectedCode: "APOIO123",
+          hint: "Linha de contacto indicada na nota (palavra + número)",
+          unlocksAccess: ["phone"],
+        },
+
+        // UNLOCKED BY: APOIO123 - Contains clue for next code
+        phone: {
+          title: "Chamada de Apoio Técnico",
+          content:
+            "📞 <strong>Conversa com colega experiente:</strong><br>👥 'A Felisbina precisa de abordagem empática e cuidadosa'<br>💡 'Atenção: dependência emocional do progenitor pode afetar autonomia'<br>✅ 'Ponto forte: 6 meses experiência como empregada de limpeza'<br>⚠️ 'Situação familiar: ruptura recente com irmão que geria finanças'<br><br>📋 'Para consultares as <span style='color: #8e44ad; font-weight: bold;'>NOTAS</span> anteriores, usa o código do ano passado: <span style='color: #8e44ad; font-weight: bold;'>2024</span>'<br><br>🔑 <em>O colega deu-te o código das notas anteriores</em>",
+          discovered: false,
+          required: true,
+          unlockRequirement: "APOIO123",
+          requiresCodeEntry: true,
+          expectedCode: "NOTAS2024",
+          hint: "Palavra + ano mencionados pelo colega na chamada",
+          unlocksAccess: ["clipboard"],
+        },
+
+        // UNLOCKED BY: NOTAS2024 - Contains clue for next code
+        clipboard: {
+          title: "Notas dos Técnicos Anteriores",
+          content:
+            "📋 <strong>Avaliação técnica anterior:</strong><br>😟 <strong>Dependência Emocional:</strong> 'Elevada dependência emocional do progenitor'<br>💼 <strong>Experiência Profissional:</strong> '6 meses como empregada de limpeza - transferível'<br>⚠️ <strong>Situação Familiar:</strong> 'Ruptura recente com irmão responsável por finanças'<br>📈 <strong>Potencial:</strong> 'Disponibilidade alta, capacidade boa com formação'<br><br>🔐 <strong>Código de arquivo:</strong> <em>\"Protocolo <span style='color: #d35400; font-weight: bold;'>DLD</span> ano <span style='color: #d35400; font-weight: bold;'>2025</span> - usar para aceder aos procedimentos\"</em><br><br>🔑 <em>O código do protocolo atual está nas notas</em>",
+          discovered: false,
+          required: true,
+          unlockRequirement: "NOTAS2024",
+          requiresCodeEntry: true,
+          expectedCode: "DLD2025",
+          hint: "Protocolo + ano mencionados nas notas arquivadas",
+          unlocksAccess: ["board"],
+        },
+
+        // FINAL CLUE - Contains obvious final code
+        board: {
+          title: "Procedimentos SAASI - Protocolo DLD",
+          content:
+            "📌 <strong>Protocolo Avaliação DLD 2025:</strong><br>1️⃣ <strong>Disponibilidade:</strong> Avaliar impedimentos para trabalho<br>2️⃣ <strong>Capacidade:</strong> Analisar competências e necessidades formação<br>3️⃣ <strong>Fatores:</strong> Identificar risco/proteção<br>4️⃣ <strong>Plano:</strong> Definir acompanhamento personalizado<br><br>✅ <strong>Perfil Felisbina:</strong> Disponível, capacidade boa c/ formação<br><br>🚪 <strong>Próximo passo:</strong> <em>\"Dirigir-se à sala de <span style='color: #c0392b; font-weight: bold;'>REUNIÃO</span> para iniciar avaliação formal\"</em><br><br>🔑 <em>A palavra para a próxima sala está destacada</em>",
+          discovered: false,
+          required: true,
+          unlockRequirement: "DLD2025",
+          requiresCodeEntry: true,
+          expectedCode: "REUNIÃO",
+          hint: "Tipo de sala mencionado nas instruções finais",
+          unlocksAccess: ["meeting-door"],
+        },
+
+        // ALTERNATIVE ROUTE - Coffee with helpful hint
+        coffee: {
+          title: "Bem-estar no Trabalho Social",
+          content:
+            "☕ <strong>Máquina de café:</strong><br>💪 <strong>Energia aumentada!</strong> (+30 energia)<br>🧠 <strong>Foco melhorado</strong> para investigação complexa<br>💡 <strong>Dica profissional:</strong> Cuidar do bem-estar é essencial no trabalho social!<br><br>🔍 <strong>Dica de investigação:</strong> <em>Procure por palavras destacadas e números nos documentos - são pistas importantes!</em><br><br>⚡ <em>Com energia alta (≥70), pode saltar alguns passos!</em>",
+          discovered: false,
+          required: false,
+          unlockRequirement: null,
+          energyBoost: 30,
+          requiresCodeEntry: false,
+          unlocksAccess: [],
+        },
+      };
+
+      function initReceptionPuzzle() {
+        updateReceptionMetrics();
+        showToast(
+          "🔍 Explore o escritório! Clique nos objetos para descobrir pistas sobre a Felisbina.",
+          "info",
+          5000
+        );
+
+        // Show helpful instructions after a moment
+        setTimeout(() => {
+          showToast(
+            "💡 DICA: Procure por palavras destacadas e números nos documentos - são códigos importantes!",
+            "info",
+            6000
+          );
+        }, 3000);
+      }
+
+      function investigateObject(objectId) {
+        const clue = receptionClues[objectId];
+
+        if (!clue) {
+          showToast("❌ Objeto não encontrado!", "error", 4000);
+          return;
+        }
+
+        // Check if this object is already unlocked (successfully completed)
+        if (
+          receptionState.unlockedObjects &&
+          receptionState.unlockedObjects.has(objectId)
+        ) {
+          showToast("✅ Este objeto já foi desbloqueado!", "info", 4000);
+          return;
+        }
+
+        // Check if this clue can be investigated now (proper order)
+        if (!canInvestigateClue(clue)) {
+          return;
+        }
+
+        // Don't mark as investigated yet - only when successfully unlocked
+
+        // Show investigation result
+        showInvestigationResult(clue);
+
+        // Handle clue discovery - only for objects that don't require codes
+        if (!clue.requiresCodeEntry) {
+          // For objects like coffee that don't need codes, discover immediately
+          if (!clue.discovered) {
+            clue.discovered = true;
+
+            // Mark as unlocked since no code is needed
+            receptionState.unlockedObjects.add(objectId);
+            receptionState.investigatedObjects.add(objectId);
+
+            // Count clues and update discovery list
+            if (clue.required) {
+              receptionState.cluesFound++;
+              receptionState.discoveredClues.push(clue);
+            } else {
+              receptionState.discoveredClues.push({ ...clue, optional: true });
+            }
+
+            // Enhanced scoring for puzzle solving
+            if (clue.required) {
+              addScore(15); // Points for required clue discovery
+            } else {
+              addScore(10); // Bonus points for optional clues
+            }
+
+            // Handle special cases (like coffee energy boost)
+            if (objectId === "coffee" && clue.energyBoost) {
+              receptionState.energyLevel = Math.min(
+                100,
+                receptionState.energyLevel + clue.energyBoost
+              );
+              addBonusPoints(5, "Bem-estar no trabalho!");
+              showToast(
+                "☕ Energia renovada! Agora pode acessar mais objetos!",
+                "success",
+                3000
+              );
+            }
+
+            // Update UI
+            updateCluesList();
+            markObjectAsInvestigated(objectId);
+            showClueIndicator(objectId);
+
+            // Show discovery feedback
+            showToast(
+              `🎉 ${
+                clue.required ? "Informação essencial" : "Bonus"
+              } descoberta!`,
+              "success",
+              3000
+            );
+
+            // Direct unlock for items that don't need code entry
+            if (clue.unlocksAccess && clue.unlocksAccess.length > 0) {
+              unlockNewObjects(clue);
+            }
+          }
+        } else {
+          // For objects that require code entry, just show the prompt
+          // Don't discover the clue until code is correctly entered
+          setTimeout(async () => {
+            await showCodeEntryPrompt(clue, objectId);
+          }, 1000);
+        }
+
+        updateReceptionMetrics();
+        checkPuzzleCompletion();
+      }
+
+      function canInvestigateClue(clue) {
+        // Objects without unlock requirements are always available
+        if (!clue.unlockRequirement) {
+          return true;
+        }
+
+        // Initialize codes if not exists
+        if (!receptionState.codesDiscovered) {
+          receptionState.codesDiscovered = [];
+        }
+
+        // Check if we have the required code (entered successfully)
+        if (receptionState.codesDiscovered.includes(clue.unlockRequirement)) {
+          return true;
+        }
+
+        // Special energy-based unlocks (alternative paths)
+        if (
+          clue.unlockRequirement === "NOTAS2024" &&
+          receptionState.energyLevel >= 70
+        ) {
+          showToast(
+            "🔥 Energia alta permite acesso direto às notas!",
+            "info",
+            2000
+          );
+          return true;
+        }
+
+        // Show appropriate unlock hint
+        const unlockHints = {
+          RSI2025:
+            "Precisa inserir código de acesso aos arquivos (computador primeiro)",
+          APOIO123:
+            "Precisa inserir código de contacto (pasta de beneficiários primeiro)",
+          NOTAS2024:
+            "Precisa inserir código das notas OU energia ≥70 (tente o café!)",
+          DLD2025:
+            "Precisa inserir código do protocolo (notas dos técnicos primeiro)",
+        };
+
+        const hint = unlockHints[clue.unlockRequirement] || "Objeto bloqueado";
+        showToast(`🔒 ${hint}`, "warning", 3000);
+        return false;
+      }
+
+      function unlockNewObjects(discoveredClue) {
+        if (discoveredClue.unlocksAccess) {
+          const newlyUnlocked = discoveredClue.unlocksAccess.filter((objId) => {
+            const targetClue = receptionClues[objId];
+            return (
+              targetClue &&
+              !targetClue.discovered &&
+              !receptionState.investigatedObjects.has(objId)
+            );
+          });
+
+          if (newlyUnlocked.length > 0) {
+            const objectNames = {
+              cabinet: "Arquivo",
+              phone: "Telefone",
+              clipboard: "Prancheta",
+              board: "Quadro de Procedimentos",
+              "meeting-door": "Sala de Reunião",
+            };
+
+            const unlockedNames = newlyUnlocked
+              .map((id) => objectNames[id] || id)
+              .join(", ");
+            showToast(
+              `🔓 Novo acesso desbloqueado: ${unlockedNames}!`,
+              "info",
+              4000
+            );
+
+            // Visual feedback - highlight newly unlocked objects
+            highlightUnlockedObjects(newlyUnlocked);
+          }
+        }
+      }
+
+      function highlightUnlockedObjects(objectIds) {
+        objectIds.forEach((objectId) => {
+          const element = document.querySelector(
+            `[onclick="investigateObject('${objectId}')"]`
+          );
+          if (element) {
+            element.style.animation = "pulse 2s ease-in-out 3";
+            element.style.border = "2px solid #4caf50";
+            setTimeout(() => {
+              element.style.animation = "";
+              element.style.border = "";
+            }, 6000);
+          }
+        });
+      }
+
+      function updateContextPhase() {
+        // Simplified context phase based on codes discovered
+        const codes = receptionState.codesDiscovered || [];
+
+        if (
+          codes.length >= 2 &&
+          receptionState.contextPhase === "preparation"
+        ) {
+          receptionState.contextPhase = "investigation";
+          showToast("🔄 Investigação aprofundada desbloqueada!", "info", 3000);
+        } else if (
+          codes.length >= 4 &&
+          receptionState.contextPhase === "investigation"
+        ) {
+          receptionState.contextPhase = "completion";
+          showToast(
+            "🎯 Fase final! Todos os códigos revelam o caminho.",
+            "info",
+            3000
+          );
+        }
+      }
+
+      function showInvestigationResult(clue) {
+        const panel = document.getElementById("investigation-content");
+
+        let content = `
+          <div style="border-left: 4px solid #3498db; padding-left: 15px;">
+            <h5 style="color: #2c3e50; margin: 0 0 10px 0;">${clue.title}</h5>
+            <div style="line-height: 1.6;">${clue.content}</div>
+        `;
+
+        // Show next action hint
+        if (clue.requiresCodeEntry) {
+          content += `
+            <div style="margin-top: 15px; background: #fff3e0; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
+              <strong>🔑 Próximo passo:</strong> Inserir código para desbloquear acesso<br>
+              <small style="color: #e67e22; margin-top: 5px; display: block;">💡 ${clue.hint}</small>
+            </div>
+          `;
+        } else if (clue.unlocksAccess && clue.unlocksAccess.length > 0) {
+          const objectNames = {
+            cabinet: "🗄️ Arquivo",
+            phone: "📞 Telefone",
+            clipboard: "📋 Prancheta",
+            board: "📌 Quadro de Procedimentos",
+            "meeting-door": "🚪 Sala de Reunião",
+          };
+          const unlockNames = clue.unlocksAccess
+            .map((id) => objectNames[id] || id)
+            .join(", ");
+          content += `
+            <div style="margin-top: 10px; background: #e8f5e8; padding: 10px; border-radius: 5px; border-left: 4px solid #4caf50;">
+              <strong>✅ Acesso direto desbloqueado:</strong> ${unlockNames}
+            </div>
+          `;
+        }
+
+        content += `</div>`;
+        panel.innerHTML = content;
+      }
+
+      async function showCodeEntryPrompt(clue, objectId) {
+        const promptMessage =
+          `🔐 <strong>CÓDIGO NECESSÁRIO</strong><br><br>` +
+          `📋 <strong>Objeto:</strong> ${clue.title}<br>` +
+          `💡 <strong>Dica:</strong> ${clue.hint}<br><br>` +
+          `Digite o código para desbloquear:`;
+
+        const code = await customDialog.prompt(
+          promptMessage,
+          "Código de Acesso"
+        );
+
+        if (code === null || code === undefined) {
+          // User cancelled or invalid input
+          showToast("❌ Entrada de código cancelada", "warning", 4000);
+          return;
+        }
+
+        // Convert to string and trim whitespace to handle any input type
+        const userCode = String(code).trim();
+        const expectedCode = String(clue.expectedCode).trim();
+
+        if (userCode.toUpperCase() === expectedCode.toUpperCase()) {
+          // Correct code!
+          if (!receptionState.codesDiscovered) {
+            receptionState.codesDiscovered = [];
+          }
+          receptionState.codesDiscovered.push(clue.expectedCode);
+
+          addScore(20); // Bonus points for correct code entry
+          showToast(`🎉 Código correto! Acesso desbloqueado!`, "success", 3000);
+
+          // Mark this object as properly unlocked
+          receptionState.unlockedObjects.add(objectId);
+          receptionState.investigatedObjects.add(objectId);
+
+          // Handle clue discovery (moved from investigateObject)
+          if (!clue.discovered) {
+            clue.discovered = true;
+
+            // Count clues and update discovery list
+            if (clue.required) {
+              receptionState.cluesFound++;
+              receptionState.discoveredClues.push(clue);
+            } else {
+              receptionState.discoveredClues.push({ ...clue, optional: true });
+            }
+
+            // Enhanced scoring for puzzle solving (additional points for successful unlock)
+            if (clue.required) {
+              addScore(15); // Points for required clue discovery
+            } else {
+              addScore(10); // Bonus points for optional clues
+            }
+
+            // Update UI after successful code entry
+            updateCluesList();
+            markObjectAsInvestigated(objectId);
+            showClueIndicator(objectId);
+
+            // Show discovery feedback
+            showToast(
+              `🎉 ${
+                clue.required ? "Informação essencial" : "Bonus"
+              } descoberta!`,
+              "success",
+              3000
+            );
+          }
+
+          // Unlock new objects
+          unlockNewObjects(clue);
+        } else {
+          // Wrong code
+          showToast(
+            `❌ Código incorreto: "${userCode}". Tente novamente!`,
+            "error",
+            3000
+          );
+
+          // Allow retry after delay
+          setTimeout(async () => {
+            const retry = await customDialog.confirm(
+              `💡 <strong>Código incorreto!</strong><br><br>` +
+                `<strong>Código inserido:</strong> "${userCode}"<br>` +
+                `<strong>Dica:</strong> ${clue.hint}<br><br>` +
+                `Deseja tentar novamente?`,
+              "🔐 Código Incorreto"
+            );
+            if (retry) {
+              await showCodeEntryPrompt(clue, objectId);
+            }
+          }, 1000);
+        }
+      }
+
+      function updateCluesList() {
+        const cluesList = document.getElementById("clues-list");
+
+        if (receptionState.discoveredClues.length === 0) {
+          cluesList.innerHTML =
+            '<p style="font-style: italic; color: #666;">Nenhuma pista descoberta ainda...</p>';
+          return;
+        }
+
+        cluesList.innerHTML = receptionState.discoveredClues
+          .map(
+            (clue, index) => `
+          <div style="background: ${
+            clue.optional ? "#fff3e0" : "#e8f5e8"
+          }; margin: 10px 0; padding: 12px; border-radius: 8px; border-left: 4px solid ${
+              clue.optional ? "#ff9800" : "#4caf50"
+            };">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong>${clue.optional ? "🎁" : index + 1 + "."} ${
+              clue.title
+            }</strong>
+              <span style="background: ${
+                clue.optional ? "#ff9800" : "#4caf50"
+              }; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${
+              clue.optional ? "Bonus" : "+10 pts"
+            }</span>
+            </div>
+            <div style="margin-top: 8px; font-size: 14px; color: #2c3e50;">${
+              clue.content
+            }</div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function markObjectAsInvestigated(objectId) {
+        const object = document.getElementById(
+          objectId === "computer"
+            ? "computer-screen"
+            : objectId === "cabinet"
+            ? "file-cabinet"
+            : objectId === "coffee"
+            ? "coffee-machine"
+            : objectId === "phone"
+            ? "office-phone"
+            : objectId === "board"
+            ? "notice-board"
+            : objectId
+        );
+
+        if (object) {
+          object.style.opacity = "0.7";
+          object.style.transform = "scale(0.95)";
+          object.style.cursor = "default";
+          object.style.border = "3px solid #4caf50";
+        }
+      }
+
+      function showClueIndicator(objectId) {
+        const indicator = document.getElementById(`${objectId}-clue`);
+        if (indicator) {
+          indicator.classList.remove("hidden");
+          indicator.style.display = "flex";
+        }
+      }
+
+      function updateReceptionMetrics() {
+        // Fix: Only count required clues, cap at maximum
+        const actualCluesFound = Math.min(
+          receptionState.cluesFound,
+          receptionState.requiredClues
+        );
+        document.getElementById("clues-found").textContent = actualCluesFound;
+        document.getElementById("energy-level").textContent =
+          receptionState.energyLevel;
+
+        // Fix: Cap progress at 100%
+        const progress = Math.min(
+          100,
+          Math.round((actualCluesFound / receptionState.requiredClues) * 100)
+        );
+        document.getElementById("puzzle1-progress").textContent = progress;
+      }
+
+      function checkPuzzleCompletion() {
+        if (receptionState.cluesFound >= receptionState.requiredClues) {
+          // Unlock meeting room
+          const meetingDoor = document.getElementById("meeting-door");
+          meetingDoor.style.background = "#4caf50";
+          meetingDoor.style.cursor = "pointer";
+          meetingDoor.style.opacity = "1";
+          meetingDoor.style.transform = "scale(1.05)";
+          meetingDoor.innerHTML = `
+            <div style="font-size: 30px;">🚪</div>
+            <div style="font-weight: bold; margin-top: 5px; color: white;">Sala de Reunião</div>
+            <div style="font-size: 12px; color: #e8f8e8;">🔓 Desbloqueada!</div>
+          `;
+
+          // Show completion button
+          document.getElementById("next-reception").style.display = "block";
+
+          // Time bonus
+          const elapsedMinutes =
+            (Date.now() - escapeRoomState.startTime) / 60000;
+          if (elapsedMinutes <= 2 && !receptionState.bonusEarned) {
+            addBonusPoints(15, "Investigação rápida!");
+            receptionState.bonusEarned = true;
+          }
+
+          showToast(
+            "🎉 Puzzle completado! Todas as pistas descobertas!",
+            "success",
+            4000
+          );
+          setTimeout(() => {
+            showToast(
+              "🚪 A sala de reunião foi desbloqueada! Pode prosseguir.",
+              "info",
+              3000
+            );
+          }, 2000);
         }
       }
 
@@ -1715,5 +3217,3 @@
     </script>
   </body>
 </html>
-
-

@@ -983,409 +983,38 @@
     </div>
 
     <script src="js/shared.js"></script>
+    <script src="js/selection-state-manager.js"></script>
+    <script src="js/success-rate-system.js"></script>
+    <script src="js/modal-system.js"></script>
+    <script src="js/phase4-engine.js"></script>
     <script>
       // IMPLEMENTAÇÃO COMPLETA DA FASE 4 - CONFORME ESPECIFICAÇÃO DETALHADA
+      // INTEGRAÇÃO COM NOVOS MOTORES - Agent 4 Implementation
 
-      // Estado do jogo da Fase 4
-      const gameState = {
-        currentState: "intro",
-        score: 0,
+      // NOTA: Estado do jogo agora é gerido pelo Phase4Engine
+      // Mantendo compatibilidade com código existente que pode referenciar gameState
+      let gameState = null;
 
-        // Puzzle 1: Gestão de Progresso
-        progressEvaluations: {},
-        puzzle1Score: 0,
-        puzzle1Progress: 0,
-
-        // Puzzle 2: Gestão de Crises
-        crisisResponses: {},
-        puzzle2Score: 0,
-        puzzle2Progress: 0,
-
-        // Puzzle 3: Ajuste de Estratégias
-        strategyAdjustments: {},
-        puzzle3Score: 0,
-        puzzle3Progress: 0,
-
-        // Puzzle 4: Preparação para Autonomia
-        autonomyPlanning: {},
-        puzzle4Score: 0,
-        puzzle4Progress: 0,
-
-        // Dados das fases anteriores
-        phase1Data: null,
-        phase2Data: null,
-        phase3Data: null,
-
-        // Tempo de início
-        startTime: Date.now(),
-        completionTime: null,
-      };
-
-      // DADOS CONFORME ESPECIFICAÇÃO DETALHADA
-      const progressManagementData = {
-        programas_em_curso: [
-          {
-            id: "consultas_psicologia",
-            nome: "Consultas de Psicologia",
-            entidade: "Centro de Saúde de Ramalde",
-            progresso_atual: 66.7,
-            status: "em_curso",
-            indicadores: {
-              adesao: 90,
-              satisfacao: 85,
-              objetivos_alcancados: 70,
-              autonomia_emocional: 60,
-            },
-            observacoes:
-              "Progresso consistente. Redução significativa da dependência emocional do pai.",
-            proxima_acao: "continuar_conforme_planeado",
-            pontos_avaliacao_correta: 8,
-          },
-          {
-            id: "programa_qualifica",
-            nome: "Programa Qualifica - Limpeza",
-            entidade: "IEFP Porto",
-            progresso_atual: 50,
-            status: "com_dificuldades",
-            indicadores: {
-              adesao: 75,
-              aproveitamento: 60,
-              motivacao: 55,
-              competencias_adquiridas: 45,
-            },
-            observacoes:
-              "Dificuldades na componente teórica. Precisa apoio adicional.",
-            proxima_acao: "ajustar_metodologia",
-            pontos_avaliacao_correta: 10,
-          },
-          {
-            id: "grupos_apoio_social",
-            nome: "Grupos de Apoio Social",
-            entidade: "IPSS Solidariedade",
-            progresso_atual: 40,
-            status: "resistencia",
-            indicadores: {
-              adesao: 40,
-              participacao: 30,
-              integracao_grupo: 25,
-              rede_social: 20,
-            },
-            observacoes:
-              "Resistência à participação. Sente-se 'diferente' dos outros participantes.",
-            proxima_acao: "estrategia_alternativa",
-            pontos_avaliacao_correta: 12,
-          },
-        ],
-      };
-
-      const crisisManagementData = {
-        cenarios_crise: [
-          {
-            id: "crise_habitacional",
-            titulo: "Crise Habitacional Urgente",
-            descricao:
-              "A Felisbina foi despejada da pensão por atraso no pagamento. Está temporariamente na casa de uma conhecida, mas só pode ficar 3 dias.",
-            urgencia: "alta",
-            tempo_limite: 180,
-            opcoes_resposta: [
-              {
-                id: "contactar_emergencia_social",
-                acao: "Contactar serviço de emergência social da Câmara",
-                probabilidade_sucesso: 80,
-                pontos: 15,
-                correto: true,
-                consequencias: "Alojamento temporário garantido em 24h",
-              },
-              {
-                id: "solicitar_apoio_familia",
-                acao: "Contactar familiares para apoio temporário",
-                probabilidade_sucesso: 30,
-                pontos: 5,
-                correto: false,
-                consequencias: "Família não tem condições para ajudar",
-              },
-              {
-                id: "parar_programas_procurar_casa",
-                acao: "Suspender programas para procurar habitação",
-                probabilidade_sucesso: 60,
-                pontos: -10,
-                correto: false,
-                consequencias: "Interrupção do progresso nos programas",
-              },
-            ],
-          },
-          {
-            id: "oportunidade_emprego",
-            titulo: "Oportunidade de Emprego Inesperada",
-            descricao:
-              "Empresa de limpeza contactou o IEFP. Têm vaga imediata, mas Felisbina só tem 50% do Programa Qualifica completo.",
-            urgencia: "media",
-            tempo_limite: 240,
-            opcoes_resposta: [
-              {
-                id: "aceitar_emprego_suspender_qualifica",
-                acao: "Aceitar emprego e suspender Programa Qualifica",
-                probabilidade_sucesso: 90,
-                pontos: 8,
-                correto: false,
-                consequencias: "Emprego a curto prazo mas sem certificação",
-              },
-              {
-                id: "negociar_emprego_part_time",
-                acao: "Negociar horário part-time para manter ambos",
-                probabilidade_sucesso: 70,
-                pontos: 18,
-                correto: true,
-                consequencias: "Conciliação ideal entre emprego e formação",
-              },
-              {
-                id: "recusar_completar_qualifica",
-                acao: "Recusar emprego para completar formação",
-                probabilidade_sucesso: 100,
-                pontos: 5,
-                correto: false,
-                consequencias: "Formação completa mas oportunidade perdida",
-              },
-            ],
-          },
-          {
-            id: "resistencia_grupos_apoio",
-            titulo: "Resistência aos Grupos de Apoio",
-            descricao:
-              "Felisbina quer abandonar grupos de apoio. Sente que 'não encaixa' e que os outros participantes 'têm problemas piores'.",
-            urgencia: "baixa",
-            tempo_limite: 300,
-            opcoes_resposta: [
-              {
-                id: "aceitar_abandonar_grupos",
-                acao: "Aceitar decisão e focar noutras intervenções",
-                probabilidade_sucesso: 100,
-                pontos: 3,
-                correto: false,
-                consequencias: "Problema de isolamento social não resolvido",
-              },
-              {
-                id: "encontrar_grupo_alternativo",
-                acao: "Procurar grupo mais adequado ao seu perfil",
-                probabilidade_sucesso: 85,
-                pontos: 12,
-                correto: true,
-                consequencias: "Melhor adaptação e participação ativa",
-              },
-              {
-                id: "sessoes_individuais_preparacao",
-                acao: "Sessões individuais para preparar participação em grupo",
-                probabilidade_sucesso: 75,
-                pontos: 10,
-                correto: true,
-                consequencias: "Preparação gradual para integração social",
-              },
-            ],
-          },
-        ],
-      };
-
-      const strategyAdjustmentData = {
-        estrategias_ajuste: [
-          {
-            id: "modelo_hibrido_emprego_formacao",
-            nome: "Modelo Híbrido: Emprego + Formação",
-            descricao:
-              "Combinar emprego part-time com conclusão do Programa Qualifica",
-            adequado: true,
-            pontos: 12,
-            vantagens: [
-              "Experiência prática",
-              "Rendimento imediato",
-              "Certificação formal",
-            ],
-            desafios: ["Gestão de tempo", "Coordenação entidades"],
-          },
-          {
-            id: "foco_competencias_praticas",
-            nome: "Foco em Competências Práticas",
-            descricao:
-              "Priorizar componente prática do Qualifica e adiar teoria",
-            adequado: true,
-            pontos: 8,
-            vantagens: ["Alinha com pontos fortes", "Menos pressão académica"],
-            desafios: ["Certificação incompleta"],
-          },
-          {
-            id: "apoio_social_personalizado",
-            nome: "Apoio Social Personalizado",
-            descricao:
-              "Substituir grupos genéricos por apoio individual + atividades específicas",
-            adequado: true,
-            pontos: 10,
-            vantagens: ["Menos ansiedade social", "Apoio mais direcionado"],
-            desafios: ["Mais recursos técnicos necessários"],
-          },
-          {
-            id: "habitacao_definitiva",
-            nome: "Solução Habitacional Definitiva",
-            descricao:
-              "Priorizar encontrar habitação estável antes de avançar outros objetivos",
-            adequado: false,
-            pontos: -5,
-            vantagens: ["Estabilidade base"],
-            desafios: [
-              "Atraso outros objetivos",
-              "Mercado habitacional difícil",
-            ],
-            justificacao_inadequada:
-              "Habitação temporária é suficiente para manter programas",
-          },
-        ],
-      };
-
-      const autonomyPreparationData = {
-        areas_autonomia: [
-          {
-            id: "autonomia_habitacional",
-            nome: "Autonomia Habitacional",
-            status_atual: "dependente_apoio_emergencial",
-            meta_6_meses: "habitacao_independente",
-            acoes_necessarias: [
-              {
-                acao: "Inscrição habitação social",
-                prazo: "imediato",
-                responsavel: "tecnico_saasi",
-                pontos: 5,
-              },
-              {
-                acao: "Poupança para caução",
-                prazo: "3 meses",
-                responsavel: "felisbina_apoio_tecnico",
-                pontos: 4,
-              },
-              {
-                acao: "Procura ativa mercado privado",
-                prazo: "1 mês",
-                responsavel: "felisbina_autonoma",
-                pontos: 3,
-              },
-            ],
-          },
-          {
-            id: "autonomia_profissional",
-            nome: "Autonomia Profissional",
-            status_atual: "emprego_part_time_apoiado",
-            meta_6_meses: "emprego_estavel_autonomo",
-            acoes_necessarias: [
-              {
-                acao: "Certificação competências completa",
-                prazo: "2 meses",
-                responsavel: "iefp_felisbina",
-                pontos: 6,
-              },
-              {
-                acao: "Negociação full-time",
-                prazo: "4 meses",
-                responsavel: "felisbina_apoio_minimo",
-                pontos: 5,
-              },
-              {
-                acao: "Plano desenvolvimento carreira",
-                prazo: "6 meses",
-                responsavel: "felisbina_autonoma",
-                pontos: 4,
-              },
-            ],
-          },
-          {
-            id: "autonomia_emocional",
-            nome: "Autonomia Emocional",
-            status_atual: "progresso_significativo_apoio_ocasional",
-            meta_6_meses: "estabilidade_emocional_independente",
-            acoes_necessarias: [
-              {
-                acao: "Redução frequência consultas psicologia",
-                prazo: "1 mês",
-                responsavel: "centro_saude",
-                pontos: 4,
-              },
-              {
-                acao: "Estratégias gestão stress autonomas",
-                prazo: "2 meses",
-                responsavel: "felisbina_psicologo",
-                pontos: 5,
-              },
-              {
-                acao: "Rede apoio informal estabelecida",
-                prazo: "4 meses",
-                responsavel: "felisbina_apoio_minimo",
-                pontos: 6,
-              },
-            ],
-          },
-          {
-            id: "autonomia_social",
-            nome: "Autonomia Social",
-            status_atual: "participacao_limitada_apoio_necessario",
-            meta_6_meses: "rede_social_activa_independente",
-            acoes_necessarias: [
-              {
-                acao: "Participação regular atividades escolhidas",
-                prazo: "2 meses",
-                responsavel: "felisbina_apoio_tecnico",
-                pontos: 4,
-              },
-              {
-                acao: "Desenvolvimento amizades independentes",
-                prazo: "4 meses",
-                responsavel: "felisbina_apoio_minimo",
-                pontos: 5,
-              },
-              {
-                acao: "Papel ativo na comunidade",
-                prazo: "6 meses",
-                responsavel: "felisbina_autonoma",
-                pontos: 3,
-              },
-            ],
-          },
-        ],
-        estrategias_manutencao: [
-          {
-            id: "contactos_seguimento",
-            nome: "Contactos de Seguimento",
-            descricao:
-              "Sistema de contactos regulares com frequência decrescente",
-            pontos: 8,
-            adequado: true,
-          },
-          {
-            id: "rede_apoio_emergencia",
-            nome: "Rede de Apoio de Emergência",
-            descricao: "Contactos para situações de crise ou dúvidas urgentes",
-            pontos: 6,
-            adequado: true,
-          },
-          {
-            id: "indicadores_alerta",
-            nome: "Sistema de Indicadores de Alerta",
-            descricao: "Sinais que indicam necessidade de reforço de apoio",
-            pontos: 5,
-            adequado: true,
-          },
-          {
-            id: "apoio_intensivo_permanente",
-            nome: "Manutenção Apoio Intensivo",
-            descricao: "Manter todos os apoios com mesma intensidade",
-            pontos: -8,
-            adequado: false,
-            justificacao: "Impede desenvolvimento autonomia e é insustentável",
-          },
-        ],
-      };
-
-      // Inicialização
+      // Aguardar inicialização do Phase4Engine
       document.addEventListener("DOMContentLoaded", function () {
-        loadPreviousPhases();
-        updateSidebar();
-        SaaSIAnalytics.trackEvent("phase4_started", { timestamp: Date.now() });
+        // O gameState será definido pelo Phase4Engine quando inicializar
+        setTimeout(() => {
+          if (window.phase4Engine) {
+            gameState = window.phase4Engine.gameState;
+          }
+        }, 100);
       });
+
+      // DADOS MOVIDOS PARA phase4-engine.js - Agent 4 Implementation
+
+      // Crisis management data moved to phase4-engine.js
+
+      // Strategy adjustment data moved to phase4-engine.js
+
+      // Autonomy preparation data moved to phase4-engine.js
+
+      // INICIALIZAÇÃO AGORA GERIDA PELO PHASE4ENGINE
+      // Funções de compatibilidade mantidas para transição suave
 
       // Toast System
       function showToast(message, type = "info", duration = 5000) {
@@ -2432,12 +2061,18 @@
       }
 
       // Reiniciar Fase 4
-      function restartPhase4() {
-        if (
-          confirm(
-            "🔄 Tem certeza que deseja reiniciar a Fase 4?\n\nTodos os progressos desta fase serão perdidos."
-          )
-        ) {
+      async function restartPhase4() {
+        const confirmRestart = await ModalSystem.confirm(
+          "🔄 Tem certeza que deseja reiniciar a Fase 4?<br><br>Todos os progressos desta fase serão perdidos.",
+          {
+            title: "🔄 Reiniciar Fase 4",
+            okText: "Sim, reiniciar",
+            cancelText: "Cancelar",
+            type: "warning",
+          }
+        );
+
+        if (confirmRestart) {
           localStorage.removeItem("saasi_phase4_results");
           location.reload();
         }

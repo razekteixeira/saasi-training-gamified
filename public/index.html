@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SAASI Escape Room - Portal de Formação</title>
+    <link rel="stylesheet" href="css/main.css" />
     <style>
       * {
         margin: 0;
@@ -263,6 +264,31 @@
           longa duração. Através de puzzles e desafios interativos, desenvolverá
           competências essenciais para o exercício profissional.
         </p>
+        <div
+          class="case-summary"
+          style="
+            background: rgba(227, 242, 253, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid rgba(33, 150, 243, 0.3);
+          "
+        >
+          <h3>👤 Caso de Estudo: Felisbina Santos</h3>
+          <p>
+            <strong>Perfil:</strong> 56 anos, 9º ano escolaridade, vive sozinha
+            numa pensão
+          </p>
+          <p>
+            <strong>Situação:</strong> Beneficiária RSI (242,23€) + PSI
+            (324,55€), experiência 6 meses limpeza
+          </p>
+          <p>
+            <strong>Desafios:</strong> Dependência emocional do pai, perda
+            suporte familiar, isolamento social
+          </p>
+        </div>
         <div style="text-align: center; margin-top: 20px">
           <a
             href="timeline.html"
@@ -527,6 +553,49 @@
             Complete as fases para desbloquear conquistas
           </div>
         </div>
+      </div>
+
+      <!-- Reset Game Section -->
+      <div
+        class="reset-section"
+        id="reset-section"
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 20px;
+          background: rgba(255, 193, 7, 0.1);
+          border-radius: 8px;
+          border-left: 4px solid #ffc107;
+        "
+      >
+        <h3 style="color: #e67e22; margin-bottom: 10px">
+          🔄 Gestão de Progresso
+        </h3>
+        <p style="color: #666; margin-bottom: 15px; font-size: 14px">
+          Para testar ou recomeçar o jogo desde o início
+        </p>
+        <button
+          class="reset-btn"
+          onclick="handleResetClick()"
+          style="
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+          "
+          onmouseover="this.style.background='#c0392b'"
+          onmouseout="this.style.background='#e74c3c'"
+        >
+          🗑️ Reiniciar Jogo Completo
+        </button>
+        <div
+          id="reset-status"
+          style="margin-top: 10px; font-size: 12px; color: #666"
+        ></div>
       </div>
 
       <div class="footer">
@@ -861,6 +930,398 @@
         loadAppState();
         updateUI();
       });
+    </script>
+
+    <!-- Enhanced Integration -->
+    <script src="js/shared.js"></script>
+    <script src="js/multi-phase-coordinator.js"></script>
+    <script src="js/modal-system.js"></script>
+    <script>
+      // Legacy function - no longer needed
+      // Dependencies are checked directly in reset functions
+
+      // Enhanced progress tracking with MultiPhaseCoordinator
+      function loadEnhancedAppState() {
+        try {
+          const gameState = MultiPhaseCoordinator.getGameState();
+
+          // Update individual phase scores and unlock status
+          for (let phase = 1; phase <= 4; phase++) {
+            const phaseElement = document.getElementById(`phase${phase}-score`);
+            const phaseBtnElement = document.getElementById(
+              `phase${phase}-btn`
+            );
+
+            if (phaseElement && gameState.phases[`phase${phase}`]) {
+              const phaseData = gameState.phases[`phase${phase}`];
+              phaseElement.textContent = `${phaseData.score}/100`;
+              phaseElement.style.color =
+                phaseData.score >= 85
+                  ? "#4caf50"
+                  : phaseData.score >= 60
+                  ? "#ff9800"
+                  : "#757575";
+            }
+
+            // Enhanced unlock status
+            if (phaseBtnElement && gameState.unlocked[phase]) {
+              const unlockData = gameState.unlocked[phase];
+              if (!unlockData.unlocked) {
+                phaseBtnElement.style.opacity = "0.5";
+                phaseBtnElement.style.cursor = "not-allowed";
+                phaseBtnElement.title = unlockData.reason;
+                phaseBtnElement.onclick = (e) => {
+                  e.preventDefault();
+                  ModalSystem.alert(
+                    `🔒 ${unlockData.reason}<br><br>
+                    <strong>Pontuação necessária:</strong> ${
+                      unlockData.requiredScore
+                    }<br>
+                    <strong>Pontuação atual:</strong> ${
+                      unlockData.currentScore || 0
+                    }`,
+                    "warning"
+                  );
+                };
+              } else {
+                phaseBtnElement.style.opacity = "1";
+                phaseBtnElement.style.cursor = "pointer";
+                phaseBtnElement.title = "";
+                phaseBtnElement.onclick = null;
+              }
+            }
+          }
+
+          // Update overall progress
+          const progressElement = document.getElementById("overall-progress");
+          if (progressElement) {
+            progressElement.innerHTML = `
+              <div style="text-align: center; margin: 20px 0;">
+                <h3>📊 Progresso Geral</h3>
+                <div style="font-size: 2rem; margin: 10px 0; color: ${gameState.progress.overallLevel.color};">
+                  ${gameState.progress.totalScore}/400 pontos (${gameState.progress.percentage}%)
+                </div>
+                <div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0;">
+                  <div style="background: linear-gradient(90deg, #4caf50, #2196f3); height: 100%; width: ${gameState.progress.percentage}%; transition: width 0.3s ease;"></div>
+                </div>
+                <div style="margin-top: 10px;">
+                  <strong>Nível:</strong> ${gameState.progress.overallLevel.title}<br>
+                  <strong>Fases Completas:</strong> ${gameState.progress.completedPhases}/4
+                </div>
+              </div>
+            `;
+          }
+
+          // Update Felisbina journey narrative
+          const narrativeElement = document.getElementById("felisbina-journey");
+          if (
+            narrativeElement &&
+            gameState.felisbinaJourney.progressNarrative
+          ) {
+            narrativeElement.innerHTML = `
+              <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left;">
+                <h4>🎯 Jornada da Felisbina</h4>
+                <p style="margin: 10px 0; line-height: 1.6;">${gameState.felisbinaJourney.progressNarrative}</p>
+                <div style="margin-top: 15px;">
+                  <strong>Estado Atual:</strong> ${gameState.felisbinaJourney.currentStage}
+                </div>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error("Error loading enhanced app state:", error);
+          // Fallback to original loadAppState logic
+          originalLoadAppState();
+        }
+      }
+
+      // Store original function as backup
+      const originalLoadAppState = window.loadAppState || function () {};
+
+      // Comprehensive reset function that clears everything
+      function performCompleteReset() {
+        try {
+          console.log("Performing complete reset...");
+
+          // Clear all localStorage keys
+          const keysToRemove = [
+            "saasi_phase1_results",
+            "saasi_phase2_results",
+            "saasi_phase3_results",
+            "saasi_phase4_results",
+            "saasi_settings",
+            "saasi_last_save",
+            "saasi_game_mode",
+          ];
+
+          keysToRemove.forEach((key) => {
+            localStorage.removeItem(key);
+            console.log(`Removed localStorage key: ${key}`);
+          });
+
+          // Reset global app state to initial values
+          window.appState = {
+            phases: {
+              phase1: { unlocked: true, completed: false, score: 0 },
+              phase2: { unlocked: false, completed: false, score: 0 },
+              phase3: { unlocked: false, completed: false, score: 0 },
+              phase4: { unlocked: false, completed: false, score: 0 },
+            },
+            achievements: [],
+            totalScore: 0,
+          };
+
+          // Try to reset MultiPhaseCoordinator if available
+          if (typeof MultiPhaseCoordinator !== "undefined") {
+            try {
+              MultiPhaseCoordinator.resetAllData();
+              console.log("MultiPhaseCoordinator reset successful");
+            } catch (error) {
+              console.warn("MultiPhaseCoordinator reset failed:", error);
+            }
+          }
+
+          // Try to reset SaaSIStorage if available
+          if (typeof SaaSIStorage !== "undefined") {
+            try {
+              SaaSIStorage.clearAllData();
+              console.log("SaaSIStorage reset successful");
+            } catch (error) {
+              console.warn("SaaSIStorage reset failed:", error);
+            }
+          }
+
+          // Reset game mode to default
+          window.selectedGameMode = "normal";
+
+          console.log("Complete reset performed successfully");
+          return true;
+        } catch (error) {
+          console.error("Error in performCompleteReset:", error);
+          return false;
+        }
+      }
+
+      // Force UI refresh after reset
+      function refreshUIAfterReset() {
+        try {
+          // Update all progress indicators
+          document.getElementById("overall-progress").style.width = "0%";
+          document.getElementById("progress-text").textContent = "0% concluído";
+          document.getElementById("total-score").textContent =
+            "Pontuação: 0/400";
+
+          // Reset all phase cards to initial state
+          // Phase 1 - Always unlocked
+          document.getElementById("phase1-score").textContent = "--";
+          document.getElementById("phase1-status").textContent = "🎯";
+          document.getElementById("phase1-btn").textContent = "Começar Fase 1";
+          document.getElementById("phase-1").classList.remove("locked");
+          document.getElementById("phase1-btn").disabled = false;
+
+          // Phase 2 - Locked
+          document.getElementById("phase2-score").textContent = "--";
+          document.getElementById("phase2-status").textContent = "🔒";
+          document.getElementById("phase2-btn").textContent =
+            "Requer Fase 1 (70+ pontos)";
+          document.getElementById("phase-2").classList.add("locked");
+          document.getElementById("phase2-btn").disabled = true;
+
+          // Phase 3 - Locked
+          document.getElementById("phase3-score").textContent = "--";
+          document.getElementById("phase3-status").textContent = "🔒";
+          document.getElementById("phase3-btn").textContent =
+            "Requer Fase 2 (60+ pontos)";
+          document.getElementById("phase-3").classList.add("locked");
+          document.getElementById("phase3-btn").disabled = true;
+
+          // Phase 4 - Locked
+          document.getElementById("phase4-score").textContent = "--";
+          document.getElementById("phase4-status").textContent = "🔒";
+          document.getElementById("phase4-btn").textContent =
+            "Requer Fase 3 (65+ pontos)";
+          document.getElementById("phase-4").classList.add("locked");
+          document.getElementById("phase4-btn").disabled = true;
+
+          // Reset achievements
+          const badgesContainer = document.getElementById("badges-container");
+          if (badgesContainer) {
+            badgesContainer.innerHTML =
+              '<div style="color: #7f8c8d; font-style: italic;">Complete as fases para desbloquear conquistas</div>';
+          }
+
+          // Reset game mode selection
+          selectGameMode("normal");
+
+          console.log("UI refreshed after reset");
+        } catch (error) {
+          console.error("Error refreshing UI after reset:", error);
+        }
+      }
+
+      // Enhanced reset function (legacy - now uses showResetConfirmation)
+      async function resetAllProgressEnhanced() {
+        console.log(
+          "resetAllProgressEnhanced called - redirecting to showResetConfirmation"
+        );
+        return await showResetConfirmation();
+      }
+
+      // Reset confirmation function for the UI button
+      async function showResetConfirmation() {
+        console.log("showResetConfirmation called");
+        const statusDiv = document.getElementById("reset-status");
+
+        try {
+          // Check if ModalSystem is available and ready
+          if (window.ModalSystem) {
+            console.log("ModalSystem available, showing modal...");
+
+            // Show confirmation dialog
+            const confirmReset = await ModalSystem.confirm(
+              "🔄 <strong>REINICIAR JOGO COMPLETO</strong><br><br>" +
+                "Esta ação irá:<br>" +
+                "• Apagar todos os resultados das 4 fases<br>" +
+                "• Remover todas as conquistas<br>" +
+                "• Limpar o progresso guardado<br><br>" +
+                "⚠️ <strong>Esta ação não pode ser desfeita!</strong><br><br>" +
+                "Deseja continuar?",
+              {
+                title: "🔄 Reiniciar Jogo",
+                okText: "Sim, reiniciar",
+                cancelText: "Cancelar",
+                type: "warning",
+              }
+            );
+
+            if (confirmReset) {
+              statusDiv.innerHTML =
+                '<span style="color: #e67e22;">⏳ A limpar dados...</span>';
+
+              // Use the comprehensive reset function
+              const resetSuccess = performCompleteReset();
+
+              // Show result and refresh UI
+              if (resetSuccess) {
+                statusDiv.innerHTML =
+                  '<span style="color: #27ae60;">✅ Dados limpos com sucesso!</span>';
+
+                // Refresh UI immediately without full page reload
+                refreshUIAfterReset();
+
+                setTimeout(() => {
+                  statusDiv.innerHTML = "";
+                }, 3000);
+              } else {
+                statusDiv.innerHTML =
+                  '<span style="color: #e74c3c;">❌ Erro ao limpar dados. Tente recarregar a página.</span>';
+              }
+            } else {
+              statusDiv.innerHTML =
+                '<span style="color: #666;">Operação cancelada.</span>';
+              setTimeout(() => {
+                statusDiv.innerHTML = "";
+              }, 2000);
+            }
+          } else {
+            // Fallback to native confirm if ModalSystem not available
+            console.log("ModalSystem not available, using native confirm");
+            const originalConfirm = window._originalConfirm || confirm;
+
+            if (
+              originalConfirm(
+                "🔄 REINICIAR JOGO COMPLETO\n\nEsta ação irá:\n• Apagar todos os resultados das 4 fases\n• Remover todas as conquistas\n• Limpar o progresso guardado\n\n⚠️ Esta ação não pode ser desfeita!\n\nDeseja continuar?"
+              )
+            ) {
+              statusDiv.innerHTML =
+                '<span style="color: #e67e22;">⏳ A limpar dados...</span>';
+
+              const resetSuccess = performCompleteReset();
+
+              if (resetSuccess) {
+                statusDiv.innerHTML =
+                  '<span style="color: #27ae60;">✅ Dados limpos com sucesso!</span>';
+                refreshUIAfterReset();
+                setTimeout(() => {
+                  statusDiv.innerHTML = "";
+                }, 3000);
+              } else {
+                statusDiv.innerHTML =
+                  '<span style="color: #e74c3c;">❌ Erro ao limpar dados.</span>';
+              }
+            } else {
+              statusDiv.innerHTML =
+                '<span style="color: #666;">Operação cancelada.</span>';
+              setTimeout(() => {
+                statusDiv.innerHTML = "";
+              }, 2000);
+            }
+          }
+        } catch (error) {
+          console.error("Reset function error:", error);
+
+          // Last resort fallback
+          const originalConfirm = window._originalConfirm || confirm;
+          if (
+            originalConfirm(
+              "Tem a certeza de que deseja reiniciar todo o progresso?"
+            )
+          ) {
+            const success = performCompleteReset();
+            if (success) {
+              refreshUIAfterReset();
+              if (statusDiv) {
+                statusDiv.innerHTML =
+                  '<span style="color: #27ae60;">✅ Reset concluído!</span>';
+                setTimeout(() => {
+                  statusDiv.innerHTML = "";
+                }, 3000);
+              }
+            } else {
+              // Nuclear option - clear everything and reload
+              localStorage.clear();
+              location.reload();
+            }
+          }
+        }
+      }
+
+      // Single reset handler that works with onclick
+      function handleResetClick() {
+        console.log("Reset button clicked!");
+
+        // Use a timeout to allow the browser to process the click
+        setTimeout(async () => {
+          try {
+            console.log("Attempting to show reset confirmation...");
+            await showResetConfirmation();
+          } catch (error) {
+            console.error("Reset click handler error:", error);
+            // Fallback to simple confirmation
+            const originalConfirm = window._originalConfirm || confirm;
+            console.log("Using fallback confirmation");
+            if (
+              originalConfirm(
+                "Tem a certeza de que deseja reiniciar todo o progresso?"
+              )
+            ) {
+              const success = performCompleteReset();
+              if (success) {
+                refreshUIAfterReset();
+                console.log("Fallback reset completed successfully");
+              } else {
+                // Last resort - clear everything and reload
+                localStorage.clear();
+                location.reload();
+              }
+            }
+          }
+        }, 0);
+      }
+
+      console.log(
+        "Enhanced navigation with MultiPhaseCoordinator loaded successfully"
+      );
     </script>
   </body>
 </html>

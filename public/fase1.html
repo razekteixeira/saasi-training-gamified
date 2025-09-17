@@ -639,6 +639,7 @@
           <h2>Avaliação DLD - Decisão Final</h2>
 
           <div
+            id="dld-criteria-display"
             style="
               background: #f5f5f5;
               padding: 20px;
@@ -647,11 +648,7 @@
             "
           >
             <h4>Critérios DLD:</h4>
-            <p>✅ Desemprego de longa duração (>12 meses)</p>
-            <p>⚠️ Idade 56 anos (fator de risco)</p>
-            <p>⚠️ Qualificação 9º ano (baixa qualificação)</p>
-            <p>✅ Beneficiária RSI + PSI ativas</p>
-            <p>⚠️ Dependência emocional identificada</p>
+            <!-- Content will be populated by assessment logic -->
           </div>
 
           <div>
@@ -752,6 +749,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Load scoring system -->
+    <script src="js/scoring-system.js"></script>
+    <script src="js/assessment-logic.js"></script>
+    <script src="js/case-data-felisbina.js"></script>
+    <script src="js/modal-system.js"></script>
 
     <script>
       // ESTADO DO JOGO
@@ -936,7 +939,7 @@
           id: "qualificacao",
           text: "9º ano escolaridade",
           category: "protection",
-          points: 6,
+          points: 8,
         },
         {
           id: "beneficios_duplos",
@@ -1076,11 +1079,36 @@
           .forEach((el) => el.classList.remove("selected"));
         event.target.classList.add("selected");
 
-        // Atualizar métricas
-        gameState.empathy += option.empathy;
-        gameState.information += option.info;
-        gameState.interactions++;
-        addScore(Math.max(0, option.empathy + option.info));
+        // Use new weighted scoring system
+        const dialogue = dialogues[currentDialogue];
+        const optionIndex = dialogue.options.indexOf(option);
+        const rawScores = { empathy: option.empathy, info: option.info };
+
+        // Calculate weighted scores with proper limits
+        const weightedScores = ScoringSystem.calculateWeightedResponse(
+          dialogue.id,
+          optionIndex,
+          rawScores
+        );
+
+        // Update metrics with capping
+        const updatedMetrics = ScoringSystem.updateDialogueMetrics(
+          gameState,
+          weightedScores
+        );
+
+        // Add to total score with proper limits
+        addScore(weightedScores.totalPoints);
+
+        // Show quality feedback
+        showToast(
+          updatedMetrics.qualityFeedback,
+          weightedScores.quality === "excellent"
+            ? "success"
+            : weightedScores.quality === "poor"
+            ? "warning"
+            : "info"
+        );
 
         updateDialogueMetrics();
 
@@ -1092,15 +1120,16 @@
       }
 
       function updateDialogueMetrics() {
-        document.getElementById("empathy").textContent = Math.max(
-          0,
-          gameState.empathy
-        );
+        // Apply proper limits and display
+        document.getElementById("empathy").textContent =
+          ScoringSystem.applyLimit("empathy", gameState.empathy);
         document.getElementById("information").textContent = Math.round(
-          (gameState.information / 75) * 100
+          (ScoringSystem.applyLimit("information", gameState.information) /
+            SCORING_LIMITS.information.max) *
+            100
         );
         document.getElementById("interactions").textContent =
-          gameState.interactions;
+          ScoringSystem.applyLimit("interactions", gameState.interactions);
       }
 
       // SISTEMA DE ANÁLISE
@@ -1437,7 +1466,20 @@
 
       // SISTEMA DE AVALIAÇÃO
       function showAssessment() {
-        // Já está implementado no HTML
+        // Generate and display corrected DLD criteria using assessment logic
+        const dldCriteria = AssessmentLogic.generateDLDCriteria();
+        const criteriaDisplay = document.getElementById("dld-criteria-display");
+
+        criteriaDisplay.innerHTML = `
+          <h4>Critérios DLD:</h4>
+          <p>${dldCriteria.unemployment.status} ${dldCriteria.unemployment.text}</p>
+          <p>${dldCriteria.age.status} ${dldCriteria.age.text}</p>
+          <p>${dldCriteria.education.status} ${dldCriteria.education.text}</p>
+          <p style="margin-left: 20px; font-size: 0.9em; color: #666;"><em>Nota: ${dldCriteria.education.context}</em></p>
+          <p>${dldCriteria.benefits.status} ${dldCriteria.benefits.text}</p>
+          <p>${dldCriteria.emotional.status} ${dldCriteria.emotional.text}</p>
+          <p>${dldCriteria.experience.status} ${dldCriteria.experience.text}</p>
+        `;
       }
 
       function selectAvailability(choice) {
@@ -1448,18 +1490,117 @@
 
         gameState.availability = choice;
 
-        if (choice === "sim_total") {
-          addScore(10);
-        } else if (choice === "sim_condicionada") {
-          addScore(8);
-        } else {
-          addScore(3);
+        // Use new assessment logic for proper evaluation and feedback
+        const evaluation = AssessmentLogic.evaluateResponse(
+          "availability",
+          choice
+        );
+        addScore(evaluation.points);
+
+        // Show detailed feedback with justification and scoring
+        const scoreDisplay =
+          evaluation.points > 0 ? `+${evaluation.points}` : evaluation.points;
+        showToast(
+          `${evaluation.quality.toUpperCase()}: ${
+            evaluation.justification
+          } (${scoreDisplay} pontos)`,
+          evaluation.quality === "excellent"
+            ? "success"
+            : evaluation.quality === "poor"
+            ? "warning"
+            : "info",
+          6000
+        );
+
+        // Show additional gamification feedback
+        if (evaluation.quality === "excellent") {
+          setTimeout(() => {
+            showToast(
+              `🎉 EXCELENTE ESCOLHA! Máxima pontuação para disponibilidade`,
+              "success",
+              4000
+            );
+          }, 2000);
+        } else if (evaluation.quality === "poor") {
+          setTimeout(() => {
+            showToast(
+              `⚠️ ATENÇÃO: Escolha conservadora pode limitar oportunidades de inserção`,
+              "warning",
+              5000
+            );
+          }, 2000);
         }
 
+        // Reset capacity selection and validate combinations
+        resetCapacitySelection();
+        updateCapacityOptions(choice);
         document.getElementById("capacity-section").style.display = "block";
       }
 
       function selectCapacity(choice) {
+        // Validate the combination before proceeding
+        const validationResult = validateAssessmentCombination(
+          gameState.availability,
+          choice
+        );
+
+        if (!validationResult.valid) {
+          // Calculate what the score WOULD have been for educational purposes
+          const hypotheticalEvaluation = AssessmentLogic.evaluateResponse(
+            "capacity",
+            choice
+          );
+          const scorePenalty = Math.floor(hypotheticalEvaluation.points * 0.5); // 50% penalty for invalid combinations
+
+          // Apply penalty for poor decision-making
+          addScore(-scorePenalty);
+
+          // Show comprehensive feedback with scoring impact
+          showToast(
+            `⚠️ COMBINAÇÃO INADEQUADA: ${validationResult.reason}`,
+            "warning",
+            8000
+          );
+
+          // Show scoring impact
+          setTimeout(() => {
+            showToast(
+              `📉 PENALIZAÇÃO: -${scorePenalty} pontos por escolha inconsistente`,
+              "error",
+              6000
+            );
+          }, 1500);
+
+          // Provide educational feedback
+          setTimeout(() => {
+            showToast(
+              `💡 SUGESTÃO: ${validationResult.suggestion}`,
+              "info",
+              8000
+            );
+          }, 3000);
+
+          // Also show what the correct score would have been
+          setTimeout(() => {
+            const correctChoice = getOptimalCapacityChoice(
+              gameState.availability
+            );
+            const correctEvaluation = AssessmentLogic.evaluateResponse(
+              "capacity",
+              correctChoice
+            );
+            showToast(
+              `🎯 ESCOLHA IDEAL: "${getChoiceDisplayName(correctChoice)}" (+${
+                correctEvaluation.points
+              } pontos)`,
+              "info",
+              6000
+            );
+          }, 4500);
+
+          return; // Don't proceed with invalid selection
+        }
+
         document
           .querySelectorAll("#capacity-options .dialogue-option")
           .forEach((el) => el.classList.remove("selected"));
@@ -1467,50 +1608,174 @@
 
         gameState.capacity = choice;
 
-        if (choice === "sim_plena") {
-          addScore(10);
-        } else if (choice === "sim_formacao") {
-          addScore(12);
-        } else {
-          addScore(2);
+        // Use new assessment logic for proper evaluation and feedback
+        const evaluation = AssessmentLogic.evaluateResponse("capacity", choice);
+        addScore(evaluation.points);
+
+        // Show detailed feedback with justification and scoring
+        const scoreDisplay =
+          evaluation.points > 0 ? `+${evaluation.points}` : evaluation.points;
+        showToast(
+          `${evaluation.quality.toUpperCase()}: ${
+            evaluation.justification
+          } (${scoreDisplay} pontos)`,
+          evaluation.quality === "excellent"
+            ? "success"
+            : evaluation.quality === "poor"
+            ? "warning"
+            : "info",
+          6000
+        );
+
+        // Show additional gamification feedback for capacity
+        if (evaluation.quality === "excellent") {
+          setTimeout(() => {
+            showToast(
+              `🏆 DECISÃO PERFEITA! Combinação otimizada para o perfil da Felisbina`,
+              "success",
+              4000
+            );
+          }, 2000);
+        } else if (evaluation.quality === "adequate") {
+          setTimeout(() => {
+            showToast(
+              `✅ ESCOLHA VÁLIDA, mas pode haver opções mais otimizadas`,
+              "info",
+              4000
+            );
+          }, 2000);
         }
+
+        // Generate comprehensive assessment report for learning
+        const fullReport = AssessmentLogic.generateAssessmentReport({
+          availability: gameState.availability,
+          capacity: gameState.capacity,
+        });
+
+        // Store assessment report for conclusion display
+        gameState.assessmentReport = fullReport;
 
         document.getElementById("finalize-assessment").style.display = "block";
       }
 
       // CONCLUSÃO
       function showConclusion() {
-        document.getElementById("final-score").textContent = gameState.score;
+        // Calculate final score using new scoring system
+        const finalScore = ScoringSystem.calculatePhase1Score(gameState);
+        gameState.score = finalScore;
 
-        let level = "Técnico Iniciante";
-        if (gameState.score >= 95) level = "Mestre SAASI";
-        else if (gameState.score >= 85) level = "Técnico Especialista";
-        else if (gameState.score >= 70) level = "Técnico Proficiente";
-        else if (gameState.score >= 50) level = "Técnico Competente";
+        // Generate comprehensive performance report
+        const performanceReport =
+          ScoringSystem.generatePerformanceReport(gameState);
 
-        document.getElementById("final-level").textContent = level;
+        document.getElementById("final-score").textContent =
+          performanceReport.totalScore;
+        document.getElementById("final-level").textContent =
+          performanceReport.level.title;
 
         const report = document.getElementById("final-report");
         report.innerHTML = `
-                <h3>Relatório de Performance:</h3>
-                <p><strong>Empatia:</strong> ${Math.max(
-                  0,
-                  gameState.empathy
-                )}/25</p>
-                <p><strong>Informação Recolhida:</strong> ${Math.round(
-                  (gameState.information / 75) * 100
-                )}%</p>
-                <p><strong>Elementos Categorizados:</strong> ${
-                  gameState.categorized
-                }/6</p>
-                <p><strong>Documentos Identificados:</strong> ${
-                  gameState.docsIdentified
-                }/3</p>
-                <p><strong>Decisão Final:</strong> ${
-                  gameState.availability && gameState.capacity
-                    ? "Completa"
-                    : "Incompleta"
-                }</p>
+                <h3>Relatório de Performance Detalhado:</h3>
+                
+                <div style="background: ${
+                  performanceReport.level.color
+                }20; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                  <h4 style="color: ${
+                    performanceReport.level.color
+                  }; margin: 0;">
+                    ${performanceReport.level.title}
+                  </h4>
+                  <p style="margin: 5px 0;"><em>${
+                    performanceReport.level.description
+                  }</em></p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+                  <div>
+                    <h4>📊 Métricas Principais:</h4>
+                    <p><strong>Empatia:</strong> ${
+                      performanceReport.metrics.empathy.score
+                    }/${performanceReport.metrics.empathy.max} (${
+          performanceReport.metrics.empathy.percentage
+        }%)</p>
+                    <p><strong>Informação:</strong> ${
+                      performanceReport.metrics.information.score
+                    }/${performanceReport.metrics.information.max} (${
+          performanceReport.metrics.information.percentage
+        }%)</p>
+                    <p><strong>Interações:</strong> ${
+                      performanceReport.metrics.interactions.score
+                    }/${performanceReport.metrics.interactions.max} (${
+          performanceReport.metrics.interactions.percentage
+        }%)</p>
+                  </div>
+                  
+                  <div>
+                    <h4>🎯 Atividades:</h4>
+                    <p><strong>Elementos Categorizados:</strong> ${
+                      gameState.categorized
+                    }/6</p>
+                    <p><strong>Documentos Identificados:</strong> ${
+                      gameState.docsIdentified
+                    }/3</p>
+                    <p><strong>Avaliação DLD:</strong> ${
+                      gameState.availability && gameState.capacity
+                        ? "Completa"
+                        : "Incompleta"
+                    }</p>
+                  </div>
+                </div>
+
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                  <h4>💡 Recomendações de Melhoria:</h4>
+                  ${
+                    performanceReport.recommendations.length > 0
+                      ? performanceReport.recommendations
+                          .map(
+                            (rec) =>
+                              `<p style="margin: 5px 0;"><strong>${rec.area}:</strong> ${rec.suggestion}</p>`
+                          )
+                          .join("")
+                      : "<p>Excelente trabalho! Continue a praticar para manter o nível.</p>"
+                  }
+                </div>
+
+                 <div style="background: ${
+                   performanceReport.validation.valid ? "#e8f5e9" : "#ffebee"
+                 }; padding: 10px; border-radius: 8px;">
+                   <h4>✅ Validação: ${
+                     performanceReport.validation.summary
+                   }</h4>
+                   ${
+                     performanceReport.validation.warnings.length > 0
+                       ? "<p><strong>Avisos:</strong> " +
+                         performanceReport.validation.warnings.join(", ") +
+                         "</p>"
+                       : ""
+                   }
+                 </div>
+
+                 ${
+                   gameState.assessmentReport
+                     ? `
+                   <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                     <h4>📋 Avaliação DLD Detalhada:</h4>
+                     <p><strong>Disponibilidade:</strong> ${
+                       gameState.assessmentReport.availability.justification
+                     }</p>
+                     <p><strong>Capacidade:</strong> ${
+                       gameState.assessmentReport.capacity.justification
+                     }</p>
+                     <p><strong>Recomendação Final:</strong> ${
+                       gameState.assessmentReport.overall.recommendation
+                     }</p>
+                     <p><strong>Qualidade Geral:</strong> ${gameState.assessmentReport.overall.quality.toUpperCase()} (${
+                         gameState.assessmentReport.overall.percentage
+                       }%)</p>
+                   </div>
+                 `
+                     : ""
+                 }
             `;
       }
 
@@ -1518,9 +1783,12 @@
         location.reload();
       }
 
-      // Função para atualizar pontuação com limite
+      // Função para atualizar pontuação com limite usando scoring system
       function addScore(points) {
-        gameState.score = Math.min(gameState.score + points, 100);
+        gameState.score = ScoringSystem.applyLimit(
+          "phase1_total",
+          gameState.score + points
+        );
         document.getElementById("score").textContent = gameState.score;
       }
 
@@ -1559,54 +1827,135 @@
           return;
         }
 
-        // Salvar dados da Fase 1 para transferir para Fase 2
+        // Generate comprehensive phase 1 data using new scoring system
+        const performanceReport =
+          ScoringSystem.generatePerformanceReport(gameState);
+
         const phase1Data = {
           phase: 1,
-          score: gameState.score,
-          maxScore: 100,
-          percentage: gameState.score,
+          score: performanceReport.totalScore,
+          maxScore: performanceReport.maxScore,
+          percentage: performanceReport.percentage,
           duration: Math.round((Date.now() - gameStartTime) / 60000) || 15,
-          level: { title: document.getElementById("final-level").textContent },
+          level: performanceReport.level,
           achievements: [],
+
+          // Detailed metrics from new scoring system
+          metrics: performanceReport.metrics,
+          validation: performanceReport.validation,
+          recommendations: performanceReport.recommendations,
+
+          // Enhanced task reports with weighted scoring
           taskReports: {
             conversa_inicial: {
               completed: true,
-              score: Math.max(0, gameState.empathy),
+              score: performanceReport.metrics.empathy.score,
+              percentage: performanceReport.metrics.empathy.percentage,
+              quality: "Scored using weighted response system",
             },
             analise_perfil: {
               completed: gameState.categorized >= 6,
               score: gameState.categorized * 5,
+              accuracy: Math.round((gameState.categorized / 6) * 100),
+              feedback:
+                gameState.categorized >= 6
+                  ? "Análise completa"
+                  : "Análise incompleta",
             },
             documentacao: {
               completed: gameState.docsIdentified >= 3,
               score: gameState.docsIdentified * 5,
+              efficiency: Math.round((gameState.docsIdentified / 3) * 100),
+              feedback:
+                gameState.docsIdentified >= 3
+                  ? "Documentação adequada"
+                  : "Documentação incompleta",
             },
             avaliacao_final: {
               completed: gameState.availability && gameState.capacity,
-              score: 20,
+              score: ScoringSystem.calculateAssessmentScore(gameState) * 100,
+              availability: gameState.availability,
+              capacity: gameState.capacity,
+              decision_quality:
+                ScoringSystem.calculateAssessmentScore(gameState) >= 0.8
+                  ? "Excelente"
+                  : ScoringSystem.calculateAssessmentScore(gameState) >= 0.6
+                  ? "Boa"
+                  : "Adequada",
             },
           },
-          nextSteps: "Encaminhamento para IEFP aprovado",
+
+          nextSteps:
+            gameState.availability === "sim_total" &&
+            gameState.capacity === "sim_formacao"
+              ? "Encaminhamento para IEFP com formação profissional"
+              : gameState.availability !== "nao" && gameState.capacity !== "nao"
+              ? "Encaminhamento para IEFP aprovado"
+              : "Apoio adicional necessário antes do encaminhamento",
+
+          // Enhanced Felisbina data with contextual analysis using case data
           felisbinaData: {
-            nome: "Felisbina Santos",
-            idade: 56,
-            escolaridade: "9º ano",
-            habitacao: "Vive sozinha numa pensão",
+            ...FELISBINA_CASE_DATA.personal,
+            ...FELISBINA_CASE_DATA.benefits.rsi,
             beneficios: "RSI (desde Março 2025) + PSI",
-            experiencia_profissional: "6 meses como empregada de limpeza",
-            situacao: "Disponível e com capacidade para trabalhar",
-            problemas_identificados: [
-              "dependencia_emocional_pai",
-              "perda_suporte_irmao",
-              "isolamento_social",
-              "gestao_financeira_independente",
-            ],
-            fatores_protecao: [
-              "experiencia_limpeza",
-              "motivacao_trabalho",
-              "qualificacao_9ano",
-              "beneficios_sociais_ativos",
-            ],
+            experiencia_profissional:
+              FELISBINA_CASE_DATA.work_experience.empregada_limpeza.duracao +
+              " como empregada de limpeza",
+            situacao_dld: determineDLDStatus(gameState),
+
+            // Contextual education assessment
+            educacao_contextual: {
+              nivel: FELISBINA_CASE_DATA.education.nivel,
+              adequacao: "9º ano completo",
+              contexto:
+                FELISBINA_CASE_DATA.education.contexto_historico
+                  .contexto_social,
+              avaliacao_moderna: "Ensino básico completo",
+            },
+
+            // Analysis results from Phase 1 with proper context
+            problemas_identificados:
+              FELISBINA_CASE_DATA.dld_analysis.fatores_risco.map(
+                (r) => r.fator
+              ),
+            fatores_protecao:
+              FELISBINA_CASE_DATA.dld_analysis.fatores_protecao.map(
+                (p) => p.fator
+              ),
+
+            // DLD assessment results
+            avaliacao_dld: gameState.assessmentReport
+              ? {
+                  disponibilidade: {
+                    decisao: gameState.availability,
+                    justificacao:
+                      gameState.assessmentReport.availability.justification,
+                    qualidade: gameState.assessmentReport.availability.quality,
+                  },
+                  capacidade: {
+                    decisao: gameState.capacity,
+                    justificacao:
+                      gameState.assessmentReport.capacity.justification,
+                    qualidade: gameState.assessmentReport.capacity.quality,
+                  },
+                  recomendacao_final:
+                    gameState.assessmentReport.overall.recommendation,
+                  qualidade_geral: gameState.assessmentReport.overall.quality,
+                }
+              : null,
+
+            // Empathy and communication assessment
+            relacao_tecnico: {
+              empatia_estabelecida:
+                performanceReport.metrics.empathy.percentage >= 60,
+              comunicacao_eficaz:
+                performanceReport.metrics.information.percentage >= 60,
+              confianca_construida:
+                performanceReport.metrics.interactions.percentage >= 80,
+              contexto_adequado:
+                FelisbinaCaseUtils.calculateDLDBalance().assessment ===
+                "favorable",
+            },
           },
         };
 
@@ -1620,8 +1969,187 @@
         window.location.href = "fase2.html";
       }
 
+      // Função para determinar status DLD baseado nas decisões
+      function determineDLDStatus(gameState) {
+        if (!gameState.availability || !gameState.capacity) {
+          return "Avaliação incompleta";
+        }
+
+        const hasAvailability = gameState.availability !== "nao";
+        const hasCapacity = gameState.capacity !== "nao";
+
+        if (hasAvailability && hasCapacity) {
+          return "Disponível e com capacidade para trabalhar";
+        } else if (hasAvailability && !hasCapacity) {
+          return "Disponível mas necessita desenvolvimento de capacidades";
+        } else if (!hasAvailability && hasCapacity) {
+          return "Com capacidade mas temporariamente indisponível";
+        } else {
+          return "Necessita apoio antes de integração laboral";
+        }
+      }
+
+      // VALIDATION FUNCTIONS FOR ASSESSMENT LOGIC
+
+      /**
+       * Validate assessment combination based on Felisbina's case profile
+       * @param {string} availability - Selected availability option
+       * @param {string} capacity - Selected capacity option
+       * @returns {Object} Validation result with educational feedback
+       */
+      function validateAssessmentCombination(availability, capacity) {
+        // Felisbina's profile constraints: 56 anos, dependência emocional, experiência limitada (6 meses)
+
+        // Define invalid combinations based on case analysis
+        const invalidCombinations = [
+          {
+            availability: "sim_total",
+            capacity: "sim_plena",
+            reason:
+              "Com dependência emocional e experiência limitada, 'capacidade plena' não é realista",
+            suggestion:
+              "Considere 'Capacidade com formação' - reconhece potencial mas identifica necessidade de desenvolvimento",
+          },
+          {
+            availability: "nao",
+            capacity: "sim_plena",
+            reason:
+              "Contradição: se não tem disponibilidade, não faz sentido ter capacidade plena",
+            suggestion:
+              "Se não está disponível, a capacidade também deve ser limitada ou condicionada",
+          },
+          {
+            availability: "nao",
+            capacity: "sim_formacao",
+            reason:
+              "Incoerência: sem disponibilidade mas com capacidade para formação",
+            suggestion:
+              "Seja consistente: indisponibilidade implica incapacidade temporária",
+          },
+        ];
+
+        // Check for specific invalid combination
+        const invalidMatch = invalidCombinations.find(
+          (combo) =>
+            combo.availability === availability && combo.capacity === capacity
+        );
+
+        if (invalidMatch) {
+          return {
+            valid: false,
+            reason: invalidMatch.reason,
+            suggestion: invalidMatch.suggestion,
+            educational_note:
+              "Baseado no perfil da Felisbina: 56 anos, dependência emocional, experiência limitada",
+          };
+        }
+
+        return { valid: true };
+      }
+
+      /**
+       * Reset capacity selection when availability changes
+       */
+      function resetCapacitySelection() {
+        gameState.capacity = null;
+        document
+          .querySelectorAll("#capacity-options .dialogue-option")
+          .forEach((el) => el.classList.remove("selected"));
+
+        // Hide finalize button until new capacity is selected
+        document.getElementById("finalize-assessment").style.display = "none";
+      }
+
+      /**
+       * Update capacity options styling based on availability choice
+       * @param {string} availability - Selected availability option
+       */
+      function updateCapacityOptions(availability) {
+        const capacityOptions = document.querySelectorAll(
+          "#capacity-options .dialogue-option"
+        );
+
+        // Reset all options
+        capacityOptions.forEach((option) => {
+          option.style.opacity = "1";
+          option.style.pointerEvents = "auto";
+          option.title = "";
+        });
+
+        // Add visual hints for problematic combinations
+        if (availability === "sim_total") {
+          const plenaOption = document.querySelector(
+            "[onclick=\"selectCapacity('sim_plena')\"]"
+          );
+          if (plenaOption) {
+            plenaOption.style.opacity = "0.6";
+            plenaOption.title =
+              "⚠️ Combinação não recomendada para o perfil da Felisbina";
+          }
+        }
+
+        if (availability === "nao") {
+          const formacaoOption = document.querySelector(
+            "[onclick=\"selectCapacity('sim_formacao')\"]"
+          );
+          const plenaOption = document.querySelector(
+            "[onclick=\"selectCapacity('sim_plena')\"]"
+          );
+
+          [formacaoOption, plenaOption].forEach((option) => {
+            if (option) {
+              option.style.opacity = "0.6";
+              option.title = "⚠️ Incoerente com indisponibilidade";
+            }
+          });
+        }
+      }
+
+      /**
+       * Get optimal capacity choice based on availability selection
+       * @param {string} availability - Selected availability option
+       * @returns {string} Optimal capacity choice
+       */
+      function getOptimalCapacityChoice(availability) {
+        // Based on Felisbina's profile analysis and scoring system
+        switch (availability) {
+          case "sim_total":
+          case "sim_condicionada":
+            return "sim_formacao"; // Best choice: recognizes experience + need for development
+          case "nao":
+            return "nao"; // Consistent choice: no availability = no capacity
+          default:
+            return "sim_formacao";
+        }
+      }
+
+      /**
+       * Get display name for choice codes
+       * @param {string} choice - Choice code
+       * @returns {string} Display name
+       */
+      function getChoiceDisplayName(choice) {
+        const displayNames = {
+          sim_total: "SIM - Disponibilidade total",
+          sim_condicionada: "SIM - Disponibilidade condicionada",
+          sim_plena: "SIM - Capacidade plena",
+          sim_formacao: "SIM - Capacidade com formação",
+          nao: "NÃO - Indisponível/Incapacidade temporária",
+        };
+        return displayNames[choice] || choice;
+      }
+
       // Variável para tracking do tempo
       let gameStartTime = Date.now();
+
+      // Test scoring system on load (development only)
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        console.log("🧪 Running scoring system tests...");
+        ScoringSystemTests.runAllTests();
+      }
 
       // Inicializar
       updateProgress();

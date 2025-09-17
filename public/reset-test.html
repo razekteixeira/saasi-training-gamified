@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Button Test</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .test-container {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        max-width: 600px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-test {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        margin: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-test:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .reset-btn {
+        background: #e74c3c !important;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .reset-btn:hover {
+        background: #c0392b !important;
+        transform: translateY(-2px);
+      }
+
+      .status {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+      }
+
+      .status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>🧪 Reset Button Test</h1>
+      <p>Test the enhanced dialog system with these buttons:</p>
+
+      <div style="margin: 30px 0">
+        <button class="btn-test" onclick="testSimpleAlert()">
+          Simple Alert
+        </button>
+        <button class="btn-test" onclick="testConfirm()">Simple Confirm</button>
+        <button class="btn-test" onclick="testPrompt()">Simple Prompt</button>
+      </div>
+
+      <hr style="margin: 30px 0" />
+
+      <h3>🗑️ Reset Test (Same as main page)</h3>
+      <p>
+        This should show the same dialog as the reset button on the main page:
+      </p>
+
+      <button class="reset-btn" onclick="handleResetClick()">
+        🗑️ Test Reset Dialog
+      </button>
+
+      <div id="status" class="status" style="display: none"></div>
+    </div>
+
+    <!-- Load the dialog system -->
+    <script src="js/shared.js"></script>
+    <script src="js/multi-phase-coordinator.js"></script>
+    <script src="js/modal-system.js"></script>
+
+    <script>
+      // Wait for dependencies to load
+      function waitForDependencies() {
+        return new Promise((resolve) => {
+          const checkDependencies = () => {
+            if (window.ModalSystem && window.MultiPhaseCoordinator) {
+              resolve();
+            } else {
+              setTimeout(checkDependencies, 50);
+            }
+          };
+          checkDependencies();
+        });
+      }
+
+      // Test functions
+      async function testSimpleAlert() {
+        try {
+          await ModalSystem.alert("This is a test alert!", "info");
+          showStatus("✅ Alert test successful!", "success");
+        } catch (error) {
+          showStatus("❌ Alert test failed: " + error.message, "error");
+        }
+      }
+
+      async function testConfirm() {
+        try {
+          const result = await ModalSystem.confirm("Do you want to continue?");
+          showStatus(
+            `✅ Confirm test successful! Result: ${result}`,
+            "success"
+          );
+        } catch (error) {
+          showStatus("❌ Confirm test failed: " + error.message, "error");
+        }
+      }
+
+      async function testPrompt() {
+        try {
+          const result = await ModalSystem.prompt("What's your name?", {
+            placeholder: "Enter your name...",
+          });
+          showStatus(
+            `✅ Prompt test successful! Result: "${result}"`,
+            "success"
+          );
+        } catch (error) {
+          showStatus("❌ Prompt test failed: " + error.message, "error");
+        }
+      }
+
+      // Reset confirmation function (copied from main page)
+      async function showResetConfirmation() {
+        try {
+          console.log("showResetConfirmation called");
+          await waitForDependencies();
+          console.log("Dependencies loaded, showing modal...");
+
+          // Show confirmation dialog
+          const confirmReset = await ModalSystem.confirm(
+            "🔄 <strong>REINICIAR JOGO COMPLETO</strong><br><br>" +
+              "Esta ação irá:<br>" +
+              "• Apagar todos os resultados das 4 fases<br>" +
+              "• Remover todas as conquistas<br>" +
+              "• Limpar o progresso guardado<br><br>" +
+              "⚠️ <strong>Esta ação não pode ser desfeita!</strong><br><br>" +
+              "Deseja continuar?",
+            {
+              title: "🔄 Reiniciar Jogo",
+              okText: "Sim, reiniciar",
+              cancelText: "Cancelar",
+              type: "warning",
+            }
+          );
+
+          if (confirmReset) {
+            showStatus(
+              "✅ User confirmed reset! (In real app, this would clear data)",
+              "success"
+            );
+          } else {
+            showStatus("ℹ️ User cancelled reset operation", "success");
+          }
+        } catch (error) {
+          console.error("Reset function error:", error);
+          showStatus("❌ Reset dialog failed: " + error.message, "error");
+
+          // Fallback to native confirm
+          const originalConfirm = window._originalConfirm || confirm;
+          if (originalConfirm("Fallback: Are you sure you want to reset?")) {
+            showStatus("✅ Fallback confirm worked", "success");
+          }
+        }
+      }
+
+      // Single reset handler (copied from main page)
+      function handleResetClick() {
+        console.log("Reset button clicked!");
+
+        setTimeout(async () => {
+          try {
+            console.log("Attempting to show reset confirmation...");
+            await showResetConfirmation();
+          } catch (error) {
+            console.error("Reset click handler error:", error);
+            const originalConfirm = window._originalConfirm || confirm;
+            console.log("Using fallback confirmation");
+            if (
+              originalConfirm(
+                "Fallback: Are you sure you want to reset all progress?"
+              )
+            ) {
+              showStatus("✅ Fallback reset confirmed", "success");
+            } else {
+              showStatus("ℹ️ Fallback reset cancelled", "success");
+            }
+          }
+        }, 0);
+      }
+
+      function showStatus(message, type) {
+        const status = document.getElementById("status");
+        status.textContent = message;
+        status.className = `status ${type}`;
+        status.style.display = "block";
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          status.style.display = "none";
+        }, 5000);
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Reset test page loaded");
+
+        // Test if dialog system is working after a short delay
+        setTimeout(() => {
+          if (window.ModalSystem) {
+            showStatus("✅ Dialog system loaded successfully!", "success");
+          } else {
+            showStatus("❌ Dialog system failed to load", "error");
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

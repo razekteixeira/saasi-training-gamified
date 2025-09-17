@@ -67,38 +67,70 @@ class SaaSIStorageManager {
    * @returns {Object} Progress summary
    */
   getOverallProgress() {
-    const progress = {
+    const phaseResults = {
       phase1: this.loadPhaseResults(1),
       phase2: this.loadPhaseResults(2),
       phase3: this.loadPhaseResults(3),
-      totalScore: 0,
-      completedPhases: 0,
-      unlockedPhases: 1, // Phase 1 always unlocked
+      phase4: this.loadPhaseResults(4),
     };
 
-    // Calculate totals
-    if (progress.phase1) {
-      progress.totalScore += progress.phase1.score || 0;
-      progress.completedPhases++;
-      if (progress.phase1.score >= 70) {
-        progress.unlockedPhases = Math.max(progress.unlockedPhases, 2);
+    // Use MultiPhaseCoordinator if available, otherwise fallback to basic calculation
+    if (typeof MultiPhaseCoordinator !== "undefined") {
+      const detailedProgress =
+        MultiPhaseCoordinator.generateProgressReport(phaseResults);
+      return {
+        ...detailedProgress.overview,
+        detailedReport: detailedProgress,
+        unlockedPhases: this.calculateUnlockedPhases(phaseResults),
+      };
+    } else {
+      // Fallback for backward compatibility
+      return this.basicProgressCalculation(phaseResults);
+    }
+  }
+
+  /**
+   * Calculate unlocked phases (fallback method)
+   * CONFORME ESPECIFICAÇÃO: Phase 2 requires 60+, Phase 3 requires 60+, Phase 4 requires 65+
+   * @param {Object} phaseResults - Phase results
+   * @returns {number} Number of unlocked phases
+   */
+  calculateUnlockedPhases(phaseResults) {
+    let unlocked = 1; // Phase 1 always unlocked
+
+    if (phaseResults.phase1?.score >= 60) unlocked = Math.max(unlocked, 2);
+    if (phaseResults.phase2?.score >= 60) unlocked = Math.max(unlocked, 3);
+    if (phaseResults.phase3?.score >= 65) unlocked = Math.max(unlocked, 4);
+
+    return unlocked;
+  }
+
+  /**
+   * Basic progress calculation (fallback)
+   * @param {Object} phaseResults - Phase results
+   * @returns {Object} Basic progress summary
+   */
+  basicProgressCalculation(phaseResults) {
+    let totalScore = 0;
+    let completedPhases = 0;
+
+    for (let phase = 1; phase <= 4; phase++) {
+      const phaseData = phaseResults[`phase${phase}`];
+      if (phaseData?.score !== undefined) {
+        totalScore += phaseData.score;
+        completedPhases++;
       }
     }
 
-    if (progress.phase2) {
-      progress.totalScore += progress.phase2.score || 0;
-      progress.completedPhases++;
-      if (progress.phase2.score >= 70) {
-        progress.unlockedPhases = Math.max(progress.unlockedPhases, 3);
-      }
-    }
-
-    if (progress.phase3) {
-      progress.totalScore += progress.phase3.score || 0;
-      progress.completedPhases++;
-    }
-
-    return progress;
+    return {
+      totalScore: Math.min(totalScore, 400),
+      maxPossible: 400,
+      percentage: Math.round((totalScore / 400) * 100),
+      completedPhases: completedPhases,
+      averageScore:
+        completedPhases > 0 ? Math.round(totalScore / completedPhases) : 0,
+      unlockedPhases: this.calculateUnlockedPhases(phaseResults),
+    };
   }
 
   /**
@@ -343,7 +375,7 @@ class SaaSIUtils {
         return { unlocked: true, reason: "Always available" };
 
       case 2:
-        if (progress.phase1 && progress.phase1.score >= 70) {
+        if (progress.phase1 && progress.phase1.score >= 60) {
           return {
             unlocked: true,
             reason: "Phase 1 completed with sufficient score",
@@ -351,12 +383,12 @@ class SaaSIUtils {
         }
         return {
           unlocked: false,
-          reason: "Requires Phase 1 completion with 70+ points",
+          reason: "Requires Phase 1 completion with 60+ points",
           currentScore: progress.phase1?.score || 0,
         };
 
       case 3:
-        if (progress.phase2 && progress.phase2.score >= 70) {
+        if (progress.phase2 && progress.phase2.score >= 60) {
           return {
             unlocked: true,
             reason: "Phase 2 completed with sufficient score",
@@ -364,8 +396,21 @@ class SaaSIUtils {
         }
         return {
           unlocked: false,
-          reason: "Requires Phase 2 completion with 70+ points",
+          reason: "Requires Phase 2 completion with 60+ points",
           currentScore: progress.phase2?.score || 0,
+        };
+
+      case 4:
+        if (progress.phase3 && progress.phase3.score >= 65) {
+          return {
+            unlocked: true,
+            reason: "Phase 3 completed with sufficient score",
+          };
+        }
+        return {
+          unlocked: false,
+          reason: "Requires Phase 3 completion with 65+ points",
+          currentScore: progress.phase3?.score || 0,
         };
 
       default:
@@ -478,5 +523,165 @@ function getPlayerLevel(score) {
 function generateSessionId() {
   return SaaSIUtils.generateSessionId();
 }
+
+/**
+ * Enhanced Dialog System Integration
+ * Automatically replaces native dialogs with modern modal system
+ */
+class DialogManager {
+  constructor() {
+    this.initialized = false;
+    this.init();
+  }
+
+  init() {
+    // Wait for ModalSystem to be available
+    const checkModalSystem = () => {
+      if (window.ModalSystem) {
+        this.enableEnhancedDialogs();
+        this.initialized = true;
+        console.log("Enhanced Dialog System initialized successfully");
+      } else {
+        setTimeout(checkModalSystem, 50);
+      }
+    };
+    checkModalSystem();
+  }
+
+  enableEnhancedDialogs() {
+    // Store original functions
+    if (!window._originalAlert) {
+      window._originalAlert = window.alert;
+      window._originalConfirm = window.confirm;
+      window._originalPrompt = window.prompt;
+    }
+
+    // Replace with enhanced modal versions
+    window.alert = async (message) => {
+      return await ModalSystem.alert(message, "info");
+    };
+
+    window.confirm = async (message) => {
+      return await ModalSystem.confirm(message);
+    };
+
+    window.prompt = async (message, defaultValue = "") => {
+      return await ModalSystem.prompt(message, {
+        defaultValue,
+        required: false,
+      });
+    };
+
+    // Add convenience methods
+    window.showSuccess = (message, duration = 3000) => {
+      return ModalSystem.notify(message, {
+        type: "success",
+        duration,
+      });
+    };
+
+    window.showWarning = (message, duration = 4000) => {
+      return ModalSystem.notify(message, {
+        type: "warning",
+        duration,
+      });
+    };
+
+    window.showError = (message, duration = 5000) => {
+      return ModalSystem.notify(message, {
+        type: "error",
+        duration,
+      });
+    };
+
+    window.showInfo = (message, duration = 3000) => {
+      return ModalSystem.notify(message, {
+        type: "info",
+        duration,
+      });
+    };
+  }
+
+  disableEnhancedDialogs() {
+    if (window._originalAlert) {
+      window.alert = window._originalAlert;
+      window.confirm = window._originalConfirm;
+      window.prompt = window._originalPrompt;
+    }
+  }
+
+  // Enhanced alert with better UX
+  async smartAlert(message, options = {}) {
+    const {
+      type = "info",
+      title = null,
+      showAsNotification = false,
+      duration = 4000,
+    } = options;
+
+    if (showAsNotification) {
+      return ModalSystem.notify(message, { type, duration });
+    } else {
+      const titleMap = {
+        info: "ℹ️ Informação",
+        success: "✅ Sucesso",
+        warning: "⚠️ Aviso",
+        error: "❌ Erro",
+      };
+      return await ModalSystem.alert(message, {
+        type,
+        title: title || titleMap[type],
+      });
+    }
+  }
+
+  // Enhanced confirm with better options
+  async smartConfirm(message, options = {}) {
+    const {
+      title = "❓ Confirmar",
+      okText = "Confirmar",
+      cancelText = "Cancelar",
+      type = "confirm",
+      dangerousAction = false,
+    } = options;
+
+    return await ModalSystem.confirm(message, {
+      title: dangerousAction ? "⚠️ Ação Perigosa" : title,
+      okText,
+      cancelText,
+      type: dangerousAction ? "warning" : type,
+    });
+  }
+
+  // Enhanced prompt with validation
+  async smartPrompt(message, options = {}) {
+    const {
+      title = "📝 Input Necessário",
+      defaultValue = "",
+      placeholder = "Digite sua resposta...",
+      required = false,
+      inputType = "text",
+      maxLength = null,
+      pattern = null,
+      okText = "OK",
+      cancelText = "Cancelar",
+    } = options;
+
+    return await ModalSystem.prompt(message, {
+      title,
+      defaultValue,
+      placeholder,
+      required,
+      inputType,
+      maxLength,
+      pattern,
+      okText,
+      cancelText,
+    });
+  }
+}
+
+// Initialize Dialog Manager
+window.DialogManager = new DialogManager();
 
 console.log("SAASI Shared Libraries loaded successfully");

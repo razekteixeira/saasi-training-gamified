@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Object Interaction Test</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .test-container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .test-object {
+        display: inline-block;
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+        color: white;
+        padding: 30px;
+        margin: 10px;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 150px;
+      }
+
+      .test-object:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .test-object.unlocked {
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        border: 3px solid #2e7d32;
+      }
+
+      .status-display {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+      }
+
+      .logs {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>🧪 Object Interaction Test</h1>
+      <p>
+        Test the new object clicking logic - objects should remain clickable
+        until unlocked successfully.
+      </p>
+
+      <div class="status-display">
+        <h3>Test Scenario:</h3>
+        <p>
+          <strong>Object A:</strong> Requires code "TEST123" - should remain
+          clickable until correct code is entered
+        </p>
+        <p>
+          <strong>Object B:</strong> No code required - should be unlocked
+          immediately
+        </p>
+        <p>
+          <strong>Behavior:</strong> You can click Object A multiple times,
+          enter wrong codes, cancel dialogs, etc. Only when you enter "TEST123"
+          should it become unlocked.
+        </p>
+      </div>
+
+      <div style="text-align: center; margin: 30px 0">
+        <div class="test-object" id="object-a" onclick="testObject('a')">
+          <div style="font-size: 30px">🔐</div>
+          <div><strong>Object A</strong></div>
+          <div style="font-size: 12px">Requires Code</div>
+          <div id="status-a" style="margin-top: 10px; font-size: 12px">
+            Clickable
+          </div>
+        </div>
+
+        <div class="test-object" id="object-b" onclick="testObject('b')">
+          <div style="font-size: 30px">☕</div>
+          <div><strong>Object B</strong></div>
+          <div style="font-size: 12px">No Code Needed</div>
+          <div id="status-b" style="margin-top: 10px; font-size: 12px">
+            Clickable
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center">
+        <button
+          onclick="resetTest()"
+          style="
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          🔄 Reset Test
+        </button>
+      </div>
+
+      <div class="logs" id="logs">
+        <div>🟢 Test initialized - ready to test object interactions</div>
+      </div>
+    </div>
+
+    <!-- Load dialog system -->
+    <script src="js/shared.js"></script>
+    <script src="js/modal-system.js"></script>
+
+    <script>
+      // Test state
+      let testState = {
+        objectA: { unlocked: false, clickCount: 0 },
+        objectB: { unlocked: false, clickCount: 0 },
+      };
+
+      function log(message) {
+        const logs = document.getElementById("logs");
+        const timestamp = new Date().toLocaleTimeString();
+        logs.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        logs.scrollTop = logs.scrollHeight;
+      }
+
+      async function testObject(objectId) {
+        testState[`object${objectId.toUpperCase()}`].clickCount++;
+        const clickCount =
+          testState[`object${objectId.toUpperCase()}`].clickCount;
+
+        log(
+          `🖱️ Object ${objectId.toUpperCase()} clicked (${clickCount} times)`
+        );
+
+        // Check if already unlocked
+        if (testState[`object${objectId.toUpperCase()}`].unlocked) {
+          log(
+            `✅ Object ${objectId.toUpperCase()} is already unlocked - showing message`
+          );
+          await ModalSystem.alert(
+            "✅ Este objeto já foi desbloqueado!",
+            "info"
+          );
+          return;
+        }
+
+        if (objectId === "a") {
+          // Object A requires code
+          log(`🔐 Object A requires code - showing prompt`);
+
+          try {
+            const code = await ModalSystem.prompt(
+              "🔐 CÓDIGO NECESSÁRIO<br><br>" +
+                "📋 Objeto: Test Object A<br>" +
+                "💡 Dica: O código é TEST123<br><br>" +
+                "Digite o código para desbloquear:",
+              {
+                title: "🔐 Código Necessário",
+                placeholder: "Digite o código...",
+                required: true,
+              }
+            );
+
+            if (code === null) {
+              log(`❌ User cancelled code entry for Object A`);
+              return;
+            }
+
+            if (code === "TEST123") {
+              log(`✅ Correct code entered for Object A - unlocking!`);
+              testState.objectA.unlocked = true;
+
+              const objElement = document.getElementById("object-a");
+              objElement.classList.add("unlocked");
+              document.getElementById("status-a").textContent = "UNLOCKED";
+
+              await ModalSystem.alert(
+                "🎉 Código correto! Object A desbloqueado!",
+                "success"
+              );
+            } else {
+              log(`❌ Wrong code entered: "${code}" - Object A remains locked`);
+
+              const retry = await ModalSystem.confirm(
+                `💡 Código incorreto!<br><br>` +
+                  `<strong>Código inserido:</strong> "${code}"<br>` +
+                  `<strong>Código correto:</strong> TEST123<br><br>` +
+                  `Tentar novamente?`,
+                {
+                  title: "❌ Código Incorreto",
+                  okText: "Tentar Novamente",
+                  cancelText: "Desistir",
+                }
+              );
+
+              if (retry) {
+                log(`🔄 User chose to retry Object A`);
+                // Wait a bit then allow clicking again
+                setTimeout(() => {
+                  testObject("a");
+                }, 500);
+              } else {
+                log(
+                  `🚫 User gave up on Object A - but can still click it later`
+                );
+              }
+            }
+          } catch (error) {
+            log(`❌ Error with Object A: ${error.message}`);
+          }
+        } else if (objectId === "b") {
+          // Object B doesn't require code
+          log(`☕ Object B doesn't require code - unlocking immediately`);
+          testState.objectB.unlocked = true;
+
+          const objElement = document.getElementById("object-b");
+          objElement.classList.add("unlocked");
+          document.getElementById("status-b").textContent = "UNLOCKED";
+
+          await ModalSystem.alert(
+            "☕ Object B desbloqueado! Sem código necessário.",
+            "success"
+          );
+        }
+      }
+
+      function resetTest() {
+        log(`🔄 Resetting test state`);
+
+        testState = {
+          objectA: { unlocked: false, clickCount: 0 },
+          objectB: { unlocked: false, clickCount: 0 },
+        };
+
+        // Reset visual state
+        document.getElementById("object-a").classList.remove("unlocked");
+        document.getElementById("object-b").classList.remove("unlocked");
+        document.getElementById("status-a").textContent = "Clickable";
+        document.getElementById("status-b").textContent = "Clickable";
+
+        log(`✅ Test reset - both objects are now clickable again`);
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        log(`🎮 Object interaction test loaded`);
+        log(
+          `📋 Instructions: Click Object A multiple times, try wrong codes, cancel dialogs - it should remain clickable`
+        );
+        log(
+          `📋 Only when you enter "TEST123" should Object A become permanently unlocked`
+        );
+        log(`📋 Object B should unlock immediately on first click`);
+      });
+    </script>
+  </body>
+</html>

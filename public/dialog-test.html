@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Dialog System Test</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .test-container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .test-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+      }
+
+      .test-section h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .btn-test {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        margin: 5px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-test:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .result-display {
+        background: #f5f5f5;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>🎨 Enhanced Dialog System Test</h1>
+      <p>
+        Test all the enhanced dialog functionalities with beautiful,
+        user-friendly modals.
+      </p>
+
+      <div class="test-section">
+        <h3>📢 Alert Dialogs</h3>
+        <button class="btn-test" onclick="testAlert('info')">Info Alert</button>
+        <button class="btn-test" onclick="testAlert('success')">
+          Success Alert
+        </button>
+        <button class="btn-test" onclick="testAlert('warning')">
+          Warning Alert
+        </button>
+        <button class="btn-test" onclick="testAlert('error')">
+          Error Alert
+        </button>
+        <div
+          id="alert-result"
+          class="result-display"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div class="test-section">
+        <h3>❓ Confirm Dialogs</h3>
+        <button class="btn-test" onclick="testConfirm('basic')">
+          Basic Confirm
+        </button>
+        <button class="btn-test" onclick="testConfirm('custom')">
+          Custom Confirm
+        </button>
+        <button class="btn-test" onclick="testConfirm('dangerous')">
+          Dangerous Action
+        </button>
+        <div
+          id="confirm-result"
+          class="result-display"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div class="test-section">
+        <h3>📝 Prompt Dialogs</h3>
+        <button class="btn-test" onclick="testPrompt('basic')">
+          Basic Prompt
+        </button>
+        <button class="btn-test" onclick="testPrompt('email')">
+          Email Prompt
+        </button>
+        <button class="btn-test" onclick="testPrompt('password')">
+          Password Prompt
+        </button>
+        <button class="btn-test" onclick="testPrompt('required')">
+          Required Field
+        </button>
+        <div
+          id="prompt-result"
+          class="result-display"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div class="test-section">
+        <h3>🔔 Notifications</h3>
+        <button class="btn-test" onclick="testNotification('info')">
+          Info Notification
+        </button>
+        <button class="btn-test" onclick="testNotification('success')">
+          Success Notification
+        </button>
+        <button class="btn-test" onclick="testNotification('warning')">
+          Warning Notification
+        </button>
+        <button class="btn-test" onclick="testNotification('error')">
+          Error Notification
+        </button>
+      </div>
+
+      <div class="test-section">
+        <h3>🧪 Smart Dialog Methods</h3>
+        <button class="btn-test" onclick="testSmartAlert()">Smart Alert</button>
+        <button class="btn-test" onclick="testSmartConfirm()">
+          Smart Confirm
+        </button>
+        <button class="btn-test" onclick="testSmartPrompt()">
+          Smart Prompt
+        </button>
+        <div
+          id="smart-result"
+          class="result-display"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div class="test-section">
+        <h3>🚀 Quick Methods</h3>
+        <button
+          class="btn-test"
+          onclick="showSuccess('Quick success message!')"
+        >
+          showSuccess()
+        </button>
+        <button
+          class="btn-test"
+          onclick="showWarning('Quick warning message!')"
+        >
+          showWarning()
+        </button>
+        <button class="btn-test" onclick="showError('Quick error message!')">
+          showError()
+        </button>
+        <button class="btn-test" onclick="showInfo('Quick info message!')">
+          showInfo()
+        </button>
+      </div>
+
+      <div class="test-section">
+        <h3>🔄 Native Override Test</h3>
+        <button class="btn-test" onclick="testNativeAlert()">
+          Native alert()
+        </button>
+        <button class="btn-test" onclick="testNativeConfirm()">
+          Native confirm()
+        </button>
+        <button class="btn-test" onclick="testNativePrompt()">
+          Native prompt()
+        </button>
+        <div
+          id="native-result"
+          class="result-display"
+          style="display: none"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Load the enhanced dialog system -->
+    <script src="js/shared.js"></script>
+    <script src="js/modal-system.js"></script>
+    <script>
+      // Test functions
+      async function testAlert(type) {
+        const messages = {
+          info: "This is an informational message with some useful details.",
+          success:
+            "Operation completed successfully! Everything went as expected.",
+          warning: "Please be careful! This action might have consequences.",
+          error: "An error occurred during the operation. Please try again.",
+        };
+
+        const result = await ModalSystem.alert(messages[type], type);
+        showResult("alert-result", `Alert (${type}) returned: ${result}`);
+      }
+
+      async function testConfirm(type) {
+        let result;
+
+        switch (type) {
+          case "basic":
+            result = await ModalSystem.confirm(
+              "Do you want to proceed with this action?"
+            );
+            break;
+          case "custom":
+            result = await ModalSystem.confirm(
+              "This will delete all your data permanently. Are you absolutely sure?",
+              {
+                title: "🗑️ Delete All Data",
+                okText: "Yes, Delete Everything",
+                cancelText: "Keep My Data",
+                type: "warning",
+              }
+            );
+            break;
+          case "dangerous":
+            result = await DialogManager.smartConfirm(
+              "This action will irreversibly destroy the server!",
+              { dangerousAction: true }
+            );
+            break;
+        }
+
+        showResult("confirm-result", `Confirm (${type}) returned: ${result}`);
+      }
+
+      async function testPrompt(type) {
+        let result;
+
+        switch (type) {
+          case "basic":
+            result = await ModalSystem.prompt("What's your name?", {
+              placeholder: "Enter your full name...",
+              defaultValue: "João Silva",
+            });
+            break;
+          case "email":
+            result = await ModalSystem.prompt(
+              "Please enter your email address:",
+              {
+                title: "📧 Email Required",
+                placeholder: "your.email@example.com",
+                inputType: "email",
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
+              }
+            );
+            break;
+          case "password":
+            result = await ModalSystem.prompt("Enter your password:", {
+              title: "🔐 Password Required",
+              inputType: "password",
+              placeholder: "Enter your password...",
+            });
+            break;
+          case "required":
+            result = await ModalSystem.prompt("This field is required:", {
+              title: "📋 Required Information",
+              required: true,
+              placeholder: "You must enter something...",
+            });
+            break;
+        }
+
+        showResult("prompt-result", `Prompt (${type}) returned: "${result}"`);
+      }
+
+      function testNotification(type) {
+        const messages = {
+          info: "📘 Here's some useful information for you!",
+          success: "🎉 Great! Your action was completed successfully!",
+          warning: "⚠️ Warning: Please review your settings.",
+          error: "💥 Oops! Something went wrong, but don't worry.",
+        };
+
+        ModalSystem.notify(messages[type], {
+          type: type,
+          duration: 4000,
+          position: "top-right",
+        });
+      }
+
+      async function testSmartAlert() {
+        const result = await DialogManager.smartAlert(
+          "This is a smart alert with enhanced options!",
+          {
+            type: "success",
+            title: "🎯 Smart Alert Demo",
+          }
+        );
+        showResult("smart-result", `Smart Alert returned: ${result}`);
+      }
+
+      async function testSmartConfirm() {
+        const result = await DialogManager.smartConfirm(
+          "Would you like to save your progress before continuing?",
+          {
+            title: "💾 Save Progress",
+            okText: "Save & Continue",
+            cancelText: "Continue Without Saving",
+          }
+        );
+        showResult("smart-result", `Smart Confirm returned: ${result}`);
+      }
+
+      async function testSmartPrompt() {
+        const result = await DialogManager.smartPrompt(
+          "Please enter your project name:",
+          {
+            title: "📁 New Project",
+            placeholder: "My Awesome Project",
+            required: true,
+            maxLength: 50,
+          }
+        );
+        showResult("smart-result", `Smart Prompt returned: "${result}"`);
+      }
+
+      async function testNativeAlert() {
+        // This should now use the enhanced modal instead of native alert
+        alert("This should appear as a beautiful modal, not a native alert!");
+        showResult(
+          "native-result",
+          "Native alert() called (now using enhanced modal)"
+        );
+      }
+
+      async function testNativeConfirm() {
+        // This should now use the enhanced modal instead of native confirm
+        const result = await confirm(
+          "Do you like the new modal system better than native dialogs?"
+        );
+        showResult(
+          "native-result",
+          `Native confirm() returned: ${result} (using enhanced modal)`
+        );
+      }
+
+      async function testNativePrompt() {
+        // This should now use the enhanced modal instead of native prompt
+        const result = await prompt(
+          "What's your favorite feature of this modal system?",
+          "The beautiful design!"
+        );
+        showResult(
+          "native-result",
+          `Native prompt() returned: "${result}" (using enhanced modal)`
+        );
+      }
+
+      function showResult(elementId, message) {
+        const element = document.getElementById(elementId);
+        element.style.display = "block";
+        element.textContent = message;
+        element.style.borderLeftColor = "#4caf50";
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          element.style.display = "none";
+        }, 5000);
+      }
+
+      // Wait for system to initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+          showInfo(
+            "🎨 Enhanced Dialog System is ready! Try the buttons above to test all features."
+          );
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

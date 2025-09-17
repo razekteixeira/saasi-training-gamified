@@ -433,7 +433,7 @@ const interventionPlanPuzzle = {
     },
     {
       id: "processo_rvcc",
-      nome: "Processo RVCC (9º ano)",
+      nome: "Processo RVCC (12º ano)",
       entidade: "Centro de Qualificação", 
       duracao_semanas: 20,
       frequencia: "1x por semana",
@@ -498,7 +498,7 @@ const interventionPlanPuzzle = {
     },
     {
       indicador: "Melhoria das qualificações",
-      metrica: "Conclusão RVCC 9º ano",
+      metrica: "Conclusão RVCC 12º ano",
       meta: "Certificado obtido",
       prazo: "6 meses"
     },
