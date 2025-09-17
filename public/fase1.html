@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAASI Escape Room - Fase 1</title>
+    <style>
+      /* Toast System */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+      }
+
+      .toast {
+        background: #333;
+        color: white;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        position: relative;
+        padding-right: 50px;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: #28a745;
+        border-left: 4px solid #1e7e34;
+      }
+
+      .toast.error {
+        background: #dc3545;
+        border-left: 4px solid #c82333;
+      }
+
+      .toast.warning {
+        background: #ffc107;
+        color: #212529;
+        border-left: 4px solid #e0a800;
+      }
+
+      .toast.info {
+        background: #17a2b8;
+        border-left: 4px solid #138496;
+      }
+
+      .toast-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+
+      .toast-close:hover {
+        opacity: 1;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .main-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 20px;
+      }
+      .back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(108, 117, 125, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        z-index: 1000;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .back-button:hover {
+        background: rgba(84, 91, 98, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+      .state {
+        display: none;
+      }
+      .state.active {
+        display: block;
+      }
+      .progress {
+        background: #e0e0e0;
+        height: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .progress-fill {
+        background: #4caf50;
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s;
+      }
+      .btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        cursor: pointer;
+        margin: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+      .btn.selected {
+        background: #4caf50;
+      }
+      .dialogue-option {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      .dialogue-option:hover {
+        border-color: rgba(102, 126, 234, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+      .dialogue-option.selected {
+        border-color: #4caf50;
+        background: rgba(232, 245, 233, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+      }
+      .drag-item {
+        background: rgba(255, 243, 224, 0.9);
+        backdrop-filter: blur(5px);
+        border: 2px solid #ff9800;
+        padding: 15px;
+        margin: 8px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: inline-block;
+        user-select: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(255, 152, 0, 0.2);
+        position: relative;
+        min-height: 50px;
+        min-width: 120px;
+        text-align: center;
+        font-weight: 500;
+        touch-action: manipulation;
+      }
+      .drag-item:hover {
+        background: rgba(255, 224, 178, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+      }
+      .drag-item:active {
+        transform: scale(0.98);
+      }
+      .drag-item.selected {
+        background: rgba(102, 126, 234, 0.9);
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+      .drag-item.placed {
+        opacity: 0.6;
+        background: rgba(200, 200, 200, 0.8);
+        border-color: #999;
+        color: #666;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .drop-zone {
+        min-height: 120px;
+        border: 3px dashed rgba(204, 204, 204, 0.7);
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 15px;
+        background: rgba(249, 249, 249, 0.8);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        position: relative;
+        touch-action: manipulation;
+      }
+      .drop-zone.drag-over,
+      .drop-zone.active {
+        border-color: #667eea;
+        background: rgba(227, 242, 253, 0.9);
+        border-style: solid;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+      }
+      .drop-zone.correct {
+        border-color: #4caf50;
+        background: rgba(232, 245, 233, 0.9);
+        border-style: solid;
+      }
+      .drop-zone.incorrect {
+        border-color: #f44336;
+        background: rgba(255, 235, 238, 0.9);
+        border-style: solid;
+        animation: shake 0.5s ease-in-out;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+      .mobile-instructions {
+        background: rgba(227, 242, 253, 0.9);
+        backdrop-filter: blur(5px);
+        padding: 15px;
+        border-radius: 12px;
+        margin: 15px 0;
+        border: 2px solid rgba(33, 150, 243, 0.3);
+      }
+      .mobile-mode-button {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 10px 5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+        touch-action: manipulation;
+      }
+      .mobile-mode-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+      }
+      .document-item {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .score {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(51, 51, 51, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+      .metrics {
+        background: rgba(240, 240, 240, 0.8);
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Mobile Responsive Enhancements */
+      @media (max-width: 768px) {
+        .main-container {
+          padding: 10px;
+        }
+        .container {
+          padding: 20px;
+          margin-bottom: 10px;
+        }
+        .back-button {
+          top: 10px;
+          left: 10px;
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .score {
+          top: 10px;
+          right: 10px;
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .btn {
+          padding: 12px 20px;
+          font-size: 14px;
+          margin: 6px 3px;
+          min-width: 100px;
+        }
+        .dialogue-option {
+          padding: 15px;
+          margin: 10px 0;
+          font-size: 14px;
+        }
+        .drag-item {
+          min-width: 100px;
+          padding: 12px;
+          margin: 6px 3px;
+          font-size: 14px;
+        }
+        .drop-zone {
+          min-height: 100px;
+          padding: 15px;
+          margin: 10px 0;
+        }
+        .metrics {
+          padding: 15px;
+          font-size: 14px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        h2 {
+          font-size: 1.4rem;
+        }
+        h3 {
+          font-size: 1.2rem;
+        }
+        .mobile-instructions {
+          display: block;
+        }
+        /* Make drag container scrollable on small screens */
+        #elements-pool {
+          max-height: 200px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        /* Stack drop zones vertically on mobile */
+        .analysis-container {
+          flex-direction: column;
+          gap: 10px;
+        }
+        .analysis-container > div {
+          flex: 1;
+          min-width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+        .main-container {
+          padding: 5px;
+        }
+        .container {
+          padding: 15px;
+        }
+        .back-button,
+        .score {
+          position: static;
+          display: inline-block;
+          margin: 5px;
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+        .mobile-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          padding: 10px;
+          z-index: 1001;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .main-container {
+          margin-top: 60px;
+        }
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+          padding: 15px;
+          font-size: 16px;
+        }
+        .dialogue-option {
+          margin: 8px 0;
+          padding: 12px;
+        }
+        .drag-item {
+          width: calc(50% - 10px);
+          margin: 5px;
+          padding: 10px;
+          font-size: 12px;
+          min-width: 90px;
+        }
+        h1 {
+          font-size: 1.5rem;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+        h3 {
+          font-size: 1.1rem;
+        }
+      }
+
+      /* Touch-friendly improvements */
+      @media (hover: none) and (pointer: coarse) {
+        .drag-item {
+          min-height: 60px;
+          padding: 15px;
+        }
+        .btn {
+          min-height: 48px;
+          padding: 15px 20px;
+        }
+        .dialogue-option {
+          min-height: 60px;
+          padding: 18px;
+        }
+        .drop-zone {
+          min-height: 140px;
+          padding: 25px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <a href="index.html" class="back-button">← Voltar ao Menu</a>
+    <div class="score">Pontuação: <span id="score">0</span>/100</div>
+
+    <div class="main-container">
+      <div class="container">
+        <div class="progress">
+          <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+
+        <!-- ESTADO 1: INICIO -->
+        <div id="state-inicio" class="state active">
+          <h1>SAASI Escape Room - Fase 1</h1>
+          <h2>Acolhimento e Avaliação Inicial</h2>
+
+          <div
+            style="
+              background: #e3f2fd;
+              padding: 20px;
+              border-radius: 5px;
+              margin: 20px 0;
+            "
+          >
+            <h3>Contexto:</h3>
+            <p>
+              <strong>Felisbina Santos</strong>, 56 anos, 9º ano de
+              escolaridade, vive sozinha numa pensão.
+            </p>
+            <p>
+              Beneficiária de RSI desde Março 2025 + Prestação Social para a
+              Inclusão (PSI).
+            </p>
+            <p>
+              <strong>Experiência profissional:</strong> 6 meses como empregada
+              de limpeza.
+            </p>
+            <p>
+              Objetivo: Realizar acolhimento inicial e determinar se tem
+              <strong>Disponibilidade e Capacidade Para Trabalhar</strong>.
+            </p>
+          </div>
+
+          <button class="btn" onclick="startGame()">Começar Consulta</button>
+        </div>
+
+        <!-- ESTADO 2: CONVERSA -->
+        <div id="state-conversa" class="state">
+          <h2>Conversa com Felisbina</h2>
+          <div class="metrics">
+            <strong>Empatia:</strong> <span id="empathy">0</span>/25 |
+            <strong>Informação:</strong> <span id="information">0</span>% |
+            <strong>Interações:</strong> <span id="interactions">0</span>/5
+          </div>
+
+          <div id="dialogue-content">
+            <h3 id="dialogue-question">Selecione como iniciar a conversa:</h3>
+            <div id="dialogue-options">
+              <!-- Opções serão inseridas dinamicamente -->
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            id="next-dialogue"
+            onclick="nextState()"
+            style="display: none"
+          >
+            Continuar para Análise
+          </button>
+        </div>
+
+        <!-- ESTADO 3: ANALISE -->
+        <div id="state-analise" class="state">
+          <h2>Análise de Fatores de Risco e Proteção</h2>
+          <div class="metrics">
+            <strong>Elementos Categorizados:</strong>
+            <span id="categorized">0</span>/6 | <strong>Precisão:</strong>
+            <span id="accuracy">0</span>%
+          </div>
+
+          <div class="mobile-instructions">
+            <h4>📱 Instruções:</h4>
+            <p>
+              <strong>Desktop:</strong> Arraste os elementos para as categorias
+            </p>
+            <p>
+              <strong>Mobile:</strong> Toque num elemento para selecioná-lo,
+              depois toque na categoria desejada
+            </p>
+            <button class="mobile-mode-button" onclick="toggleMobileMode()">
+              <span id="mode-text">Modo Toque</span>
+            </button>
+          </div>
+
+          <div id="elements-pool">
+            <h4>Elementos para Análise:</h4>
+            <!-- Elementos serão inseridos dinamicamente -->
+          </div>
+
+          <div class="analysis-container" style="display: flex; gap: 20px">
+            <div style="flex: 1">
+              <h4 style="color: #d32f2f">🔴 Fatores de Risco</h4>
+              <div
+                class="drop-zone"
+                id="risk-zone"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+                onclick="handleZoneClick('risk')"
+              >
+                <p>Selecione fatores de risco</p>
+              </div>
+            </div>
+            <div style="flex: 1">
+              <h4 style="color: #388e3c">🟢 Fatores de Proteção</h4>
+              <div
+                class="drop-zone"
+                id="protection-zone"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+                onclick="handleZoneClick('protection')"
+              >
+                <p>Selecione fatores de proteção</p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            id="next-analysis"
+            onclick="nextState()"
+            style="display: none"
+          >
+            Continuar para Documentação
+          </button>
+        </div>
+
+        <!-- ESTADO 4: DOCUMENTACAO -->
+        <div id="state-documentacao" class="state">
+          <h2>Verificação de Documentação</h2>
+          <div class="metrics">
+            <strong>Documentos Identificados:</strong>
+            <span id="docs-identified">0</span>/3 |
+            <strong>Eficiência:</strong> <span id="efficiency">0</span>%
+          </div>
+
+          <div id="documents-list">
+            <!-- Documentos serão inseridos dinamicamente -->
+          </div>
+
+          <button
+            class="btn"
+            id="next-docs"
+            onclick="nextState()"
+            style="display: none"
+          >
+            Continuar para Avaliação
+          </button>
+        </div>
+
+        <!-- ESTADO 5: AVALIACAO -->
+        <div id="state-avaliacao" class="state">
+          <h2>Avaliação DLD - Decisão Final</h2>
+
+          <div
+            style="
+              background: #f5f5f5;
+              padding: 20px;
+              border-radius: 5px;
+              margin: 20px 0;
+            "
+          >
+            <h4>Critérios DLD:</h4>
+            <p>✅ Desemprego de longa duração (>12 meses)</p>
+            <p>⚠️ Idade 56 anos (fator de risco)</p>
+            <p>⚠️ Qualificação 9º ano (baixa qualificação)</p>
+            <p>✅ Beneficiária RSI + PSI ativas</p>
+            <p>⚠️ Dependência emocional identificada</p>
+          </div>
+
+          <div>
+            <h4>1. A Felisbina tem DISPONIBILIDADE para trabalhar?</h4>
+            <div id="availability-options">
+              <div
+                class="dialogue-option"
+                onclick="selectAvailability('sim_total')"
+              >
+                <strong>SIM - Disponibilidade total</strong><br />
+                Sem dependentes, horário flexível, motivada para mudança
+              </div>
+              <div
+                class="dialogue-option"
+                onclick="selectAvailability('sim_condicionada')"
+              >
+                <strong>SIM - Disponibilidade condicionada</strong><br />
+                Disponível mas com necessidade de apoio psicológico
+              </div>
+              <div class="dialogue-option" onclick="selectAvailability('nao')">
+                <strong>NÃO - Indisponível temporariamente</strong><br />
+                Necessita primeiro de estabilização emocional
+              </div>
+            </div>
+          </div>
+
+          <div id="capacity-section" style="display: none">
+            <h4>2. A Felisbina tem CAPACIDADE para trabalhar?</h4>
+            <div id="capacity-options">
+              <div
+                class="dialogue-option"
+                onclick="selectCapacity('sim_plena')"
+              >
+                <strong>SIM - Capacidade plena</strong><br />
+                Experiência anterior, sem limitações físicas
+              </div>
+              <div
+                class="dialogue-option"
+                onclick="selectCapacity('sim_formacao')"
+              >
+                <strong>SIM - Capacidade com formação</strong><br />
+                Capacidade existente mas necessita qualificação adicional
+              </div>
+              <div class="dialogue-option" onclick="selectCapacity('nao')">
+                <strong>NÃO - Incapacidade temporária</strong><br />
+                Limitações emocionais impedem trabalho imediato
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="btn"
+            id="finalize-assessment"
+            onclick="nextState()"
+            style="display: none"
+          >
+            Finalizar Avaliação
+          </button>
+        </div>
+
+        <!-- ESTADO 6: CONCLUSAO -->
+        <div id="state-conclusao" class="state">
+          <h1>Fase 1 Concluída!</h1>
+
+          <div
+            style="
+              text-align: center;
+              background: #e8f5e9;
+              padding: 30px;
+              border-radius: 10px;
+              margin: 20px 0;
+            "
+          >
+            <h2>Pontuação Final: <span id="final-score">0</span>/100</h2>
+            <h3 id="final-level">Técnico Iniciante</h3>
+          </div>
+
+          <div id="final-report">
+            <!-- Relatório será inserido dinamicamente -->
+          </div>
+
+          <div style="text-align: center; margin-top: 30px">
+            <button class="btn" onclick="restartGame()">Repetir Fase 1</button>
+            <button
+              class="btn"
+              style="background: #4caf50"
+              onclick="continueToPhase2()"
+            >
+              Continuar para Fase 2
+            </button>
+            <a
+              href="index.html"
+              class="btn"
+              style="background: #6c757d; text-decoration: none"
+              >Voltar ao Menu</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ESTADO DO JOGO
+      let gameState = {
+        currentState: "inicio",
+        score: 0,
+        progress: 0,
+
+        // Métricas da conversa
+        empathy: 0,
+        information: 0,
+        interactions: 0,
+
+        // Métricas da análise
+        categorized: 0,
+        accuracy: 0,
+
+        // Métricas da documentação
+        docsIdentified: 0,
+        efficiency: 0,
+
+        // Decisões finais
+        availability: null,
+        capacity: null,
+      };
+
+      // DADOS DO JOGO
+      const dialogues = [
+        {
+          id: "abertura",
+          question: "Bom dia, Felisbina. Como se sente hoje?",
+          options: [
+            {
+              text: "Bom dia! Obrigada por me receber. Como posso ajudá-la?",
+              empathy: 8,
+              info: 10,
+            },
+            {
+              text: "Olá. Vamos começar com algumas perguntas sobre a sua situação.",
+              empathy: 4,
+              info: 15,
+            },
+            {
+              text: "Bom dia. Sei que deve estar nervosa, mas estou aqui para a ajudar.",
+              empathy: 12,
+              info: 8,
+            },
+          ],
+        },
+        {
+          id: "situacao_atual",
+          question:
+            "Pode falar-me sobre como tem sido viver sozinha na pensão?",
+          options: [
+            {
+              text: "Deve ser um grande desafio gerir tudo sozinha. Como se tem sentido?",
+              empathy: 12,
+              info: 15,
+            },
+            {
+              text: "E como está a gerir as suas finanças agora que vive independentemente?",
+              empathy: 6,
+              info: 12,
+            },
+            {
+              text: "Compreendo que deve sentir falta do apoio que tinha antes.",
+              empathy: 10,
+              info: 10,
+            },
+          ],
+        },
+        {
+          id: "experiencia_limpeza",
+          question:
+            "Fale-me sobre a sua experiência como empregada de limpeza.",
+          options: [
+            {
+              text: "Esses 6 meses de experiência são muito valiosos. O que aprendeu?",
+              empathy: 8,
+              info: 15,
+            },
+            {
+              text: "Gostava do trabalho? Sente-se confiante para voltar a essa área?",
+              empathy: 6,
+              info: 12,
+            },
+            {
+              text: "Que competências desenvolveu nesse trabalho?",
+              empathy: 4,
+              info: 18,
+            },
+          ],
+        },
+        {
+          id: "dependencia_emocional",
+          question:
+            "Vejo que menciona frequentemente o seu pai. Como é essa relação?",
+          options: [
+            {
+              text: "É natural procurar apoio nos que nos são próximos. Conte-me mais sobre isso.",
+              empathy: 12,
+              info: 15,
+            },
+            {
+              text: "Compreendo que o seu pai é importante para si. Como o vê influenciar as suas decisões?",
+              empathy: 8,
+              info: 18,
+            },
+            {
+              text: "É bom ter alguém em quem confiar. Fale-me dessa relação.",
+              empathy: 6,
+              info: 10,
+            },
+          ],
+        },
+        {
+          id: "ruptura_familiar",
+          question:
+            "Como foi quando o seu irmão cortou a relação? Como se sentiu?",
+          options: [
+            {
+              text: "Deve ter sido muito difícil perder esse apoio. Como está a lidar com isso?",
+              empathy: 15,
+              info: 12,
+            },
+            {
+              text: "Compreendo que se sinta sozinha. Que estratégias tem usado para lidar com esta situação?",
+              empathy: 12,
+              info: 15,
+            },
+            {
+              text: "Agora tem de tomar as suas próprias decisões. Como se sente com essa responsabilidade?",
+              empathy: 8,
+              info: 18,
+            },
+          ],
+        },
+        {
+          id: "motivacao_trabalho",
+          question: "O que a motiva a procurar trabalho neste momento?",
+          options: [
+            {
+              text: "É corajoso querer recuperar a sua independência. Isso mostra muita força.",
+              empathy: 10,
+              info: 10,
+            },
+            {
+              text: "Trabalhar pode ajudá-la a sentir-se mais segura e independente. Concorda?",
+              empathy: 8,
+              info: 12,
+            },
+            {
+              text: "Com a sua experiência, há várias possibilidades na área social.",
+              empathy: 6,
+              info: 15,
+            },
+          ],
+        },
+      ];
+
+      const analysisElements = [
+        { id: "idade", text: "Idade 56 anos", category: "risk", points: 5 },
+        {
+          id: "experiencia_limpeza",
+          text: "6 meses experiência limpeza",
+          category: "protection",
+          points: 8,
+        },
+        {
+          id: "isolamento_ruptura",
+          text: "Perda suporte familiar (irmão)",
+          category: "risk",
+          points: 10,
+        },
+        {
+          id: "dependencia_pai",
+          text: "Dependência emocional do pai",
+          category: "risk",
+          points: 10,
+        },
+        {
+          id: "qualificacao",
+          text: "9º ano escolaridade",
+          category: "protection",
+          points: 6,
+        },
+        {
+          id: "beneficios_duplos",
+          text: "RSI + PSI ativos",
+          category: "protection",
+          points: 7,
+        },
+      ];
+
+      const documents = [
+        {
+          id: "rsi",
+          name: "Comprovativo RSI",
+          mandatory: true,
+          available: true,
+          points: 8,
+        },
+        {
+          id: "historico",
+          name: "Histórico Profissional",
+          mandatory: true,
+          available: false,
+          points: 10,
+        },
+        {
+          id: "habilitacoes",
+          name: "Certificado de Habilitações",
+          mandatory: true,
+          available: true,
+          points: 6,
+        },
+        {
+          id: "medico",
+          name: "Relatório Médico",
+          mandatory: false,
+          available: false,
+          points: 3,
+        },
+        {
+          id: "referencias",
+          name: "Referências de Empregadores",
+          mandatory: false,
+          available: false,
+          points: 2,
+        },
+      ];
+
+      let currentDialogue = 0;
+
+      // FUNÇÕES PRINCIPAIS
+      function startGame() {
+        changeState("conversa");
+        showDialogue();
+      }
+
+      function changeState(newState) {
+        // Esconder estado atual
+        document.querySelector(".state.active").classList.remove("active");
+
+        // Mostrar novo estado
+        document.getElementById(`state-${newState}`).classList.add("active");
+
+        gameState.currentState = newState;
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const states = [
+          "inicio",
+          "conversa",
+          "analise",
+          "documentacao",
+          "avaliacao",
+          "conclusao",
+        ];
+        const currentIndex = states.indexOf(gameState.currentState);
+        const progress = (currentIndex / (states.length - 1)) * 100;
+
+        document.getElementById("progress").style.width = progress + "%";
+      }
+
+      function nextState() {
+        const states = [
+          "inicio",
+          "conversa",
+          "analise",
+          "documentacao",
+          "avaliacao",
+          "conclusao",
+        ];
+        const currentIndex = states.indexOf(gameState.currentState);
+        const nextState = states[currentIndex + 1];
+
+        if (nextState) {
+          changeState(nextState);
+
+          // Inicializar próximo estado
+          if (nextState === "analise") {
+            showAnalysis();
+          } else if (nextState === "documentacao") {
+            showDocuments();
+          } else if (nextState === "avaliacao") {
+            showAssessment();
+          } else if (nextState === "conclusao") {
+            showConclusion();
+          }
+        }
+      }
+
+      // SISTEMA DE DIÁLOGOS
+      function showDialogue() {
+        if (currentDialogue >= dialogues.length) {
+          document.getElementById("next-dialogue").style.display = "block";
+          return;
+        }
+
+        const dialogue = dialogues[currentDialogue];
+        document.getElementById("dialogue-question").textContent =
+          dialogue.question;
+
+        const optionsContainer = document.getElementById("dialogue-options");
+        optionsContainer.innerHTML = "";
+
+        dialogue.options.forEach((option, index) => {
+          const div = document.createElement("div");
+          div.className = "dialogue-option";
+          div.textContent = option.text;
+          div.onclick = () => selectDialogueOption(option);
+          optionsContainer.appendChild(div);
+        });
+      }
+
+      function selectDialogueOption(option) {
+        // Remover seleção anterior
+        document
+          .querySelectorAll(".dialogue-option")
+          .forEach((el) => el.classList.remove("selected"));
+        event.target.classList.add("selected");
+
+        // Atualizar métricas
+        gameState.empathy += option.empathy;
+        gameState.information += option.info;
+        gameState.interactions++;
+        addScore(Math.max(0, option.empathy + option.info));
+
+        updateDialogueMetrics();
+
+        // Próximo diálogo após 1 segundo
+        setTimeout(() => {
+          currentDialogue++;
+          showDialogue();
+        }, 1000);
+      }
+
+      function updateDialogueMetrics() {
+        document.getElementById("empathy").textContent = Math.max(
+          0,
+          gameState.empathy
+        );
+        document.getElementById("information").textContent = Math.round(
+          (gameState.information / 75) * 100
+        );
+        document.getElementById("interactions").textContent =
+          gameState.interactions;
+      }
+
+      // SISTEMA DE ANÁLISE
+      function showAnalysis() {
+        const pool = document.getElementById("elements-pool");
+
+        analysisElements.forEach((element) => {
+          const div = document.createElement("div");
+          div.className = "drag-item";
+          div.draggable = true;
+          div.textContent = element.text;
+          div.dataset.id = element.id;
+          div.dataset.category = element.category;
+          div.dataset.points = element.points;
+          div.ondragstart = drag;
+          pool.appendChild(div);
+        });
+      }
+
+      function allowDrop(ev) {
+        ev.preventDefault();
+        ev.target.classList.add("drag-over");
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.dataset.id);
+      }
+
+      function drop(ev) {
+        ev.preventDefault();
+        ev.target.classList.remove("drag-over");
+
+        const elementId = ev.dataTransfer.getData("text");
+        const element = document.querySelector(`[data-id="${elementId}"]`);
+        const correctCategory = element.dataset.category;
+        const points = parseInt(element.dataset.points);
+
+        let isCorrect = false;
+        if (ev.target.id === "risk-zone" && correctCategory === "risk") {
+          isCorrect = true;
+        } else if (
+          ev.target.id === "protection-zone" &&
+          correctCategory === "protection"
+        ) {
+          isCorrect = true;
+        }
+
+        if (isCorrect) {
+          addScore(points);
+          element.style.background = "#c8e6c9";
+          ev.target.classList.add("correct");
+        } else {
+          element.style.background = "#ffcdd2";
+          ev.target.classList.add("incorrect");
+          setTimeout(() => ev.target.classList.remove("incorrect"), 500);
+        }
+
+        ev.target.appendChild(element);
+        element.classList.add("placed");
+        gameState.categorized++;
+
+        updateAnalysisMetrics();
+
+        if (gameState.categorized >= 6) {
+          document.getElementById("next-analysis").style.display = "block";
+        }
+      }
+
+      // MOBILE TOUCH FUNCTIONALITY
+      let selectedElement = null;
+      let isMobileMode = false;
+
+      // Detect if device is touch-enabled
+      function isTouchDevice() {
+        return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      }
+
+      function toggleMobileMode() {
+        isMobileMode = !isMobileMode;
+        const modeText = document.getElementById("mode-text");
+        const button = document.querySelector(".mobile-mode-button");
+
+        if (isMobileMode) {
+          modeText.textContent = "Modo Arrastar";
+          button.style.background = "linear-gradient(135deg, #4caf50, #45a049)";
+          enableTouchMode();
+        } else {
+          modeText.textContent = "Modo Toque";
+          button.style.background = "linear-gradient(135deg, #ff9800, #f57c00)";
+          disableTouchMode();
+        }
+      }
+
+      function enableTouchMode() {
+        // Add click handlers to elements
+        const elements = document.querySelectorAll(".drag-item:not(.placed)");
+        elements.forEach((element) => {
+          element.onclick = handleElementClick;
+          element.style.cursor = "pointer";
+        });
+
+        // Update zone text
+        document.querySelector("#risk-zone p").textContent =
+          "Toque aqui após selecionar um elemento";
+        document.querySelector("#protection-zone p").textContent =
+          "Toque aqui após selecionar um elemento";
+      }
+
+      function disableTouchMode() {
+        // Remove click handlers
+        const elements = document.querySelectorAll(".drag-item");
+        elements.forEach((element) => {
+          element.onclick = null;
+          element.style.cursor = "grab";
+        });
+
+        // Reset zone text
+        document.querySelector("#risk-zone p").textContent =
+          "Arraste fatores de risco aqui";
+        document.querySelector("#protection-zone p").textContent =
+          "Arraste fatores de proteção aqui";
+
+        // Clear selection
+        if (selectedElement) {
+          selectedElement.classList.remove("selected");
+          selectedElement = null;
+        }
+      }
+
+      function handleElementClick(event) {
+        if (!isMobileMode || event.target.classList.contains("placed")) return;
+
+        // Clear previous selection
+        if (selectedElement) {
+          selectedElement.classList.remove("selected");
+        }
+
+        // Select new element
+        selectedElement = event.target;
+        selectedElement.classList.add("selected");
+
+        // Provide feedback
+        const zones = document.querySelectorAll(".drop-zone");
+        zones.forEach((zone) => zone.classList.add("active"));
+
+        // Show instruction
+        showToast("Agora toque numa zona para colocar o elemento", "info");
+      }
+
+      function handleZoneClick(zoneType) {
+        if (!isMobileMode || !selectedElement) return;
+
+        const elementId = selectedElement.dataset.id;
+        const correctCategory = selectedElement.dataset.category;
+        const points = parseInt(selectedElement.dataset.points);
+
+        let isCorrect = false;
+        let targetZone = null;
+
+        if (zoneType === "risk" && correctCategory === "risk") {
+          isCorrect = true;
+          targetZone = document.getElementById("risk-zone");
+        } else if (
+          zoneType === "protection" &&
+          correctCategory === "protection"
+        ) {
+          isCorrect = true;
+          targetZone = document.getElementById("protection-zone");
+        } else {
+          targetZone = document.getElementById(zoneType + "-zone");
+        }
+
+        // Visual feedback
+        if (isCorrect) {
+          addScore(points);
+          selectedElement.style.background = "#c8e6c9";
+          targetZone.classList.add("correct");
+          showToast("Correto! +" + points + " pontos", "success");
+        } else {
+          selectedElement.style.background = "#ffcdd2";
+          targetZone.classList.add("incorrect");
+          setTimeout(() => targetZone.classList.remove("incorrect"), 500);
+          showToast("Incorreto. Tente novamente!", "error");
+        }
+
+        // Move element
+        targetZone.appendChild(selectedElement);
+        selectedElement.classList.add("placed");
+        selectedElement.classList.remove("selected");
+
+        // Clear selection and active states
+        selectedElement = null;
+        const zones = document.querySelectorAll(".drop-zone");
+        zones.forEach((zone) => zone.classList.remove("active"));
+
+        gameState.categorized++;
+        updateAnalysisMetrics();
+
+        if (gameState.categorized >= 6) {
+          document.getElementById("next-analysis").style.display = "block";
+        }
+      }
+
+      // Toast notification system
+      function showToast(message, type = "info") {
+        // Remove existing toast
+        const existingToast = document.querySelector(".toast");
+        if (existingToast) {
+          existingToast.remove();
+        }
+
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        toast.style.cssText = `
+          position: fixed;
+          top: 80px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: ${
+            type === "success"
+              ? "#4caf50"
+              : type === "error"
+              ? "#f44336"
+              : "#2196f3"
+          };
+          color: white;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-weight: 600;
+          font-size: 14px;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          backdrop-filter: blur(10px);
+          animation: slideDown 0.3s ease;
+        `;
+
+        document.body.appendChild(toast);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.style.animation = "slideUp 0.3s ease";
+            setTimeout(() => toast.remove(), 300);
+          }
+        }, 3000);
+      }
+
+      // Add CSS animations for toast
+      if (!document.querySelector("#toast-animations")) {
+        const style = document.createElement("style");
+        style.id = "toast-animations";
+        style.textContent = `
+          @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // Auto-enable mobile mode on touch devices
+      document.addEventListener("DOMContentLoaded", function () {
+        if (isTouchDevice()) {
+          // Auto-enable mobile mode for touch devices
+          setTimeout(() => {
+            if (
+              document
+                .getElementById("state-analise")
+                .classList.contains("active")
+            ) {
+              toggleMobileMode();
+            }
+          }, 1000);
+        }
+      });
+
+      function updateAnalysisMetrics() {
+        document.getElementById("categorized").textContent =
+          gameState.categorized;
+        const accuracy = Math.round((gameState.categorized / 6) * 100);
+        document.getElementById("accuracy").textContent = accuracy;
+      }
+
+      // SISTEMA DE DOCUMENTAÇÃO
+      function showDocuments() {
+        const container = document.getElementById("documents-list");
+
+        documents.forEach((doc) => {
+          const div = document.createElement("div");
+          div.className = "document-item";
+          div.innerHTML = `
+                    <h4>${doc.name} ${
+            doc.mandatory ? "(Obrigatório)" : "(Opcional)"
+          }</h4>
+                    <p>Disponível: ${doc.available ? "Sim" : "Não"}</p>
+                    <button class="btn" onclick="processDocument('${doc.id}', ${
+            doc.available
+          }, ${doc.mandatory}, ${doc.points})">
+                        ${doc.available ? "Recolher" : "Solicitar"}
+                    </button>
+                `;
+          container.appendChild(div);
+        });
+      }
+
+      function processDocument(id, available, mandatory, points) {
+        if (mandatory) {
+          gameState.docsIdentified++;
+          addScore(points);
+        }
+
+        event.target.disabled = true;
+        event.target.textContent = available ? "Recolhido" : "Solicitado";
+        event.target.style.background = "#4CAF50";
+
+        updateDocumentMetrics();
+
+        if (gameState.docsIdentified >= 3) {
+          document.getElementById("next-docs").style.display = "block";
+        }
+      }
+
+      function updateDocumentMetrics() {
+        document.getElementById("docs-identified").textContent =
+          gameState.docsIdentified;
+        const efficiency = Math.round((gameState.docsIdentified / 3) * 100);
+        document.getElementById("efficiency").textContent = efficiency;
+      }
+
+      // SISTEMA DE AVALIAÇÃO
+      function showAssessment() {
+        // Já está implementado no HTML
+      }
+
+      function selectAvailability(choice) {
+        document
+          .querySelectorAll("#availability-options .dialogue-option")
+          .forEach((el) => el.classList.remove("selected"));
+        event.target.classList.add("selected");
+
+        gameState.availability = choice;
+
+        if (choice === "sim_total") {
+          addScore(10);
+        } else if (choice === "sim_condicionada") {
+          addScore(8);
+        } else {
+          addScore(3);
+        }
+
+        document.getElementById("capacity-section").style.display = "block";
+      }
+
+      function selectCapacity(choice) {
+        document
+          .querySelectorAll("#capacity-options .dialogue-option")
+          .forEach((el) => el.classList.remove("selected"));
+        event.target.classList.add("selected");
+
+        gameState.capacity = choice;
+
+        if (choice === "sim_plena") {
+          addScore(10);
+        } else if (choice === "sim_formacao") {
+          addScore(12);
+        } else {
+          addScore(2);
+        }
+
+        document.getElementById("finalize-assessment").style.display = "block";
+      }
+
+      // CONCLUSÃO
+      function showConclusion() {
+        document.getElementById("final-score").textContent = gameState.score;
+
+        let level = "Técnico Iniciante";
+        if (gameState.score >= 95) level = "Mestre SAASI";
+        else if (gameState.score >= 85) level = "Técnico Especialista";
+        else if (gameState.score >= 70) level = "Técnico Proficiente";
+        else if (gameState.score >= 50) level = "Técnico Competente";
+
+        document.getElementById("final-level").textContent = level;
+
+        const report = document.getElementById("final-report");
+        report.innerHTML = `
+                <h3>Relatório de Performance:</h3>
+                <p><strong>Empatia:</strong> ${Math.max(
+                  0,
+                  gameState.empathy
+                )}/25</p>
+                <p><strong>Informação Recolhida:</strong> ${Math.round(
+                  (gameState.information / 75) * 100
+                )}%</p>
+                <p><strong>Elementos Categorizados:</strong> ${
+                  gameState.categorized
+                }/6</p>
+                <p><strong>Documentos Identificados:</strong> ${
+                  gameState.docsIdentified
+                }/3</p>
+                <p><strong>Decisão Final:</strong> ${
+                  gameState.availability && gameState.capacity
+                    ? "Completa"
+                    : "Incompleta"
+                }</p>
+            `;
+      }
+
+      function restartGame() {
+        location.reload();
+      }
+
+      // Função para atualizar pontuação com limite
+      function addScore(points) {
+        gameState.score = Math.min(gameState.score + points, 100);
+        document.getElementById("score").textContent = gameState.score;
+      }
+
+      // Toast System
+      function showToast(message, type = "info", duration = 5000) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        toast.innerHTML = `
+          ${message}
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+
+        container.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add("show"), 100);
+
+        // Auto remove
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 300);
+        }, duration);
+      }
+
+      function continueToPhase2() {
+        // Verificar se pontuação é suficiente
+        if (gameState.score < 70) {
+          showToast(
+            "⚠️ Precisa de pelo menos 70 pontos para desbloquear a Fase 2.<br>Pontuação atual: " +
+              gameState.score,
+            "warning",
+            6000
+          );
+          return;
+        }
+
+        // Salvar dados da Fase 1 para transferir para Fase 2
+        const phase1Data = {
+          phase: 1,
+          score: gameState.score,
+          maxScore: 100,
+          percentage: gameState.score,
+          duration: Math.round((Date.now() - gameStartTime) / 60000) || 15,
+          level: { title: document.getElementById("final-level").textContent },
+          achievements: [],
+          taskReports: {
+            conversa_inicial: {
+              completed: true,
+              score: Math.max(0, gameState.empathy),
+            },
+            analise_perfil: {
+              completed: gameState.categorized >= 6,
+              score: gameState.categorized * 5,
+            },
+            documentacao: {
+              completed: gameState.docsIdentified >= 3,
+              score: gameState.docsIdentified * 5,
+            },
+            avaliacao_final: {
+              completed: gameState.availability && gameState.capacity,
+              score: 20,
+            },
+          },
+          nextSteps: "Encaminhamento para IEFP aprovado",
+          felisbinaData: {
+            nome: "Felisbina Santos",
+            idade: 56,
+            escolaridade: "9º ano",
+            habitacao: "Vive sozinha numa pensão",
+            beneficios: "RSI (desde Março 2025) + PSI",
+            experiencia_profissional: "6 meses como empregada de limpeza",
+            situacao: "Disponível e com capacidade para trabalhar",
+            problemas_identificados: [
+              "dependencia_emocional_pai",
+              "perda_suporte_irmao",
+              "isolamento_social",
+              "gestao_financeira_independente",
+            ],
+            fatores_protecao: [
+              "experiencia_limpeza",
+              "motivacao_trabalho",
+              "qualificacao_9ano",
+              "beneficios_sociais_ativos",
+            ],
+          },
+        };
+
+        // Salvar no localStorage
+        localStorage.setItem(
+          "saasi_phase1_results",
+          JSON.stringify(phase1Data)
+        );
+
+        // Redirecionar para a página da Fase 2
+        window.location.href = "fase2.html";
+      }
+
+      // Variável para tracking do tempo
+      let gameStartTime = Date.now();
+
+      // Inicializar
+      updateProgress();
+    </script>
+  </body>
+</html>

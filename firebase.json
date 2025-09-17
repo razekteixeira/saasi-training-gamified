@@ -1,0 +1,52 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/*.md",
+      "scripts/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/timeline",
+        "destination": "/timeline.html"
+      },
+      {
+        "source": "/fase1",
+        "destination": "/fase1.html"
+      },
+      {
+        "source": "/fase2",
+        "destination": "/fase2.html"
+      },
+      {
+        "source": "/fase3",
+        "destination": "/fase3.html"
+      }
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(html)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=3600"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAASI Escape Room - Fase 2</title>
+    <style>
+      /* Toast System */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+      }
+
+      .toast {
+        background: #333;
+        color: white;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        position: relative;
+        padding-right: 50px;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: #28a745;
+        border-left: 4px solid #1e7e34;
+      }
+
+      .toast.error {
+        background: #dc3545;
+        border-left: 4px solid #c82333;
+      }
+
+      .toast.warning {
+        background: #ffc107;
+        color: #212529;
+        border-left: 4px solid #e0a800;
+      }
+
+      .toast.info {
+        background: #17a2b8;
+        border-left: 4px solid #138496;
+      }
+
+      .toast-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+
+      .toast-close:hover {
+        opacity: 1;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 20px;
+      }
+      .back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(108, 117, 125, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        z-index: 1000;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .back-button:hover {
+        background: rgba(84, 91, 98, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: rgba(245, 245, 245, 0.8);
+        backdrop-filter: blur(5px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      .progress-bar {
+        background: #e0e0e0;
+        height: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+      }
+      .progress-fill {
+        background: #4caf50;
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s;
+        width: 0%;
+      }
+      .state {
+        display: none;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        margin: 20px 0;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+      .state.active {
+        display: block;
+        animation: slideIn 0.5s ease;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        cursor: pointer;
+        margin: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+      .btn:disabled {
+        background: #4caf50;
+        cursor: not-allowed;
+      }
+      .problem-item,
+      .entity-item,
+      .intervention-item {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      .problem-item:hover,
+      .entity-item:hover,
+      .intervention-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border-color: rgba(102, 126, 234, 0.3);
+      }
+      .benefits-list label {
+        display: block;
+        margin: 15px 0;
+        padding: 15px;
+        background: rgba(240, 240, 240, 0.8);
+        backdrop-filter: blur(5px);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+      .benefits-list label:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-color: rgba(102, 126, 234, 0.3);
+      }
+
+      /* Mobile Responsive Enhancements */
+      @media (max-width: 768px) {
+        .main-container {
+          padding: 10px;
+        }
+        .container {
+          padding: 20px;
+          margin-bottom: 10px;
+        }
+        .back-button {
+          top: 10px;
+          left: 10px;
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .score {
+          top: 10px;
+          right: 10px;
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .btn {
+          padding: 12px 20px;
+          font-size: 14px;
+          margin: 6px 3px;
+          min-width: 100px;
+        }
+        .problem-item,
+        .entity-item,
+        .intervention-item {
+          padding: 15px;
+          margin: 10px 0;
+          font-size: 14px;
+        }
+        .benefits-list label {
+          padding: 12px;
+          margin: 10px 0;
+          font-size: 14px;
+        }
+        .header {
+          padding: 20px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        h2 {
+          font-size: 1.4rem;
+        }
+        h3 {
+          font-size: 1.2rem;
+        }
+        .loading {
+          padding: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+        .main-container {
+          padding: 5px;
+        }
+        .container {
+          padding: 15px;
+        }
+        .back-button,
+        .score {
+          position: static;
+          display: inline-block;
+          margin: 5px;
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+        .mobile-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          padding: 10px;
+          z-index: 1001;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .main-container {
+          margin-top: 60px;
+        }
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+          padding: 15px;
+          font-size: 16px;
+        }
+        .problem-item,
+        .entity-item,
+        .intervention-item {
+          margin: 8px 0;
+          padding: 12px;
+        }
+        .benefits-list label {
+          margin: 8px 0;
+          padding: 15px;
+          font-size: 16px;
+        }
+        h1 {
+          font-size: 1.5rem;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+        h3 {
+          font-size: 1.1rem;
+        }
+      }
+
+      /* Touch-friendly improvements */
+      @media (hover: none) and (pointer: coarse) {
+        .btn {
+          min-height: 48px;
+          padding: 15px 20px;
+        }
+        .problem-item,
+        .entity-item,
+        .intervention-item {
+          min-height: 60px;
+          padding: 18px;
+        }
+        .benefits-list label {
+          min-height: 60px;
+          padding: 18px;
+        }
+      }
+      .score {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(51, 51, 51, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+      .loading {
+        text-align: center;
+        padding: 50px;
+      }
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 0 auto 20px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <a href="index.html" class="back-button">← Voltar ao Menu</a>
+    <div class="score">Pontuação: <span id="score">0</span>/100</div>
+
+    <div class="main-container">
+      <div class="container">
+        <div class="header">
+          <h1>🎯 SAASI Escape Room - Fase 2</h1>
+          <h2>Identificação de Necessidades e Planeamento</h2>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+          </div>
+          <p>Progresso: <span id="progress-text">0%</span></p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+          <div class="loading-spinner"></div>
+          <h3>Carregando dados da Fase 1...</h3>
+          <p>Preparando análise personalizada para Felisbina Santos</p>
+        </div>
+
+        <!-- Estado 1: Início -->
+        <div id="state-inicio" class="state">
+          <h2>🎯 Bem-vindo à Fase 2</h2>
+          <div id="phase1-summary">
+            <h3>📋 Resumo da Fase 1</h3>
+            <p>
+              <strong>Pontuação:</strong> <span id="phase1-score">0</span>/100
+            </p>
+            <p><strong>Nível:</strong> <span id="phase1-level">-</span></p>
+            <p>
+              <strong>Situação:</strong> <span id="phase1-situation">-</span>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #e3f2fd;
+              padding: 20px;
+              border-radius: 5px;
+              margin: 20px 0;
+            "
+          >
+            <h3>Objetivos desta fase:</h3>
+            <ul>
+              <li>🔍 Mapear e priorizar problemas específicos</li>
+              <li>💰 Analisar e otimizar benefícios sociais</li>
+              <li>🤝 Articular com entidades competentes</li>
+              <li>📅 Criar plano de intervenção integrado</li>
+            </ul>
+          </div>
+
+          <button class="btn" onclick="startPhase2()">Começar Análise</button>
+        </div>
+
+        <!-- Estado 2: Mapeamento de Problemas -->
+        <div id="state-mapeamento" class="state">
+          <h2>🗺️ Mapeamento de Problemas</h2>
+          <p>Categorize e priorize os problemas identificados na Fase 1:</p>
+
+          <div id="problems-list">
+            <div class="problem-item">
+              <strong>Dependência emocional do pai</strong>
+              <p>Categoria: Psicossocial | Prioridade: Alta</p>
+              <button
+                class="btn"
+                onclick="categorizeProblem('dependencia_emocional_pai')"
+              >
+                Categorizar
+              </button>
+            </div>
+            <div class="problem-item">
+              <strong>Perda de suporte familiar (irmão cortou relação)</strong>
+              <p>Categoria: Social | Prioridade: Alta</p>
+              <button
+                class="btn"
+                onclick="categorizeProblem('perda_suporte_irmao')"
+              >
+                Categorizar
+              </button>
+            </div>
+            <div class="problem-item">
+              <strong>Isolamento social e sentimento de solidão</strong>
+              <p>Categoria: Social | Prioridade: Alta</p>
+              <button
+                class="btn"
+                onclick="categorizeProblem('isolamento_social')"
+              >
+                Categorizar
+              </button>
+            </div>
+            <div class="problem-item">
+              <strong
+                >Gestão financeira independente (nova responsabilidade)</strong
+              >
+              <p>Categoria: Competências | Prioridade: Média</p>
+              <button
+                class="btn"
+                onclick="categorizeProblem('gestao_financeira')"
+              >
+                Categorizar
+              </button>
+            </div>
+          </div>
+
+          <p>
+            <strong>Progresso:</strong>
+            <span id="problems-categorized">0</span>/4 problemas categorizados
+          </p>
+          <button
+            id="btn-next-benefits"
+            class="btn"
+            onclick="nextState('beneficios')"
+            style="display: none"
+          >
+            Continuar para Análise de Benefícios
+          </button>
+        </div>
+
+        <!-- Estado 3: Análise de Benefícios -->
+        <div id="state-beneficios" class="state">
+          <h2>💰 Análise de Benefícios</h2>
+          <p>Otimize os apoios sociais disponíveis para a Felisbina:</p>
+
+          <div
+            style="
+              background: #fff3e0;
+              padding: 15px;
+              border-radius: 5px;
+              margin: 15px 0;
+            "
+          >
+            <h4>Situação Atual:</h4>
+            <p>• RSI: 242,23€/mês</p>
+            <p>• PSI: 324,55€/mês</p>
+            <p>• <strong>Total Apoios: 566,78€/mês</strong></p>
+            <p>• Despesas: 450€/mês</p>
+            <p>• <strong>Saldo: +116,78€/mês</strong></p>
+            <p>• Dívidas: 450€ (renda + eletricidade)</p>
+          </div>
+
+          <h4>Selecione os apoios adequados:</h4>
+          <div class="benefits-list">
+            <label
+              ><input
+                type="checkbox"
+                onchange="selectBenefit('apoio_alimentar')"
+              />
+              Apoio Alimentar de Emergência (+50€/mês por 6 meses)</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                onchange="selectBenefit('fundo_emergencia')"
+              />
+              Fundo de Emergência Social (300€ único)</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                onchange="selectBenefit('tarifa_social')"
+              />
+              Tarifa Social de Energia (-33.8% na conta)</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                onchange="selectBenefit('passe_social')"
+              />
+              Passe Social + (6€/mês em vez de 30€)</label
+            >
+          </div>
+
+          <button class="btn" onclick="calculateOptimization()">
+            Calcular Otimização
+          </button>
+
+          <div
+            id="optimization-result"
+            style="
+              display: none;
+              background: #e8f5e9;
+              padding: 15px;
+              border-radius: 5px;
+              margin: 15px 0;
+            "
+          >
+            <h4>Cenário Otimizado:</h4>
+            <p id="optimized-balance">Calculando...</p>
+          </div>
+
+          <button
+            id="btn-next-entities"
+            class="btn"
+            onclick="nextState('articulacao')"
+            style="display: none"
+          >
+            Continuar para Articulação
+          </button>
+        </div>
+
+        <!-- Estado 4: Articulação com Entidades -->
+        <div id="state-articulacao" class="state">
+          <h2>🤝 Articulação com Entidades</h2>
+          <p>
+            Contacte as entidades competentes para endereçar os problemas
+            identificados:
+          </p>
+
+          <div class="entity-item">
+            <h4>Centro de Saúde Local</h4>
+            <p>
+              <strong>Serviços:</strong> Psicologia, Apoio Psicossocial,
+              Medicina Geral
+            </p>
+            <p>
+              <strong>Adequado para:</strong> Dependência emocional, luto da
+              perda de suporte familiar
+            </p>
+            <button class="btn" onclick="contactEntity('centro_saude')">
+              Agendar Consulta de Psicologia
+            </button>
+          </div>
+
+          <div class="entity-item">
+            <h4>IEFP - Instituto do Emprego e Formação Profissional</h4>
+            <p>
+              <strong>Serviços:</strong> Formação Profissional Limpeza,
+              Certificação de Competências
+            </p>
+            <p>
+              <strong>Adequado para:</strong> Valorizar experiência em limpeza,
+              desenvolver competências
+            </p>
+            <button class="btn" onclick="contactEntity('iefp')">
+              Inscrever em Formação
+            </button>
+          </div>
+
+          <div class="entity-item">
+            <h4>Centro Social Local / IPSS</h4>
+            <p>
+              <strong>Serviços:</strong> Grupos de Apoio, Atividades Sociais,
+              Apoio à Gestão Financeira
+            </p>
+            <p>
+              <strong>Adequado para:</strong> Isolamento social, apoio na gestão
+              independente
+            </p>
+            <button class="btn" onclick="contactEntity('centro_social')">
+              Inscrever em Programa Social
+            </button>
+          </div>
+
+          <p>
+            <strong>Progresso:</strong> <span id="entities-contacted">0</span>/3
+            entidades contactadas
+          </p>
+          <button
+            id="btn-next-planning"
+            class="btn"
+            onclick="nextState('planeamento')"
+            style="display: none"
+          >
+            Continuar para Planeamento
+          </button>
+        </div>
+
+        <!-- Estado 5: Plano de Intervenção -->
+        <div id="state-planeamento" class="state">
+          <h2>📅 Plano de Intervenção</h2>
+          <p>Crie um cronograma de intervenções para os próximos 7 meses:</p>
+
+          <div class="intervention-item">
+            <h4>Consulta de Psicologia (Prioridade 1)</h4>
+            <p>Duração: 12 semanas | Objetivo: Reduzir dependência emocional</p>
+            <button class="btn" onclick="scheduleIntervention('psicologia', 1)">
+              Agendar para Semana 1
+            </button>
+          </div>
+
+          <div class="intervention-item">
+            <h4>Grupo de Apoio Social (Prioridade 2)</h4>
+            <p>Duração: 8 semanas | Objetivo: Reduzir isolamento</p>
+            <button
+              class="btn"
+              onclick="scheduleIntervention('grupo_apoio', 5)"
+            >
+              Agendar para Semana 5
+            </button>
+          </div>
+
+          <div class="intervention-item">
+            <h4>Processo RVCC - 9º Ano (Prioridade 3)</h4>
+            <p>Duração: 20 semanas | Objetivo: Aumentar qualificação</p>
+            <button class="btn" onclick="scheduleIntervention('rvcc', 9)">
+              Agendar para Semana 9
+            </button>
+          </div>
+
+          <div class="intervention-item">
+            <h4>Formação Competências Digitais (Prioridade 4)</h4>
+            <p>Duração: 6 semanas | Objetivo: Melhorar empregabilidade</p>
+            <button
+              class="btn"
+              onclick="scheduleIntervention('formacao_digital', 13)"
+            >
+              Agendar para Semana 13
+            </button>
+          </div>
+
+          <div class="intervention-item">
+            <h4>Apoio à Procura de Emprego (Prioridade 5)</h4>
+            <p>Duração: 4 semanas | Objetivo: Encontrar emprego</p>
+            <button
+              class="btn"
+              onclick="scheduleIntervention('apoio_emprego', 25)"
+            >
+              Agendar para Semana 25
+            </button>
+          </div>
+
+          <p>
+            <strong>Progresso:</strong>
+            <span id="interventions-scheduled">0</span>/5 intervenções agendadas
+          </p>
+          <button
+            id="btn-finalize"
+            class="btn"
+            onclick="nextState('conclusao')"
+            style="display: none"
+          >
+            Finalizar Plano
+          </button>
+        </div>
+
+        <!-- Estado 6: Conclusão -->
+        <div id="state-conclusao" class="state">
+          <h1>🎉 Fase 2 Concluída!</h1>
+
+          <div
+            style="
+              text-align: center;
+              background: #e8f5e9;
+              padding: 30px;
+              border-radius: 10px;
+              margin: 20px 0;
+            "
+          >
+            <h2>Pontuação Final: <span id="final-score">0</span>/100</h2>
+            <h3 id="final-level">Técnico Especialista</h3>
+          </div>
+
+          <div id="final-report">
+            <h3>📊 Relatório de Performance:</h3>
+            <p>
+              <strong>Problemas Mapeados:</strong>
+              <span id="report-problems">0</span>/4
+            </p>
+            <p>
+              <strong>Benefícios Otimizados:</strong>
+              <span id="report-benefits">0</span>
+            </p>
+            <p>
+              <strong>Entidades Articuladas:</strong>
+              <span id="report-entities">0</span>/3
+            </p>
+            <p>
+              <strong>Intervenções Planeadas:</strong>
+              <span id="report-interventions">0</span>/5
+            </p>
+            <p><strong>Cronograma:</strong> 7 meses estruturados</p>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px">
+            <button class="btn" onclick="restartPhase2()">
+              🔄 Repetir Fase 2
+            </button>
+            <button
+              class="btn"
+              onclick="continueToPhase3()"
+              style="background: #4caf50"
+            >
+              ➡️ Continuar para Fase 3
+            </button>
+            <a
+              href="index.html"
+              class="btn"
+              style="background: #6c757d; text-decoration: none"
+              >⬅️ Voltar ao Menu</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Estado do jogo
+      let gameState = {
+        currentState: "loading",
+        score: 0,
+        progress: 0,
+        phase1Data: null,
+        problemsCategorized: 0,
+        selectedBenefits: [],
+        entitiesContacted: 0,
+        interventionsScheduled: 0,
+      };
+
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadPhase1Data();
+        await delay(2000); // Simular loading
+        startGame();
+      });
+
+      // Função para atualizar pontuação com limite
+      function addScore(points) {
+        gameState.score = Math.min(gameState.score + points, 100);
+        document.getElementById("score").textContent = gameState.score;
+      }
+
+      // Toast System
+      function showToast(message, type = "info", duration = 5000) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        toast.innerHTML = `
+          ${message}
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+
+        container.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add("show"), 100);
+
+        // Auto remove
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 300);
+        }, duration);
+      }
+
+      async function loadPhase1Data() {
+        const savedData = localStorage.getItem("saasi_phase1_results");
+        if (!savedData) {
+          showToast(
+            "⚠️ Dados da Fase 1 não encontrados. Redirecionando...",
+            "error",
+            3000
+          );
+          setTimeout(() => (window.location.href = "fase1.html"), 3000);
+          return;
+        }
+
+        gameState.phase1Data = JSON.parse(savedData);
+        console.log("Dados da Fase 1 carregados:", gameState.phase1Data);
+
+        // Mostrar resumo
+        document.getElementById("phase1-score").textContent =
+          gameState.phase1Data.score;
+        document.getElementById("phase1-level").textContent =
+          gameState.phase1Data.level.title;
+        document.getElementById("phase1-situation").textContent =
+          gameState.phase1Data.felisbinaData.situacao;
+      }
+
+      function startGame() {
+        changeState("inicio");
+      }
+
+      function startPhase2() {
+        changeState("mapeamento");
+      }
+
+      function changeState(newState) {
+        // Esconder estado atual
+        document.querySelectorAll(".state").forEach((state) => {
+          state.classList.remove("active");
+        });
+        document.getElementById("loading").style.display = "none";
+
+        // Mostrar novo estado
+        document.getElementById(`state-${newState}`).classList.add("active");
+
+        gameState.currentState = newState;
+        updateProgress();
+      }
+
+      function nextState(targetState) {
+        changeState(targetState);
+      }
+
+      function updateProgress() {
+        const states = [
+          "loading",
+          "inicio",
+          "mapeamento",
+          "beneficios",
+          "articulacao",
+          "planeamento",
+          "conclusao",
+        ];
+        const currentIndex = states.indexOf(gameState.currentState);
+        const progress =
+          Math.max(0, (currentIndex - 1) / (states.length - 2)) * 100;
+
+        document.getElementById("progress").style.width = progress + "%";
+        document.getElementById("progress-text").textContent =
+          Math.round(progress) + "%";
+      }
+
+      function categorizeProblem(problemId) {
+        console.log("Categorizando problema:", problemId);
+
+        // Marcar botão como usado
+        event.target.disabled = true;
+        event.target.textContent = "Categorizado ✓";
+        event.target.style.backgroundColor = "#4caf50";
+
+        gameState.problemsCategorized++;
+        addScore(15);
+
+        document.getElementById("problems-categorized").textContent =
+          gameState.problemsCategorized;
+
+        if (gameState.problemsCategorized >= 4) {
+          document.getElementById("btn-next-benefits").style.display = "block";
+        }
+
+        updateProgress();
+      }
+
+      function selectBenefit(benefitId) {
+        if (gameState.selectedBenefits.includes(benefitId)) {
+          gameState.selectedBenefits = gameState.selectedBenefits.filter(
+            (id) => id !== benefitId
+          );
+        } else {
+          gameState.selectedBenefits.push(benefitId);
+        }
+        console.log("Benefícios selecionados:", gameState.selectedBenefits);
+      }
+
+      function calculateOptimization() {
+        let monthlyIncome = 566.78; // RSI (242.23) + PSI (324.55)
+        let monthlyExpenses = 450;
+        let oneTimeSupport = 0;
+        let monthlySavings = 0;
+
+        gameState.selectedBenefits.forEach((benefit) => {
+          switch (benefit) {
+            case "apoio_alimentar":
+              monthlyIncome += 50;
+              addScore(10);
+              break;
+            case "fundo_emergencia":
+              oneTimeSupport += 300;
+              addScore(15);
+              break;
+            case "tarifa_social":
+              monthlySavings += 15; // ~33.8% de 45€
+              monthlyExpenses -= 15;
+              addScore(8);
+              break;
+            case "passe_social":
+              monthlySavings += 24; // 30€ - 6€
+              monthlyExpenses -= 24;
+              addScore(5);
+              break;
+          }
+        });
+
+        const newBalance = monthlyIncome - monthlyExpenses;
+        const baselineBalance = 566.78 - 450; // Current situation: +116.78€
+        const improvement = newBalance - baselineBalance;
+
+        document.getElementById("optimization-result").style.display = "block";
+        document.getElementById("optimized-balance").innerHTML = `
+                <strong>Novo balanço mensal:</strong> ${newBalance.toFixed(
+                  2
+                )}€<br>
+                <strong>Melhoria:</strong> +${improvement.toFixed(2)}€/mês<br>
+                <strong>Apoio único:</strong> ${oneTimeSupport}€ (para dívidas)<br>
+                <strong>Poupança mensal:</strong> ${monthlySavings}€
+            `;
+
+        setTimeout(() => {
+          document.getElementById("btn-next-entities").style.display = "block";
+        }, 2000);
+
+        updateProgress();
+      }
+
+      function contactEntity(entityId) {
+        console.log("Contactando entidade:", entityId);
+
+        // Marcar botão como usado
+        event.target.disabled = true;
+        event.target.textContent = "Contactado ✓";
+        event.target.style.backgroundColor = "#4caf50";
+
+        gameState.entitiesContacted++;
+        addScore(12);
+
+        document.getElementById("entities-contacted").textContent =
+          gameState.entitiesContacted;
+
+        if (gameState.entitiesContacted >= 3) {
+          document.getElementById("btn-next-planning").style.display = "block";
+        }
+
+        updateProgress();
+      }
+
+      function scheduleIntervention(interventionId, startWeek) {
+        console.log(`Agendando ${interventionId} para semana ${startWeek}`);
+
+        // Marcar botão como usado
+        event.target.disabled = true;
+        event.target.textContent = `Agendado ✓ (Semana ${startWeek})`;
+        event.target.style.backgroundColor = "#4caf50";
+
+        gameState.interventionsScheduled++;
+        addScore(10);
+
+        document.getElementById("interventions-scheduled").textContent =
+          gameState.interventionsScheduled;
+
+        if (gameState.interventionsScheduled >= 5) {
+          document.getElementById("btn-finalize").style.display = "block";
+        }
+
+        updateProgress();
+      }
+
+      function showConclusion() {
+        // Calcular nível final
+        let level = "Técnico Iniciante";
+        if (gameState.score >= 95) level = "Mestre SAASI";
+        else if (gameState.score >= 85) level = "Técnico Especialista";
+        else if (gameState.score >= 70) level = "Técnico Proficiente";
+        else if (gameState.score >= 50) level = "Técnico Competente";
+
+        document.getElementById("final-score").textContent = gameState.score;
+        document.getElementById("final-level").textContent = level;
+
+        // Atualizar relatório
+        document.getElementById("report-problems").textContent =
+          gameState.problemsCategorized;
+        document.getElementById("report-benefits").textContent =
+          gameState.selectedBenefits.length;
+        document.getElementById("report-entities").textContent =
+          gameState.entitiesContacted;
+        document.getElementById("report-interventions").textContent =
+          gameState.interventionsScheduled;
+      }
+
+      function restartPhase2() {
+        localStorage.removeItem("saasi_phase2_results");
+        location.reload();
+      }
+
+      function continueToPhase3() {
+        // Salvar resultados da Fase 2
+        const phase2Results = {
+          phase: 2,
+          score: gameState.score,
+          maxScore: 100,
+          percentage: gameState.score,
+          problemsCategorized: gameState.problemsCategorized,
+          selectedBenefits: gameState.selectedBenefits,
+          entitiesContacted: gameState.entitiesContacted,
+          interventionsScheduled: gameState.interventionsScheduled,
+          phase1Data: gameState.phase1Data,
+        };
+
+        localStorage.setItem(
+          "saasi_phase2_results",
+          JSON.stringify(phase2Results)
+        );
+
+        // Critério de desbloqueio: 60/100 pontos CONFORME ESPECIFICAÇÃO
+        if (gameState.score >= 60) {
+          showToast(
+            '🎉 Parabéns! Desbloqueou a Fase 3!<br><br>Código de desbloqueio: "PLANEAMENTO2025"<br><br>Pontuação: ' +
+              gameState.score +
+              "/100<br><br>Redirecionando para a Fase 3...",
+            "success",
+            3000
+          );
+          // Redirecionar para Fase 3
+          setTimeout(() => (window.location.href = "fase3.html"), 3000);
+        } else {
+          showToast(
+            "⚠️ Pontuação insuficiente para Fase 3!<br><br>Necessário: 60/100 pontos<br>Obtido: " +
+              gameState.score +
+              "/100<br><br>Tente novamente!",
+            "error",
+            6000
+          );
+        }
+      }
+
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Quando mudar para conclusão, mostrar relatório
+      const originalChangeState = changeState;
+      changeState = function (newState) {
+        originalChangeState(newState);
+        if (newState === "conclusao") {
+          showConclusion();
+        }
+      };
+    </script>
+  </body>
+</html>
