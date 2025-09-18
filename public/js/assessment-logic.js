@@ -222,7 +222,7 @@ class AssessmentLogic {
       },
       education: {
         status: "✅",
-        text: `Qualificação ${profile.education_level} (${educationValidation.assessment} para a época)`,
+        text: `Qualificação ${profile.education_level}`,
         assessment: educationValidation.assessment,
         impact: "adequate_for_context",
         context: educationValidation.reasoning,

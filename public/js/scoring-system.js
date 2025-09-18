@@ -14,9 +14,9 @@
  * These limits are defined based on SAASI requirements and game balance
  */
 const SCORING_LIMITS = {
-  empathy: { min: 0, max: 25 },
-  information: { min: 0, max: 100 }, // percentage
-  interactions: { min: 0, max: 6 },
+  empathy: { min: 0, max: 30 }, // Aumentado para permitir atingir máximo apenas com todas as questões
+  information: { min: 0, max: 75 }, // Máximo reduzido para 75% como indicado no feedback
+  interactions: { min: 0, max: 6 }, // Corrigido para permitir 6/6
   phase1_total: { min: 0, max: 100 },
   phase2_total: { min: 0, max: 100 },
   phase3_total: { min: 0, max: 100 },
@@ -40,35 +40,35 @@ const WEIGHTED_RESPONSES = {
  * Maps each dialogue option to its quality level
  */
 const DIALOGUE_QUALITY_MAP = {
-  // Abertura dialogue
+  // Abertura dialogue - Primeira interação mantém padrão original
   abertura_option_0: "good", // Empática mas não excelente
   abertura_option_1: "adequate", // Funcional mas fria
   abertura_option_2: "excellent", // Mostra empatia e profissionalismo
 
-  // Situação atual dialogue
-  situacao_atual_option_0: "excellent", // Empatia + informação balanceadas
-  situacao_atual_option_1: "adequate", // Foco apenas financeiro
-  situacao_atual_option_2: "good", // Boa empatia mas menos informação
+  // Situação atual dialogue - Corrigido: variar as classificações
+  situacao_atual_option_0: "good", // Boa empatia + informação
+  situacao_atual_option_1: "excellent", // Foco financeiro mas direto
+  situacao_atual_option_2: "adequate", // Empatia mas menos informação
 
-  // Experiência limpeza dialogue
-  experiencia_limpeza_option_0: "excellent", // Valoriza experiência + aprende
-  experiencia_limpeza_option_1: "good", // Boa mas menos técnica
-  experiencia_limpeza_option_2: "adequate", // Muito técnica, pouca empatia
+  // Experiência limpeza dialogue - Corrigido: variar as classificações
+  experiencia_limpeza_option_0: "adequate", // Valoriza mas pouco técnico
+  experiencia_limpeza_option_1: "excellent", // Equilibrio perfeito
+  experiencia_limpeza_option_2: "good", // Técnico mas funcional
 
-  // Dependência emocional dialogue
-  dependencia_emocional_option_0: "excellent", // Excelente abordagem profissional
-  dependencia_emocional_option_1: "good", // Boa análise técnica
-  dependencia_emocional_option_2: "adequate", // Superficial
+  // Dependência emocional dialogue - Corrigido: variar as classificações
+  dependencia_emocional_option_0: "good", // Boa abordagem empática
+  dependencia_emocional_option_1: "excellent", // Análise técnica excelente
+  dependencia_emocional_option_2: "adequate", // Superficial mas adequado
 
-  // Ruptura familiar dialogue
+  // Ruptura familiar dialogue - Corrigido: variar as classificações
   ruptura_familiar_option_0: "excellent", // Máxima empatia + estratégia
-  ruptura_familiar_option_1: "good", // Empatia + técnica balanceadas
-  ruptura_familiar_option_2: "adequate", // Foco na autonomia
+  ruptura_familiar_option_1: "adequate", // Técnica mas menos empática
+  ruptura_familiar_option_2: "good", // Foco autonomia equilibrado
 
-  // Motivação trabalho dialogue
-  motivacao_trabalho_option_0: "excellent", // Reforço positivo
-  motivacao_trabalho_option_1: "good", // Boa motivação
-  motivacao_trabalho_option_2: "adequate", // Técnica mas menos pessoal
+  // Motivação trabalho dialogue - Corrigido: variar as classificações
+  motivacao_trabalho_option_0: "adequate", // Reforço básico
+  motivacao_trabalho_option_1: "good", // Motivação equilibrada
+  motivacao_trabalho_option_2: "excellent", // Abordagem técnica otimizada
 };
 
 /**
@@ -174,10 +174,10 @@ class ScoringSystem {
    * @returns {number} Total phase score (0-100)
    */
   static calculatePhase1Score(gameState) {
-    // Score components with different weights
+    // Score components with different weights - ajustado para garantir coerência com excellent responses
     const empathyScore = (gameState.empathy / SCORING_LIMITS.empathy.max) * 30; // 30% weight
     const infoScore =
-      (gameState.information / SCORING_LIMITS.information.max) * 25; // 25% weight
+      (gameState.information / SCORING_LIMITS.information.max) * 25; // 25% weight (base 75)
     const interactionScore =
       (gameState.interactions / SCORING_LIMITS.interactions.max) * 15; // 15% weight
 
@@ -186,13 +186,22 @@ class ScoringSystem {
     const docsScore = (gameState.docsIdentified / 3) * 10; // 10% weight
     const assessmentScore = this.calculateAssessmentScore(gameState) * 10; // 10% weight
 
-    const totalScore =
+    let totalScore =
       empathyScore +
       infoScore +
       interactionScore +
       analysisScore +
       docsScore +
       assessmentScore;
+
+    // Bonificação para excellent responses consistentes - corrige incoerência
+    if (
+      gameState.empathy >= 25 &&
+      gameState.information >= 60 &&
+      gameState.interactions >= 5
+    ) {
+      totalScore += 5; // Bonus por performance consistente
+    }
 
     return this.applyLimit("phase1_total", Math.round(totalScore));
   }
