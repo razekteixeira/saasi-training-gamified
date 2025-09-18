@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SAASI Escape Room - Fase 1</title>
+    <title>SAASI - Fase 1</title>
     <style>
       /* Toast System */
       .toast-container {
@@ -487,7 +487,7 @@
 
         <!-- ESTADO 1: INICIO -->
         <div id="state-inicio" class="state active">
-          <h1>SAASI Escape Room - Fase 1</h1>
+          <h1>SAASI - Fase 1</h1>
           <h2>Acolhimento e Avaliação Inicial</h2>
 
           <div
@@ -512,7 +512,12 @@
               de limpeza.
             </p>
             <p>
-              Objetivo: Realizar acolhimento inicial e determinar se tem
+              <strong>Situação familiar:</strong> Dependência emocional do pai,
+              perdeu apoio do irmão que a orientava financeiramente.
+            </p>
+            <p>
+              <strong>Objetivo:</strong> Realizar acolhimento inicial e
+              determinar se tem
               <strong>Disponibilidade e Capacidade Para Trabalhar</strong>.
             </p>
           </div>
@@ -785,149 +790,127 @@
       const dialogues = [
         {
           id: "abertura",
-          question: "Bom dia, Felisbina. Como se sente hoje?",
+          question: "Olá Felisbina, sou técnica do SAASI. Como se sente hoje?",
           options: [
             {
-              text: "Bom dia! Obrigada por me receber. Como posso ajudá-la?",
+              text: "Vejo que está nervosa. Não se preocupe, estamos aqui para a ajudar.",
               empathy: 8,
-              info: 10,
+              info: 2,
             },
             {
-              text: "Olá. Vamos começar com algumas perguntas sobre a sua situação.",
-              empathy: 4,
-              info: 15,
+              text: "Preciso que me forneça algumas informações sobre a sua situação.",
+              empathy: 2,
+              info: 6,
             },
             {
-              text: "Bom dia. Sei que deve estar nervosa, mas estou aqui para a ajudar.",
-              empathy: 12,
-              info: 8,
+              text: "Conte-me um pouco sobre si e o que a trouxe até aqui.",
+              empathy: 5,
+              info: 5,
             },
           ],
         },
         {
           id: "situacao_atual",
-          question:
-            "Pode falar-me sobre como tem sido viver sozinha na pensão?",
+          question: "Vive sozinha numa pensão. Como é essa situação para si?",
           options: [
             {
-              text: "Deve ser um grande desafio gerir tudo sozinha. Como se tem sentido?",
-              empathy: 12,
-              info: 15,
+              text: "Imagino que não seja fácil viver numa pensão. Como se sente lá?",
+              empathy: 7,
+              info: 4,
             },
             {
-              text: "E como está a gerir as suas finanças agora que vive independentemente?",
-              empathy: 6,
-              info: 12,
+              text: "Há quanto tempo vive na pensão? Quanto paga de renda?",
+              empathy: 1,
+              info: 8,
             },
             {
-              text: "Compreendo que deve sentir falta do apoio que tinha antes.",
-              empathy: 10,
-              info: 10,
+              text: "A pensão é temporária? Tem planos para mudar?",
+              empathy: 4,
+              info: 6,
             },
           ],
         },
         {
           id: "experiencia_limpeza",
           question:
-            "Fale-me sobre a sua experiência como empregada de limpeza.",
+            "Tem experiência de trabalho como empregada de limpeza. Como foi?",
           options: [
             {
-              text: "Esses 6 meses de experiência são muito valiosos. O que aprendeu?",
-              empathy: 8,
-              info: 15,
-            },
-            {
-              text: "Gostava do trabalho? Sente-se confiante para voltar a essa área?",
+              text: "Seis meses é um bom período. Deve ter aprendido muito.",
               empathy: 6,
-              info: 12,
+              info: 5,
             },
             {
-              text: "Que competências desenvolveu nesse trabalho?",
-              empathy: 4,
-              info: 18,
+              text: "Porque é que o trabalho terminou? Houve algum problema?",
+              empathy: 2,
+              info: 8,
+            },
+            {
+              text: "Gostaria de voltar a trabalhar na área de limpeza?",
+              empathy: 5,
+              info: 6,
             },
           ],
         },
         {
           id: "dependencia_emocional",
           question:
-            "Vejo que menciona frequentemente o seu pai. Como é essa relação?",
+            "Falou-me do seu pai e do irmão. Como são essas relações familiares?",
           options: [
             {
-              text: "É natural procurar apoio nos que nos são próximos. Conte-me mais sobre isso.",
-              empathy: 12,
-              info: 15,
-            },
-            {
-              text: "Compreendo que o seu pai é importante para si. Como o vê influenciar as suas decisões?",
+              text: "Vejo que o seu pai é muito importante para si. Essa ligação é muito forte.",
               empathy: 8,
-              info: 18,
+              info: 4,
             },
             {
-              text: "É bom ter alguém em quem confiar. Fale-me dessa relação.",
-              empathy: 6,
-              info: 10,
+              text: "Deve ser difícil ter perdido o apoio do irmão que a orientava.",
+              empathy: 7,
+              info: 6,
+            },
+            {
+              text: "Como se sente agora sem o apoio financeiro e orientação do irmão?",
+              empathy: 5,
+              info: 8,
             },
           ],
         },
         {
-          id: "ruptura_familiar",
+          id: "mudancas_atuais",
           question:
-            "Como foi quando o seu irmão cortou a relação? Como se sentiu?",
+            "Disse que se sente sozinha agora. Como está a lidar com essas mudanças?",
           options: [
             {
-              text: "Deve ter sido muito difícil perder esse apoio. Como está a lidar com isso?",
-              empathy: 15,
-              info: 12,
+              text: "É compreensível sentir-se assim. Estas mudanças são muito difíceis.",
+              empathy: 9,
+              info: 3,
             },
             {
-              text: "Compreendo que se sinta sozinha. Que estratégias tem usado para lidar com esta situação?",
-              empathy: 12,
-              info: 15,
+              text: "Tem algum apoio além do RSI? Conhece outros serviços que possam ajudar?",
+              empathy: 4,
+              info: 8,
             },
             {
-              text: "Agora tem de tomar as suas próprias decisões. Como se sente com essa responsabilidade?",
-              empathy: 8,
-              info: 18,
-            },
-          ],
-        },
-        {
-          id: "motivacao_trabalho",
-          question: "O que a motiva a procurar trabalho neste momento?",
-          options: [
-            {
-              text: "É corajoso querer recuperar a sua independência. Isso mostra muita força.",
-              empathy: 10,
-              info: 10,
-            },
-            {
-              text: "Trabalhar pode ajudá-la a sentir-se mais segura e independente. Concorda?",
-              empathy: 8,
-              info: 12,
-            },
-            {
-              text: "Com a sua experiência, há várias possibilidades na área social.",
+              text: "Como imagina o seu futuro? Que objetivos tem para si própria?",
               empathy: 6,
-              info: 15,
+              info: 6,
             },
           ],
         },
       ];
 
       const analysisElements = [
-        { id: "idade", text: "Idade 56 anos", category: "risk", points: 5 },
+        { id: "idade_56", text: "Idade: 56 anos", category: "risk", points: 5 },
         {
           id: "experiencia_limpeza",
-          text: "6 meses experiência limpeza",
+          text: "Experiência em limpeza",
           category: "protection",
           points: 8,
         },
         {
-          id: "isolamento_ruptura",
-          text: "Perda suporte familiar (irmão)",
+          id: "isolamento_social",
+          text: "Isolamento social",
           category: "risk",
-          points: 10,
+          points: 7,
         },
         {
           id: "dependencia_pai",
@@ -936,16 +919,16 @@
           points: 10,
         },
         {
-          id: "qualificacao",
+          id: "9ano_escolaridade",
           text: "9º ano escolaridade",
           category: "protection",
           points: 8,
         },
         {
-          id: "beneficios_duplos",
-          text: "RSI + PSI ativos",
+          id: "psi_ativa",
+          text: "PSI ativa",
           category: "protection",
-          points: 7,
+          points: 6,
         },
       ];
 
@@ -1740,20 +1723,7 @@
                   }
                 </div>
 
-                 <div style="background: ${
-                   performanceReport.validation.valid ? "#e8f5e9" : "#ffebee"
-                 }; padding: 10px; border-radius: 8px;">
-                   <h4>✅ Validação: ${
-                     performanceReport.validation.summary
-                   }</h4>
-                   ${
-                     performanceReport.validation.warnings.length > 0
-                       ? "<p><strong>Avisos:</strong> " +
-                         performanceReport.validation.warnings.join(", ") +
-                         "</p>"
-                       : ""
-                   }
-                 </div>
+                 
 
                  ${
                    gameState.assessmentReport

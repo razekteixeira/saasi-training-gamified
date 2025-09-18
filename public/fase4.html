@@ -822,14 +822,6 @@
               <h3>🏆 ESCAPE ROOM SAASI CONCLUÍDO!</h3>
 
               <div class="score-display" style="margin: 30px 0">
-                <h3>
-                  Pontuação Final Fase 4:
-                  <span id="final-score-phase4">0</span>/100
-                </h3>
-                <h3>
-                  Pontuação Total Escape Room:
-                  <span id="final-score-total">0</span>/400
-                </h3>
                 <p>Nível: <span id="final-level">Técnico Iniciante</span></p>
                 <p>
                   Certificação:
@@ -998,20 +990,408 @@
       // Aguardar inicialização do Phase4Engine
       document.addEventListener("DOMContentLoaded", function () {
         // O gameState será definido pelo Phase4Engine quando inicializar
-        setTimeout(() => {
-          if (window.phase4Engine) {
+        const checkGameState = () => {
+          if (window.gameState) {
+            gameState = window.gameState;
+            console.log("HTML gameState synchronized with Phase4Engine");
+          } else if (window.phase4Engine) {
             gameState = window.phase4Engine.gameState;
+            console.log(
+              "HTML gameState synchronized with phase4Engine instance"
+            );
+          } else {
+            // Try again in 50ms
+            setTimeout(checkGameState, 50);
           }
-        }, 100);
+        };
+
+        // Start checking immediately
+        checkGameState();
       });
 
       // DADOS MOVIDOS PARA phase4-engine.js - Agent 4 Implementation
 
-      // Crisis management data moved to phase4-engine.js
+      // TEMPORARY: Add missing data structures for HTML compatibility
+      const crisisManagementData = {
+        cenarios_crise: [
+          {
+            id: "crise_habitacional",
+            titulo: "Crise Habitacional",
+            descricao:
+              "Felisbina foi despejada da pensão por atraso no pagamento",
+            gravidade: "alta",
+            urgencia: "alta",
+            tempo_limite: 180, // 3 minutos em segundos
+            opcoes_resposta: [
+              {
+                id: "contactar_emergencia_social",
+                acao: "Contactar serviços de emergência social",
+                probabilidade_sucesso: 85,
+                consequencias:
+                  "Abrigo temporário garantido, continuidade dos programas",
+                pontos: 15,
+                correto: true,
+              },
+              {
+                id: "negociar_com_pensao",
+                acao: "Tentar negociar com proprietário da pensão",
+                probabilidade_sucesso: 45,
+                consequencias:
+                  "Solução temporária, dependente da boa vontade do proprietário",
+                pontos: 8,
+                correto: false,
+              },
+              {
+                id: "procurar_familia",
+                acao: "Contactar familiares para apoio",
+                probabilidade_sucesso: 30,
+                consequencias:
+                  "Alto risco devido a conflitos familiares existentes",
+                pontos: 5,
+                correto: false,
+              },
+            ],
+          },
+          {
+            id: "crise_emprego",
+            titulo: "Perda de Oportunidade de Emprego",
+            descricao: "A empresa onde faria estágio cancelou o programa",
+            gravidade: "media",
+            urgencia: "media",
+            tempo_limite: 240, // 4 minutos
+            opcoes_resposta: [
+              {
+                id: "buscar_alternativas_iefp",
+                acao: "Buscar alternativas através do IEFP",
+                probabilidade_sucesso: 75,
+                consequencias:
+                  "Aproveitamento da rede de contactos, novas oportunidades",
+                pontos: 12,
+                correto: true,
+              },
+              {
+                id: "intensificar_formacao",
+                acao: "Intensificar formação para melhorar competências",
+                probabilidade_sucesso: 60,
+                consequencias:
+                  "Melhor preparação mas atraso nos objetivos de emprego",
+                pontos: 8,
+                correto: false,
+              },
+              {
+                id: "procura_independente",
+                acao: "Procura independente de emprego",
+                probabilidade_sucesso: 35,
+                consequencias: "Menor eficácia sem apoio especializado",
+                pontos: 6,
+                correto: false,
+              },
+            ],
+          },
+          {
+            id: "crise_psicologica",
+            titulo: "Crise Psicológica",
+            descricao: "Felisbina manifesta sinais de depressão severa",
+            gravidade: "critica",
+            urgencia: "critica",
+            tempo_limite: 120, // 2 minutos
+            opcoes_resposta: [
+              {
+                id: "contactar_psiquiatra_urgencia",
+                acao: "Contactar psiquiatra de urgência",
+                probabilidade_sucesso: 95,
+                consequencias:
+                  "Intervenção especializada imediata, segurança garantida",
+                pontos: 18,
+                correto: true,
+              },
+              {
+                id: "intensificar_psicologia",
+                acao: "Intensificar consultas de psicologia",
+                probabilidade_sucesso: 50,
+                consequencias:
+                  "Apoio importante mas pode não ser suficiente para crise",
+                pontos: 10,
+                correto: false,
+              },
+              {
+                id: "medicacao_ansiedade",
+                acao: "Prescrever medicação para ansiedade",
+                probabilidade_sucesso: 20,
+                consequencias:
+                  "Fora da competência do técnico SAASI, sem efeito adequado",
+                pontos: 3,
+                correto: false,
+              },
+            ],
+          },
+        ],
+      };
 
-      // Strategy adjustment data moved to phase4-engine.js
+      const strategyAdjustmentData = {
+        estrategias_ajuste: [
+          {
+            id: "mentoria_peer",
+            nome: "Programa de Mentoria Entre Pares",
+            descricao:
+              "Conectar Felisbina com pessoas que superaram situações similares",
+            categoria: "apoio_social",
+            pontos: 12,
+            adequado: true,
+            vantagens: [
+              "Apoio emocional",
+              "Experiência partilhada",
+              "Motivação",
+            ],
+            desafios: ["Disponibilidade de mentores", "Compatibilidade"],
+          },
+          {
+            id: "formacao_competencias_vida",
+            nome: "Formação em Competências de Vida",
+            descricao: "Desenvolver autonomia pessoal e competências práticas",
+            categoria: "capacitacao",
+            pontos: 15,
+            adequado: true,
+            vantagens: [
+              "Autonomia pessoal",
+              "Competências práticas",
+              "Autoconfiança",
+            ],
+            desafios: ["Tempo de formação", "Aplicação prática"],
+          },
+          {
+            id: "apoio_juridico",
+            nome: "Apoio Jurídico Especializado",
+            descricao:
+              "Assistência legal para questões habitacionais e familiares",
+            categoria: "juridico",
+            pontos: 10,
+            adequado: true,
+            vantagens: [
+              "Resolução legal",
+              "Proteção de direitos",
+              "Orientação especializada",
+            ],
+            desafios: ["Custos", "Processos demorados"],
+          },
+          {
+            id: "programa_voluntariado",
+            nome: "Programa de Voluntariado",
+            descricao:
+              "Participação em atividades de voluntariado para autoestima",
+            categoria: "integracao_social",
+            pontos: 8,
+            adequado: false,
+            vantagens: ["Autoestima", "Rede social", "Propósito"],
+            desafios: ["Baixa prioridade atual", "Energia limitada"],
+            justificacao_inadequada:
+              "Felisbina precisa focar primeiro na estabilidade básica antes de atividades voluntárias",
+          },
+          {
+            id: "curso_empreendedorismo",
+            nome: "Curso de Empreendedorismo Social",
+            descricao: "Desenvolver projeto próprio de geração de rendimento",
+            categoria: "empreendedorismo",
+            pontos: 14,
+            adequado: false,
+            vantagens: ["Autonomia financeira", "Inovação", "Independência"],
+            desafios: [
+              "Complexidade alta",
+              "Risco financeiro",
+              "Conhecimentos técnicos",
+            ],
+            justificacao_inadequada:
+              "Complexidade muito elevada para o perfil atual da Felisbina, requer base sólida primeiro",
+          },
+        ],
+      };
 
-      // Autonomy preparation data moved to phase4-engine.js
+      const autonomyPreparationData = {
+        areas_autonomia: [
+          {
+            id: "gestao_financeira",
+            nome: "Gestão Financeira",
+            descricao: "Capacidade de gerir dinheiro e orçamento pessoal",
+            nivel_atual: 40,
+            nivel_objetivo: 80,
+            status_atual: "basico_com_apoio",
+            meta_6_meses: "autonomo_completo",
+            acoes_necessarias: [
+              {
+                texto: "Criar orçamento mensal detalhado",
+                acao: "Criar orçamento mensal detalhado",
+                prazo: "2 semanas",
+                responsavel: "tecnico_saasi",
+                pontos: 8,
+              },
+              {
+                texto: "Abrir conta bancária individual",
+                acao: "Abrir conta bancária individual",
+                prazo: "1 semana",
+                responsavel: "felisbina_apoiada",
+                pontos: 6,
+              },
+              {
+                texto: "Aprender a usar homebanking",
+                acao: "Aprender a usar homebanking",
+                prazo: "3 semanas",
+                responsavel: "iefp_formacao",
+                pontos: 4,
+              },
+              {
+                texto: "Planear poupanças mensais",
+                acao: "Planear poupanças mensais",
+                prazo: "1 mês",
+                responsavel: "tecnico_saasi",
+                pontos: 7,
+              },
+            ],
+          },
+          {
+            id: "relacoes_interpessoais",
+            nome: "Relações Interpessoais",
+            descricao: "Desenvolver relações saudáveis e assertividade",
+            nivel_atual: 35,
+            nivel_objetivo: 75,
+            status_atual: "dependente_emocional",
+            meta_6_meses: "relacoes_equilibradas",
+            acoes_necessarias: [
+              {
+                texto: "Participar em grupo de apoio",
+                acao: "Participar em grupo de apoio",
+                prazo: "6 meses",
+                responsavel: "centro_saude",
+                pontos: 10,
+              },
+              {
+                texto: "Praticar comunicação assertiva",
+                acao: "Praticar comunicação assertiva",
+                prazo: "4 semanas",
+                responsavel: "psicologo",
+                pontos: 8,
+              },
+              {
+                texto: "Estabelecer limites saudáveis",
+                acao: "Estabelecer limites saudáveis",
+                prazo: "3 meses",
+                responsavel: "tecnico_saasi",
+                pontos: 9,
+              },
+              {
+                texto: "Desenvolver rede social de apoio",
+                acao: "Desenvolver rede social de apoio",
+                prazo: "5 meses",
+                responsavel: "ipss_local",
+                pontos: 7,
+              },
+            ],
+          },
+          {
+            id: "gestao_domestica",
+            nome: "Gestão Doméstica",
+            descricao: "Autonomia nas tarefas domésticas e organização",
+            nivel_atual: 70,
+            nivel_objetivo: 90,
+            status_atual: "parcialmente_autonomo",
+            meta_6_meses: "totalmente_autonomo",
+            acoes_necessarias: [
+              {
+                texto: "Planear refeições semanais",
+                acao: "Planear refeições semanais",
+                prazo: "2 semanas",
+                responsavel: "felisbina_apoiada",
+                pontos: 5,
+              },
+              {
+                texto: "Gerir manutenção da casa",
+                acao: "Gerir manutenção da casa",
+                prazo: "3 meses",
+                responsavel: "tecnico_saasi",
+                pontos: 6,
+              },
+              {
+                texto: "Organizar documentos pessoais",
+                acao: "Organizar documentos pessoais",
+                prazo: "1 semana",
+                responsavel: "felisbina_apoiada",
+                pontos: 4,
+              },
+              {
+                texto: "Gerir contratos e serviços",
+                acao: "Gerir contratos e serviços",
+                prazo: "4 semanas",
+                responsavel: "tecnico_saasi",
+                pontos: 8,
+              },
+            ],
+          },
+          {
+            id: "desenvolvimento_profissional",
+            nome: "Desenvolvimento Profissional",
+            descricao: "Autonomia na gestão da carreira profissional",
+            nivel_atual: 55,
+            nivel_objetivo: 85,
+            status_atual: "em_desenvolvimento",
+            meta_6_meses: "carreira_definida",
+            acoes_necessarias: [
+              {
+                texto: "Definir objetivos de carreira",
+                acao: "Definir objetivos de carreira",
+                prazo: "2 semanas",
+                responsavel: "consultor_iefp",
+                pontos: 7,
+              },
+              {
+                texto: "Desenvolver competências técnicas",
+                acao: "Desenvolver competências técnicas",
+                prazo: "6 meses",
+                responsavel: "centro_formacao",
+                pontos: 9,
+              },
+              {
+                texto: "Construir rede profissional",
+                acao: "Construir rede profissional",
+                prazo: "4 meses",
+                responsavel: "felisbina_apoiada",
+                pontos: 8,
+              },
+              {
+                texto: "Gerir procura ativa de emprego",
+                acao: "Gerir procura ativa de emprego",
+                prazo: "3 meses",
+                responsavel: "tecnico_emprego",
+                pontos: 10,
+              },
+            ],
+          },
+        ],
+        estrategias_manutencao: [
+          {
+            id: "rede_apoio_comunidade",
+            nome: "Rede de Apoio Comunitário",
+            descricao: "Manter ligação com serviços locais de apoio",
+            pontos: 8,
+          },
+          {
+            id: "acompanhamento_periodico",
+            nome: "Acompanhamento Periódico",
+            descricao: "Consultas de follow-up mensais",
+            pontos: 6,
+          },
+          {
+            id: "grupo_apoio_autonomia",
+            nome: "Grupo de Apoio à Autonomia",
+            descricao: "Participação em grupo de pessoas em transição",
+            pontos: 10,
+          },
+          {
+            id: "plano_contingencia",
+            nome: "Plano de Contingência",
+            descricao: "Estratégias para situações de crise",
+            pontos: 9,
+          },
+        ],
+      };
 
       // INICIALIZAÇÃO AGORA GERIDA PELO PHASE4ENGINE
       // Funções de compatibilidade mantidas para transição suave
@@ -1709,11 +2089,14 @@
       }
 
       function updateSidebar() {
-        // Calcular pontuação total do escape room
+        // Calcular pontuação total do escape room (limitada ao máximo de 400)
         let totalScore = gameState.score;
         if (gameState.phase1Data) totalScore += gameState.phase1Data.score;
         if (gameState.phase2Data) totalScore += gameState.phase2Data.score;
         if (gameState.phase3Data) totalScore += gameState.phase3Data.score;
+
+        // Limitar ao máximo de 400 pontos
+        totalScore = Math.min(totalScore, 400);
 
         document.getElementById("sidebar-total-score").textContent = totalScore;
 

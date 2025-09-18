@@ -684,6 +684,13 @@
         background: rgba(76, 175, 80, 0.05);
       }
 
+      .conversation-drop-zone.drag-over {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+      }
+
       .drop-zone-content {
         text-align: center;
         width: 100%;
@@ -948,6 +955,106 @@
         border-color: #2196f3;
         background: rgba(33, 150, 243, 0.1);
         transform: translateY(-3px);
+        box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+        animation: pulse-blue 1.5s infinite;
+      }
+
+      @keyframes pulse-blue {
+        0% {
+          box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(33, 150, 243, 0.8);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+        }
+      }
+
+      /* Investigation Instructions */
+      .investigation-instructions {
+        background: rgba(33, 150, 243, 0.1);
+        border: 2px solid rgba(33, 150, 243, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .instruction-step {
+        margin: 8px 0;
+        font-size: 14px;
+        color: #1976d2;
+      }
+
+      /* Connection Status */
+      .connection-status {
+        background: rgba(255, 193, 7, 0.1);
+        border: 2px solid rgba(255, 193, 7, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        text-align: center;
+      }
+
+      .status-text {
+        font-weight: bold;
+        color: #f57c00;
+        margin-bottom: 10px;
+      }
+
+      .selected-items {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .selected-item {
+        background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        animation: pulse-blue 2s infinite;
+      }
+
+      /* Mobile Helper */
+      .mobile-helper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .mobile-helper.show {
+        display: flex;
+      }
+
+      .helper-content {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 400px;
+        text-align: center;
+        margin: 20px;
+      }
+
+      .helper-content h4 {
+        color: #2196f3;
+        margin-bottom: 15px;
+      }
+
+      .helper-content p {
+        margin: 10px 0;
+        color: #333;
       }
 
       .evidence-item.categorized {
@@ -1205,8 +1312,27 @@
         }
 
         .evidence-item {
-          min-height: 100px;
-          padding: 8px;
+          min-height: 120px;
+          padding: 12px;
+          font-size: 14px;
+        }
+
+        .evidence-item.selected {
+          border-width: 4px;
+          box-shadow: 0 0 25px rgba(33, 150, 243, 0.7);
+        }
+
+        .instruction-step {
+          font-size: 16px;
+          margin: 12px 0;
+        }
+
+        .connection-status {
+          padding: 20px;
+        }
+
+        .status-text {
+          font-size: 16px;
         }
 
         .evidence-icon {
@@ -2445,6 +2571,77 @@
         transform: none !important;
       }
 
+      .topic-card.locked {
+        background: linear-gradient(135deg, #6c7b7f 0%, #4a5568 100%);
+        color: #a0aec0;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .topic-card.locked:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .topic-card.available {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+      }
+
+      .topic-card.in-progress {
+        background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+        border: 2px solid #ff8c00;
+        animation: pulse-orange 1.5s infinite;
+        box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+      }
+
+      @keyframes pulse-orange {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+        }
+        50% {
+          transform: scale(1.02);
+          box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(72, 187, 120, 0.8);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+        }
+      }
+
+      .topic-card-status {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .topic-card {
+        position: relative;
+      }
+
       .topic-card-title {
         font-weight: bold;
         font-size: 14px;
@@ -2583,6 +2780,13 @@
         z-index: 1000;
       }
 
+      .response-card.selected {
+        border: 3px solid #4caf50;
+        background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      }
+
       .response-card-header {
         display: flex;
         justify-content: space-between;
@@ -2666,6 +2870,17 @@
 
       .response-drop-zone.drag-over .drop-zone-text {
         color: white;
+      }
+
+      .response-drop-zone.has-preview {
+        background: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 100%);
+        border-color: #4caf50;
+        border-style: solid;
+      }
+
+      .response-drop-zone.has-preview .drop-zone-text {
+        color: #2e7d32;
+        font-weight: bold;
       }
 
       .feedback-panel {
@@ -4460,17 +4675,7 @@
                   <!-- Topic cards will be generated here -->
                 </div>
                 <div class="deck-info">
-                  <span id="remaining-topics">6</span> tópicos restantes
-                </div>
-
-                <!-- Topic Drop Zone for Starting Conversations -->
-                <div class="topic-drop-zone" id="topic-drop-zone">
-                  <div class="drop-zone-content">
-                    <div class="drop-zone-icon">💬</div>
-                    <span class="drop-zone-text"
-                      >Arraste um tópico aqui para iniciar conversa</span
-                    >
-                  </div>
+                  <span id="remaining-topics">5</span> tópicos restantes
                 </div>
               </div>
 
@@ -4480,25 +4685,25 @@
                   <h4 id="current-topic-title">
                     Selecione um tópico para começar
                   </h4>
-                  <div class="conversation-timer">
-                    <span id="topic-timer">⏱️ --:--</span>
-                  </div>
                 </div>
 
-                <!-- Response Cards Area -->
-                <div class="response-cards-area" id="response-cards-area">
-                  <div class="cards-instruction">
-                    Arraste um tópico do baralho para iniciar a conversa
+                <!-- Dialogue Container for conversation content -->
+                <div id="dialogue-container">
+                  <!-- Response Cards Area -->
+                  <div class="response-cards-area" id="response-cards-area">
+                    <div class="cards-instruction">
+                      Arraste um tópico do baralho para iniciar a conversa
+                    </div>
                   </div>
-                </div>
 
-                <!-- Drop Zone for Selected Response -->
-                <div class="response-drop-zone" id="response-drop-zone">
-                  <div class="drop-zone-content">
-                    <div class="drop-zone-icon">🎯</div>
-                    <span class="drop-zone-text"
-                      >Arraste sua resposta aqui</span
-                    >
+                  <!-- Drop Zone for Selected Response -->
+                  <div class="response-drop-zone" id="response-drop-zone">
+                    <div class="drop-zone-content">
+                      <div class="drop-zone-icon">🎯</div>
+                      <span class="drop-zone-text"
+                        >Arraste sua resposta aqui</span
+                      >
+                    </div>
                   </div>
                 </div>
               </div>
@@ -4557,10 +4762,46 @@
           <div class="investigation-scene">
             <div class="investigation-header">
               <h3>🕵️ Sala de Investigação - Caso Felisbina Santos</h3>
-              <p>
-                Examine cada evidência com a lupa e categorize na área
-                apropriada
-              </p>
+              <div class="investigation-instructions">
+                <div class="instruction-step">
+                  <strong>1️⃣ Examine:</strong> Clique na lupa (🔍) para examinar
+                  evidências
+                </div>
+                <div class="instruction-step">
+                  <strong>2️⃣ Categorize:</strong> Arraste evidências para
+                  Risco/Proteção
+                </div>
+                <div class="instruction-step">
+                  <strong>3️⃣ Conecte:</strong> Clique em 2 evidências para fazer
+                  conexões
+                </div>
+              </div>
+
+              <!-- Connection Status Display -->
+              <div class="connection-status" id="connection-status">
+                <div class="status-text">
+                  Selecione evidências para conectar
+                </div>
+                <div class="selected-items" id="selected-items"></div>
+              </div>
+
+              <!-- Mobile Helper -->
+              <div class="mobile-helper" id="mobile-helper">
+                <div class="helper-content">
+                  <h4>📱 Como Usar no Mobile:</h4>
+                  <p><strong>Examinar:</strong> 1 toque na evidência</p>
+                  <p>
+                    <strong>Selecionar para conexão:</strong> 2 toques rápidos
+                  </p>
+                  <p>
+                    <strong>Arrastar para categorizar:</strong> Pressione e
+                    arraste
+                  </p>
+                  <button class="btn" onclick="closeMobileHelper()">
+                    Entendi!
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div class="evidence-examination-area">
@@ -5473,7 +5714,7 @@
       const dialogueData = [
         {
           id: 1,
-          question: "Olá Felisbina, como se sente hoje?",
+          question: "Olá Felisbina, sou técnica do SAASI. Como se sente hoje?",
           options: [
             {
               text: "Vejo que está nervosa. Não se preocupe, estamos aqui para a ajudar.",
@@ -5497,7 +5738,7 @@
         },
         {
           id: 2,
-          question: "Pode falar-me sobre a sua situação habitacional atual?",
+          question: "Vive sozinha numa pensão. Como é essa situação para si?",
           options: [
             {
               text: "Imagino que não seja fácil viver numa pensão. Como se sente lá?",
@@ -5522,55 +5763,6 @@
         {
           id: 3,
           question:
-            "Falou-me do seu pai. Pode contar-me mais sobre essa relação?",
-          options: [
-            {
-              text: "Vejo que é uma pessoa muito importante para si. Isso é bonito.",
-              empathy: 9,
-              info: 3,
-              code: "father_bond",
-            },
-            {
-              text: "Essa dependência emocional pode afetar a sua autonomia?",
-              empathy: 2,
-              info: 8,
-              code: "dependency_analysis",
-            },
-            {
-              text: "Como é que essa relação a ajuda no dia-a-dia?",
-              empathy: 6,
-              info: 5,
-              code: "support_system",
-            },
-          ],
-        },
-        {
-          id: 4,
-          question: "E sobre o seu irmão? Disse que cortaram relações...",
-          options: [
-            {
-              text: "Deve ser muito difícil perder o apoio de alguém tão próximo.",
-              empathy: 8,
-              info: 4,
-              code: "brother_loss",
-            },
-            {
-              text: "O que aconteceu exatamente? Houve algum conflito específico?",
-              empathy: 3,
-              info: 7,
-              code: "conflict_details",
-            },
-            {
-              text: "Sente que consegue gerir as suas finanças sozinha agora?",
-              empathy: 4,
-              info: 7,
-              code: "financial_autonomy",
-            },
-          ],
-        },
-        {
-          id: 5,
-          question:
             "Tem experiência de trabalho como empregada de limpeza. Como foi?",
           options: [
             {
@@ -5589,7 +5781,57 @@
               text: "Gostaria de voltar a trabalhar na área de limpeza?",
               empathy: 5,
               info: 6,
-              code: "work_interest",
+              code: "work_future",
+            },
+          ],
+        },
+        {
+          id: 4,
+          question:
+            "Falou-me do seu pai e do irmão. Como são essas relações familiares?",
+          options: [
+            {
+              text: "Vejo que o seu pai é muito importante para si. Essa ligação é muito forte.",
+              empathy: 8,
+              info: 4,
+              code: "father_bond",
+            },
+            {
+              text: "Deve ser difícil ter perdido o apoio do irmão que a orientava.",
+              empathy: 7,
+              info: 6,
+              code: "brother_loss",
+            },
+            {
+              text: "Como se sente agora sem o apoio financeiro e orientação do irmão?",
+              empathy: 5,
+              info: 8,
+              code: "autonomy_challenge",
+            },
+          ],
+        },
+        {
+          id: 5,
+          question:
+            "Disse que se sente sozinha agora. Como está a lidar com essas mudanças?",
+          options: [
+            {
+              text: "É compreensível sentir-se assim. Estas mudanças são muito difíceis.",
+              empathy: 9,
+              info: 3,
+              code: "loneliness_empathy",
+            },
+            {
+              text: "Tem algum apoio além do RSI? Conhece outros serviços que possam ajudar?",
+              empathy: 4,
+              info: 8,
+              code: "support_resources",
+            },
+            {
+              text: "Como imagina o seu futuro? Que objetivos tem para si própria?",
+              empathy: 6,
+              info: 6,
+              code: "future_planning",
             },
           ],
         },
@@ -6146,7 +6388,7 @@
           2000
         );
         setTimeout(() => {
-          window.location.href = "fase2.html";
+          window.location.href = "fase2-escape.html";
         }, 2000);
       }
 
@@ -6874,10 +7116,14 @@
         updatePuzzleCounter(2);
         resetConversationState();
         setupMobileToggle();
-        loadCurrentQuestion();
+
+        // Initialize the card game system
+        initializeCardGame();
+        setupTopicDropZone();
+        generateTopicCards();
 
         showToast(
-          "🗣️ Comece a conversa! Arraste as cartas de resposta para a zona de conversa.",
+          "🗣️ Comece a conversa! Arraste um tópico do baralho para iniciar a conversa.",
           "info",
           6000
         );
@@ -6946,98 +7192,6 @@
         }
       }
 
-      function loadCurrentQuestion() {
-        const container = document.getElementById("dialogue-container");
-        const currentQuestion =
-          dialogueData[conversationState.currentQuestionIndex];
-
-        if (!currentQuestion) {
-          completeConversationPuzzle();
-          return;
-        }
-
-        let cardsHtml = "";
-        currentQuestion.options.forEach((option, index) => {
-          cardsHtml += `
-            <div class="conversation-card ${getCardSuitability(option)}" 
-                 data-option-index="${index}"
-                 data-empathy="${option.empathy}"
-                 data-info="${option.info}"
-                 data-code="${option.code}"
-                 draggable="true"
-                 ondragstart="dragConversationCard(event)"
-                 onclick="selectConversationCard(this)">
-              <div class="card-content">
-                <div class="card-text">"${option.text}"</div>
-                <div class="card-metrics">
-                  <span class="empathy-indicator">❤️ ${option.empathy}</span>
-                  <span class="info-indicator">📊 ${option.info}</span>
-                </div>
-              </div>
-              <div class="card-type-indicator">${getCardTypeLabel(option)}</div>
-            </div>
-          `;
-        });
-
-        const dropInstruction =
-          conversationState.dragMode === "mobile"
-            ? "👆 Selecione uma carta acima e toque aqui"
-            : "🎯 Arraste uma carta de resposta para aqui";
-
-        container.innerHTML = `
-          <div class="conversation-scene">
-            <div class="question-header">
-              <h3>Pergunta ${conversationState.currentQuestionIndex + 1}/${
-          conversationState.totalQuestions
-        }</h3>
-              <p class="question-text">"${currentQuestion.question}"</p>
-            </div>
-            
-            <div class="conversation-area">
-              <div class="response-cards-area">
-                <h4>🃏 Cartas de Resposta:</h4>
-                <div class="response-cards" id="response-cards">
-                  ${cardsHtml}
-                </div>
-              </div>
-              
-              <div class="conversation-zone-area">
-                <h4>💬 Zona de Conversa:</h4>
-                <div class="conversation-drop-zone" 
-                     id="conversation-zone"
-                     ondrop="dropConversationCard(event)"
-                     ondragover="allowDrop(event)"
-                     onclick="handleConversationZoneClick()">
-                  <div class="drop-zone-content">
-                    <p class="drop-instruction">
-                      ${dropInstruction}
-                    </p>
-                    <div class="conversation-preview" id="conversation-preview" style="display: none;">
-                      <!-- Preview will be shown here -->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="conversation-controls">
-              <button class="btn conversation-btn" 
-                      id="confirm-response" 
-                      onclick="confirmResponse()" 
-                      style="display: none;">
-                Confirmar Resposta ✓
-              </button>
-              <button class="btn conversation-btn secondary" 
-                      onclick="cancelSelection()" 
-                      style="display: none;" 
-                      id="cancel-response">
-                Cancelar
-              </button>
-            </div>
-          </div>
-        `;
-      }
-
       function getCardSuitability(option) {
         const empathy = option.empathy || 0;
         const info = option.info || 0;
@@ -7065,21 +7219,37 @@
           return;
         }
 
+        // Find the actual conversation card element (might be a child element)
+        const cardElement = event.target.closest(".conversation-card");
+        if (!cardElement) {
+          console.error("Could not find conversation card element");
+          return;
+        }
+
         const cardData = {
-          optionIndex: event.target.dataset.optionIndex,
-          empathy: event.target.dataset.empathy,
-          info: event.target.dataset.info,
-          code: event.target.dataset.code,
-          text: event.target.querySelector(".card-text").textContent,
+          optionIndex: cardElement.dataset.optionIndex,
+          empathy: cardElement.dataset.empathy,
+          info: cardElement.dataset.info,
+          code: cardElement.dataset.code,
+          text: cardElement.querySelector(".card-text").textContent,
         };
 
+        console.log("Dragging card data:", cardData);
+
+        // Validate card data before setting transfer data
+        if (!cardData.optionIndex && cardData.optionIndex !== "0") {
+          console.error("Missing optionIndex on card element:", cardElement);
+          showToast("❌ Erro na carta. Recarregue a página.", "error", 3000);
+          return;
+        }
+
         event.dataTransfer.setData("text/plain", JSON.stringify(cardData));
-        event.target.classList.add("dragging");
+        cardElement.classList.add("dragging");
       }
 
       function selectConversationCard(cardElement) {
         // Remove previous selections
-        document.querySelectorAll(".conversation-card").forEach((card) => {
+        document.querySelectorAll(".response-card").forEach((card) => {
           card.classList.remove("selected");
         });
 
@@ -7089,24 +7259,20 @@
           optionIndex: parseInt(cardElement.dataset.optionIndex),
           empathy: parseInt(cardElement.dataset.empathy),
           info: parseInt(cardElement.dataset.info),
-          code: cardElement.dataset.code,
+          code:
+            cardElement.dataset.code ||
+            `response_${cardElement.dataset.optionIndex}`,
           text: cardElement
-            .querySelector(".card-text")
-            .textContent.replace(/"/g, ""),
+            .querySelector(".response-card-content")
+            .textContent.trim(),
         };
 
         // Show preview in conversation zone
         showConversationPreview(conversationState.selectedCard);
 
-        // Show controls
-        document.getElementById("confirm-response").style.display =
-          "inline-block";
-        document.getElementById("cancel-response").style.display =
-          "inline-block";
-
-        // Provide feedback
+        // Show instruction for mobile users
         showToast(
-          "🎯 Carta selecionada! Confirme ou arraste para a zona de conversa.",
+          "💬 Carta selecionada! Arraste para a zona de resposta ou toque na zona para confirmar.",
           "info",
           3000
         );
@@ -7129,7 +7295,21 @@
         }
 
         try {
-          const cardData = JSON.parse(event.dataTransfer.getData("text/plain"));
+          const transferData = event.dataTransfer.getData("text/plain");
+          console.log("Received transfer data:", transferData);
+
+          if (!transferData) {
+            throw new Error("No data transferred");
+          }
+
+          const cardData = JSON.parse(transferData);
+          console.log("Parsed card data:", cardData);
+
+          // Validate card data
+          if (!cardData.optionIndex && cardData.optionIndex !== 0) {
+            throw new Error("Invalid card data: missing optionIndex");
+          }
+
           conversationState.selectedCard = cardData;
 
           showConversationPreview(cardData);
@@ -7139,6 +7319,7 @@
             confirmResponse();
           }, 1000);
         } catch (error) {
+          console.error("Drop error:", error);
           showToast(
             "❌ Erro ao processar a carta. Tente novamente.",
             "error",
@@ -7146,31 +7327,29 @@
           );
         }
 
-        // Remove dragging class
+        // Remove dragging class and drop zone highlighting
         document.querySelectorAll(".conversation-card").forEach((card) => {
           card.classList.remove("dragging");
+        });
+        document.querySelectorAll(".conversation-drop-zone").forEach((zone) => {
+          zone.classList.remove("drag-over");
         });
       }
 
       function showConversationPreview(cardData) {
-        const preview = document.getElementById("conversation-preview");
-        const zone = document.getElementById("conversation-zone");
-
-        preview.innerHTML = `
-          <div class="response-preview">
-            <div class="felisbina-says">
-              <strong>Técnico SAASI:</strong>
-            </div>
-            <div class="preview-text">"${cardData.text}"</div>
-            <div class="preview-metrics">
-              <span class="empathy-preview">❤️ Empatia: +${cardData.empathy}</span>
-              <span class="info-preview">📊 Informação: +${cardData.info}</span>
-            </div>
-          </div>
-        `;
-
-        preview.style.display = "block";
-        zone.classList.add("has-preview");
+        // Show preview information in the response drop zone
+        const dropZone = document.getElementById("response-drop-zone");
+        if (dropZone) {
+          const dropZoneText = dropZone.querySelector(".drop-zone-text");
+          if (dropZoneText) {
+            dropZoneText.innerHTML = `
+              <strong>Resposta Selecionada:</strong><br>
+              "${cardData.text}"<br>
+              <small>❤️ ${cardData.empathy} | 📊 ${cardData.info}</small>
+            `;
+          }
+          dropZone.classList.add("has-preview");
+        }
 
         // Update Felisbina's expression preview
         updateFelisbinaExpressionPreview(cardData.empathy);
@@ -7261,9 +7440,9 @@
         // Show feedback animation
         showResponseFeedback(cardData);
 
-        // Move to next question
+        // Clear the current conversation and allow selecting new topic
         setTimeout(() => {
-          nextQuestion();
+          clearCurrentConversation();
         }, 2500);
       }
 
@@ -7329,22 +7508,47 @@
           gameState.interactions;
       }
 
-      function nextQuestion() {
-        conversationState.currentQuestionIndex++;
-        conversationState.questionsCompleted++;
+      function clearCurrentConversation() {
+        // Reset current topic
+        cardGameState.currentTopic = null;
+        cardGameState.topicStartTime = null;
 
-        if (conversationState.currentQuestionIndex < dialogueData.length) {
-          loadCurrentQuestion();
-          showToast(
-            `📝 Pergunta ${conversationState.currentQuestionIndex + 1} de ${
-              dialogueData.length
-            }`,
-            "info",
-            2000
-          );
-        } else {
-          completeConversationPuzzle();
+        // Clear the dialogue container content and reset to topic selection
+        const container = document.getElementById("dialogue-container");
+        if (container) {
+          container.innerHTML = `
+            <!-- Response Cards Area -->
+            <div class="response-cards-area" id="response-cards-area">
+              <div class="cards-instruction">
+                Arraste um tópico do baralho para iniciar a conversa
+              </div>
+            </div>
+
+            <!-- Drop Zone for Selected Response -->
+            <div class="response-drop-zone" id="response-drop-zone">
+              <div class="drop-zone-content">
+                <div class="drop-zone-icon">🎯</div>
+                <span class="drop-zone-text">Arraste sua resposta aqui</span>
+              </div>
+            </div>
+          `;
         }
+
+        // Reset conversation header
+        const header = document.getElementById("current-topic-title");
+        if (header) {
+          header.textContent = "Selecione um tópico para começar";
+        }
+
+        // Regenerate topic cards to update visual states
+        generateTopicCards();
+
+        // Note: Completion check happens in addToConversationMemory after response is submitted
+        showToast(
+          `✅ Resposta registrada! Selecione outro tópico para continuar. (${cardGameState.completedTopics.size}/${topicCards.length} tópicos concluídos)`,
+          "success",
+          4000
+        );
       }
 
       function completeConversationPuzzle() {
@@ -7354,7 +7558,7 @@
           conversationState.completionTime / 60000
         );
 
-        // Calculate final bonuses
+        // Calculate final bonuses (this function calls addBonusPoints internally)
         calculateConversationBonuses(completionMinutes);
 
         // Show completion message
@@ -7396,11 +7600,21 @@
           </div>
         `;
 
+        // Mark puzzle as completed
+        gameState.conversationCompleted = true;
+
+        // Update score display immediately
+        updateScoreDisplay();
+        updateEmpathyDisplay();
+
         // Show next button
-        document.getElementById("next-dialogue").style.display = "block";
+        const nextButton = document.getElementById("next-dialogue");
+        if (nextButton) {
+          nextButton.style.display = "block";
+        }
 
         showToast(
-          "✅ Puzzle 2 concluído! Avance para a análise.",
+          "✅ Puzzle 2 concluído! Clique no botão para avançar para a análise.",
           "success",
           5000
         );
@@ -7474,7 +7688,7 @@
 
       function cancelSelection() {
         // Clear selection
-        document.querySelectorAll(".conversation-card").forEach((card) => {
+        document.querySelectorAll(".response-card").forEach((card) => {
           card.classList.remove("selected");
         });
 
@@ -7482,13 +7696,14 @@
 
         // Hide preview
         const preview = document.getElementById("conversation-preview");
-        const zone = document.getElementById("conversation-zone");
-        preview.style.display = "none";
-        zone.classList.remove("has-preview");
+        if (preview) {
+          preview.style.display = "none";
+        }
 
-        // Hide controls
-        document.getElementById("confirm-response").style.display = "none";
-        document.getElementById("cancel-response").style.display = "none";
+        const zone = document.getElementById("response-drop-zone");
+        if (zone) {
+          zone.classList.remove("has-preview");
+        }
 
         // Reset Felisbina avatar
         updateFelisbinaAvatar();
@@ -7623,6 +7838,11 @@
         resetEvidenceState();
         loadEvidenceGallery();
 
+        // Show mobile helper on touch devices
+        if (isTouchDevice()) {
+          setTimeout(() => showMobileHelper(), 1000);
+        }
+
         showToast(
           "🔍 Examine cada evidência com a lupa antes de categorizar!",
           "info",
@@ -7675,9 +7895,35 @@
             <div class="evidence-title">${evidence.title}</div>
           `;
 
-          evidenceElement.addEventListener("click", () =>
-            examineEvidence(evidence.id)
-          );
+          // Add click for examination
+          evidenceElement.addEventListener("click", (e) => {
+            if (e.target.closest(".evidence-action")) {
+              return; // Let action button handle its own click
+            }
+            examineEvidence(evidence.id);
+          });
+
+          // Add double-tap/double-click for connection selection
+          let clickCount = 0;
+          evidenceElement.addEventListener("dblclick", (e) => {
+            e.preventDefault();
+            selectForConnection(evidence.id);
+          });
+
+          // Mobile touch selection for connections
+          evidenceElement.addEventListener("touchstart", (e) => {
+            clickCount++;
+            if (clickCount === 1) {
+              setTimeout(() => {
+                if (clickCount === 1) {
+                  examineEvidence(evidence.id);
+                } else {
+                  selectForConnection(evidence.id);
+                }
+                clickCount = 0;
+              }, 300);
+            }
+          });
           evidenceElement.addEventListener("dragstart", (e) =>
             dragEvidenceStart(e)
           );
@@ -7755,6 +8001,20 @@
 
       function allowDrop(e) {
         e.preventDefault();
+
+        // Add visual feedback when dragging over the drop zone
+        const dropZone = e.target.closest(".conversation-drop-zone");
+        if (dropZone) {
+          dropZone.classList.add("drag-over");
+        }
+      }
+
+      function dragLeave(e) {
+        // Remove visual feedback when leaving the drop zone
+        const dropZone = e.target.closest(".conversation-drop-zone");
+        if (dropZone && !dropZone.contains(e.relatedTarget)) {
+          dropZone.classList.remove("drag-over");
+        }
       }
 
       function dragEvidenceStart(e) {
@@ -7876,6 +8136,8 @@
       }
 
       function selectForConnection(evidenceId) {
+        const evidence = evidenceData.find((e) => e.id === evidenceId);
+
         if (evidenceState.selectedForConnection.includes(evidenceId)) {
           // Deselect
           evidenceState.selectedForConnection =
@@ -7883,26 +8145,79 @@
               (id) => id !== evidenceId
             );
           document
-            .querySelector(`[data-evidence-id="${evidenceId}"]`)
-            .classList.remove("selected");
+            .querySelectorAll(`[data-evidence-id="${evidenceId}"]`)
+            .forEach((el) => el.classList.remove("selected"));
+
+          showToast(
+            `❌ ${evidence.icon} ${evidence.title} desmarcado`,
+            "info",
+            2000
+          );
         } else if (evidenceState.selectedForConnection.length < 2) {
           // Select
           evidenceState.selectedForConnection.push(evidenceId);
           document
-            .querySelector(`[data-evidence-id="${evidenceId}"]`)
-            .classList.add("selected");
+            .querySelectorAll(`[data-evidence-id="${evidenceId}"]`)
+            .forEach((el) => el.classList.add("selected"));
+
+          showToast(
+            `✅ ${evidence.icon} ${evidence.title} selecionado para conexão`,
+            "success",
+            2000
+          );
 
           // If two selected, try to connect
           if (evidenceState.selectedForConnection.length === 2) {
-            attemptConnection();
+            setTimeout(() => attemptConnection(), 500);
           }
         } else {
           showToast(
-            "⚠️ Máximo de 2 evidências podem ser selecionadas!",
+            "⚠️ Máximo de 2 evidências podem ser selecionadas! Clique numa selecionada para desmarcá-la.",
             "warning",
-            3000
+            4000
           );
         }
+
+        // Update visual status
+        updateConnectionStatus();
+      }
+
+      function updateConnectionStatus() {
+        const statusText = document.querySelector(".status-text");
+        const selectedItemsContainer =
+          document.getElementById("selected-items");
+
+        if (!statusText || !selectedItemsContainer) return;
+
+        const selectedCount = evidenceState.selectedForConnection.length;
+
+        if (selectedCount === 0) {
+          statusText.textContent = "Selecione evidências para conectar";
+          statusText.style.color = "#f57c00";
+          selectedItemsContainer.innerHTML = "";
+        } else if (selectedCount === 1) {
+          statusText.textContent =
+            "Selecione mais 1 evidência para fazer conexão";
+          statusText.style.color = "#2196f3";
+          updateSelectedItemsDisplay();
+        } else if (selectedCount === 2) {
+          statusText.textContent = "Verificando conexão...";
+          statusText.style.color = "#4caf50";
+          updateSelectedItemsDisplay();
+        }
+      }
+
+      function updateSelectedItemsDisplay() {
+        const selectedItemsContainer =
+          document.getElementById("selected-items");
+        if (!selectedItemsContainer) return;
+
+        selectedItemsContainer.innerHTML = evidenceState.selectedForConnection
+          .map((id) => {
+            const evidence = evidenceData.find((e) => e.id === id);
+            return `<div class="selected-item">${evidence.icon} ${evidence.title}</div>`;
+          })
+          .join("");
       }
 
       function attemptConnection() {
@@ -7920,12 +8235,8 @@
           evidenceState.connections.push([id1, id2]);
 
           // Enhanced feedback
-          const evidence1 = evidenceState.evidenceData.find(
-            (e) => e.id === id1
-          );
-          const evidence2 = evidenceState.evidenceData.find(
-            (e) => e.id === id2
-          );
+          const evidence1 = evidenceData.find((e) => e.id === id1);
+          const evidence2 = evidenceData.find((e) => e.id === id2);
 
           addBonusPoints(15, "Conexão descoberta!");
 
@@ -7962,15 +8273,49 @@
 
         // Clear selection
         evidenceState.selectedForConnection.forEach((id) => {
-          const element = document.querySelector(`[data-evidence-id="${id}"]`);
-          if (element) {
-            element.classList.remove("selected");
-          }
+          document
+            .querySelectorAll(`[data-evidence-id="${id}"]`)
+            .forEach((element) => {
+              element.classList.remove("selected");
+            });
         });
         evidenceState.selectedForConnection = [];
 
+        // Update visual status - force reset
+        const statusText = document.querySelector(".status-text");
+        if (statusText) {
+          statusText.textContent = "Selecione evidências para conectar";
+          statusText.style.color = "#f57c00";
+        }
+        const selectedItemsContainer =
+          document.getElementById("selected-items");
+        if (selectedItemsContainer) {
+          selectedItemsContainer.innerHTML = "";
+        }
+        updateConnectionStatus();
+
         updateEvidenceMetrics();
         updateConnectionStats();
+      }
+
+      // Mobile Helper Functions
+      function isTouchDevice() {
+        return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      }
+
+      function showMobileHelper() {
+        const helper = document.getElementById("mobile-helper");
+        if (helper && !localStorage.getItem("puzzle3_helper_shown")) {
+          helper.classList.add("show");
+        }
+      }
+
+      function closeMobileHelper() {
+        const helper = document.getElementById("mobile-helper");
+        if (helper) {
+          helper.classList.remove("show");
+          localStorage.setItem("puzzle3_helper_shown", "true");
+        }
       }
 
       function clearConnections() {
@@ -8694,7 +9039,8 @@
       const cardGameState = {
         currentTopic: null,
         currentTopicIndex: 0,
-        usedTopics: new Set(),
+        usedTopics: new Set(), // Topics that have been started
+        completedTopics: new Set(), // Topics that have been answered
         responseCards: [],
         selectedResponse: null,
         topicTimer: null,
@@ -8706,46 +9052,39 @@
       // Topic Card Data (matches existing dialogue data)
       const topicCards = [
         {
-          id: "abertura",
+          id: 1,
           title: "Apresentação",
           subtitle: "Como se sente hoje?",
           icon: "👋",
           description: "Iniciar conversa com cortesia",
         },
         {
-          id: "situacao_atual",
+          id: 2,
           title: "Situação Atual",
           subtitle: "Fale sobre sua situação",
           icon: "💭",
           description: "Explorar contexto pessoal",
         },
         {
-          id: "experiencia_limpeza",
+          id: 3,
           title: "Experiência",
           subtitle: "Trabalho em limpeza",
           icon: "🧹",
           description: "Competências profissionais",
         },
         {
-          id: "dependencia_emocional",
+          id: 4,
           title: "Dependência",
-          subtitle: "Relação com a irmã",
+          subtitle: "Relações familiares",
           icon: "🤝",
-          description: "Suporte emocional",
+          description: "Pai e irmão",
         },
         {
-          id: "ruptura_familiar",
+          id: 5,
           title: "Mudanças",
-          subtitle: "Mudança da irmã",
-          icon: "🏠",
-          description: "Impacto da separação",
-        },
-        {
-          id: "motivacao_trabalho",
-          title: "Motivação",
-          subtitle: "Vontade de trabalhar",
-          icon: "💪",
-          description: "Objetivos profissionais",
+          subtitle: "Sentimentos atuais",
+          icon: "💭",
+          description: "Solidão e futuro",
         },
       ];
 
@@ -8783,25 +9122,47 @@
         if (!topicDeck) return;
 
         topicDeck.innerHTML = topicCards
-          .map(
-            (topic) => `
-          <div class="topic-card" 
-               draggable="true" 
+          .map((topic) => {
+            const isCompleted = cardGameState.completedTopics.has(topic.id);
+            const isStarted = cardGameState.usedTopics.has(topic.id);
+            const nextExpected = cardGameState.completedTopics.size + 1;
+            const isAvailable = topic.id === nextExpected;
+            const isLocked = !isCompleted && !isAvailable;
+
+            let cardClass = "topic-card";
+            if (isCompleted) cardClass += " used";
+            if (isStarted && !isCompleted) cardClass += " in-progress";
+            if (isLocked) cardClass += " locked";
+            if (isAvailable) cardClass += " available";
+
+            const statusIcon = isCompleted
+              ? "✅"
+              : isStarted
+              ? "💬"
+              : isAvailable
+              ? "👆"
+              : "🔒";
+
+            return `
+          <div class="${cardClass}" 
+               draggable="${!isLocked}" 
                data-topic-id="${topic.id}"
                ondragstart="handleTopicDragStart(event)"
-               ondragend="handleTopicDragEnd(event)">
+               ondragend="handleTopicDragEnd(event)"
+               onclick="handleTopicClick(event)">
+            <div class="topic-card-status">${statusIcon}</div>
             <div class="topic-card-title">${topic.icon} ${topic.title}</div>
             <div class="topic-card-subtitle">${topic.subtitle}</div>
           </div>
-        `
-          )
+        `;
+          })
           .join("");
 
         // Update remaining topics count
         const remainingElement = document.getElementById("remaining-topics");
         if (remainingElement) {
           remainingElement.textContent =
-            topicCards.length - cardGameState.usedTopics.size;
+            topicCards.length - cardGameState.completedTopics.size;
         }
       }
 
@@ -8809,12 +9170,32 @@
        * Handle topic card drag start
        */
       function handleTopicDragStart(event) {
-        const topicId = event.target.dataset.topicId;
+        const topicId = parseInt(event.target.dataset.topicId);
 
-        // Check if topic already used
-        if (cardGameState.usedTopics.has(topicId)) {
+        // Check if topic already completed
+        if (cardGameState.completedTopics.has(topicId)) {
           event.preventDefault();
-          showToast("Este tópico já foi abordado", "warning", 2000);
+          showToast("Este tópico já foi completado", "warning", 2000);
+          return;
+        }
+
+        // Check if topic is locked (enforce sequence based on completed topics)
+        const nextExpectedTopic = cardGameState.completedTopics.size + 1;
+        if (topicId !== nextExpectedTopic) {
+          event.preventDefault();
+          const topicNames = [
+            "",
+            "Apresentação",
+            "Situação Atual",
+            "Experiência",
+            "Dependência",
+            "Mudanças",
+          ];
+          showToast(
+            `❌ Por favor, siga a ordem da conversa. Próximo tópico: ${topicNames[nextExpectedTopic]}`,
+            "warning",
+            4000
+          );
           return;
         }
 
@@ -8839,6 +9220,47 @@
         if (topicDropZone) {
           topicDropZone.classList.remove("drag-over");
         }
+      }
+
+      /**
+       * Handle topic click for mobile devices
+       */
+      function handleTopicClick(event) {
+        const topicId = parseInt(event.currentTarget.dataset.topicId);
+
+        // Check if topic already completed
+        if (cardGameState.completedTopics.has(topicId)) {
+          showToast("Este tópico já foi completado", "warning", 2000);
+          return;
+        }
+
+        // Enforce sequence: next topic should be (number of completed topics + 1)
+        const nextExpectedTopic = cardGameState.completedTopics.size + 1;
+        if (topicId !== nextExpectedTopic) {
+          const topicNames = [
+            "",
+            "Apresentação",
+            "Situação Atual",
+            "Experiência",
+            "Dependência",
+            "Mudanças",
+          ];
+          showToast(
+            `❌ Por favor, siga a ordem da conversa. Próximo tópico: ${topicNames[nextExpectedTopic]}`,
+            "warning",
+            4000
+          );
+          return;
+        }
+
+        // Start conversation
+        startConversationTopic(topicId);
+
+        showToast(
+          "✅ Tópico selecionado! Agora escolha uma resposta.",
+          "success",
+          3000
+        );
       }
 
       /**
@@ -8878,12 +9300,40 @@
         event.preventDefault();
         event.currentTarget.classList.remove("drag-over");
 
-        const topicId = event.dataTransfer.getData("text/plain");
+        const topicId = parseInt(event.dataTransfer.getData("text/plain"));
 
         // Check if it's a valid topic card
-        if (topicCards.find((t) => t.id === topicId)) {
-          startConversationTopic(topicId);
+        if (!topicCards.find((t) => t.id === topicId)) {
+          return;
         }
+
+        // Check if topic already completed
+        if (cardGameState.completedTopics.has(topicId)) {
+          showToast("Este tópico já foi completado", "warning", 2000);
+          return;
+        }
+
+        // Enforce sequence: next topic should be (number of completed topics + 1)
+        const nextExpectedTopic = cardGameState.completedTopics.size + 1;
+        if (topicId !== nextExpectedTopic) {
+          const topicNames = [
+            "",
+            "Apresentação",
+            "Situação Atual",
+            "Experiência",
+            "Dependência",
+            "Mudanças",
+          ];
+          showToast(
+            `❌ Por favor, siga a ordem da conversa. Próximo tópico: ${topicNames[nextExpectedTopic]}`,
+            "warning",
+            4000
+          );
+          return;
+        }
+
+        // Start conversation
+        startConversationTopic(topicId);
       }
 
       /**
@@ -8900,6 +9350,7 @@
         // Update UI
         updateTopicHeader(topic);
         generateResponseCards(topicId);
+        generateTopicCards(); // Update topic cards visual states
         startTopicTimer();
 
         // Update avatar and progress
@@ -8922,7 +9373,7 @@
         const remainingElement = document.getElementById("remaining-topics");
         if (remainingElement) {
           remainingElement.textContent =
-            topicCards.length - cardGameState.usedTopics.size;
+            topicCards.length - cardGameState.completedTopics.size;
         }
 
         showToast(`💬 Iniciando conversa: ${topic.title}`, "success", 3000);
@@ -8974,8 +9425,12 @@
               <div class="response-card" 
                    draggable="true"
                    data-card-id="${card.id}"
+                   data-option-index="${card.optionIndex}"
+                   data-empathy="${card.empathy}"
+                   data-info="${card.info}"
                    ondragstart="handleResponseDragStart(event)"
-                   ondragend="handleResponseDragEnd(event)">
+                   ondragend="handleResponseDragEnd(event)"
+                   onclick="selectConversationCard(this)">
                 <div class="response-card-header">
                   <span class="response-quality-badge ${card.quality}">${card.quality}</span>
                 </div>
@@ -9212,6 +9667,12 @@
        * Add topic to conversation memory
        */
       function addToConversationMemory(topic, response) {
+        // Mark topic as completed
+        cardGameState.completedTopics.add(topic.id);
+
+        // Update visual indicators
+        generateTopicCards();
+
         const memorySlots = document.getElementById("memory-slots");
         if (!memorySlots) return;
 
@@ -9234,8 +9695,8 @@
           feedbackPanel.style.display = "none";
         }
 
-        // Check if all topics completed
-        if (cardGameState.usedTopics.size >= topicCards.length) {
+        // Check if all topics completed (must have responses submitted)
+        if (cardGameState.completedTopics.size >= topicCards.length) {
           completeCardGame();
         } else {
           // Reset for next topic
@@ -9307,6 +9768,13 @@
           "success",
           4000
         );
+
+        // Mark puzzle as completed
+        gameState.conversationCompleted = true;
+
+        // Update score display
+        updateScoreDisplay();
+        updateEmpathyDisplay();
 
         // Show continue button
         const nextButton = document.getElementById("next-dialogue");
@@ -9570,12 +10038,8 @@
         const insights = [];
 
         evidenceState.connections.forEach(([id1, id2]) => {
-          const evidence1 = evidenceState.evidenceData.find(
-            (e) => e.id === id1
-          );
-          const evidence2 = evidenceState.evidenceData.find(
-            (e) => e.id === id2
-          );
+          const evidence1 = evidenceData.find((e) => e.id === id1);
+          const evidence2 = evidenceData.find((e) => e.id === id2);
 
           // Generate contextual professional insight
           const insight = getConnectionInsight(evidence1, evidence2);
@@ -9986,18 +10450,18 @@
         );
 
         const documentId = event.dataTransfer.getData("text/plain");
-        const document = documentDatabase.find((doc) => doc.id === documentId);
+        const foundDoc = documentDatabase.find((doc) => doc.id === documentId);
 
-        if (document && !scannerState.processedDocuments.includes(documentId)) {
-          loadDocumentIntoScanner(document);
+        if (foundDoc && !scannerState.processedDocuments.includes(documentId)) {
+          loadDocumentIntoScanner(foundDoc);
         }
       }
 
       /**
        * Load document into scanner
        */
-      function loadDocumentIntoScanner(document) {
-        scannerState.currentDocument = document;
+      function loadDocumentIntoScanner(docData) {
+        scannerState.currentDocument = docData;
 
         // Update scanner bed display
         const scannerBed = document.getElementById("scanner-bed");
@@ -10005,10 +10469,10 @@
 
         if (placeholder) {
           placeholder.innerHTML = `
-            <div class="placeholder-icon">${document.icon}</div>
+            <div class="placeholder-icon">${docData.icon}</div>
             <span class="placeholder-text">
-              <strong>${document.type}</strong><br>
-              ${document.description}
+              <strong>${docData.type}</strong><br>
+              ${docData.description}
             </span>
           `;
         }
@@ -10027,7 +10491,7 @@
           "active"
         );
 
-        showToast(`📄 ${document.type} carregado no scanner`, "success", 2000);
+        showToast(`📄 ${docData.type} carregado no scanner`, "success", 2000);
       }
 
       /**
@@ -10040,7 +10504,7 @@
         scannerState.scanningInProgress = true;
         scannerState.scanStartTime = Date.now();
 
-        const document = scannerState.currentDocument;
+        const currentDoc = scannerState.currentDocument;
         const scannerBed = document.getElementById("scanner-bed");
         const scanningOverlay = document.getElementById("scanning-overlay");
         const scanTimer = document.getElementById("scan-timer");
@@ -10060,10 +10524,10 @@
 
         // Start scan animation and timer
         let scanProgress = 0;
-        let timeRemaining = Math.ceil(document.scanTime / 1000);
+        let timeRemaining = Math.ceil(currentDoc.scanTime / 1000);
 
         const scanInterval = setInterval(() => {
-          scanProgress += 100 / (document.scanTime / 100);
+          scanProgress += 100 / (currentDoc.scanTime / 100);
 
           // Update progress bar
           const scanningBar = document.getElementById("scanning-bar");
@@ -10088,7 +10552,7 @@
         scannerState.scanInterval = scanInterval;
 
         showToast(
-          `🖨️ Iniciando digitalização de ${document.type}`,
+          `🖨️ Iniciando digitalização de ${currentDoc.type}`,
           "info",
           3000
         );
@@ -10128,16 +10592,16 @@
        * Complete scanning process
        */
       function completeScan() {
-        const document = scannerState.currentDocument;
+        const currentDoc = scannerState.currentDocument;
         const scanTime = Date.now() - scannerState.scanStartTime;
 
         // Calculate performance metrics
-        const targetTime = document.scanTime;
+        const targetTime = currentDoc.scanTime;
         const timeBonus = scanTime < targetTime ? 5 : 0;
         const qualityPoints = Math.random() > 0.8 ? 10 : 0; // Random quality bonus
 
         // Add to processed documents
-        scannerState.processedDocuments.push(document.id);
+        scannerState.processedDocuments.push(currentDoc.id);
         scannerState.totalScanTime += scanTime;
 
         // Calculate average speed
@@ -10148,7 +10612,7 @@
         );
 
         // Check for secret documents
-        if (document.isSecret) {
+        if (currentDoc.isSecret) {
           scannerState.secretDocsFound++;
           addScannerAchievement(
             "🔐 Documento Confidencial",
@@ -10157,10 +10621,10 @@
         }
 
         // Show scan results
-        displayScanResults(document, scanTime, timeBonus + qualityPoints);
+        displayScanResults(currentDoc, scanTime, timeBonus + qualityPoints);
 
         // Show validation panel
-        showValidationPanel(document);
+        showValidationPanel(currentDoc);
 
         // Reset scanner interface
         resetScannerInterface();
@@ -10217,7 +10681,7 @@
       /**
        * Display scan results
        */
-      function displayScanResults(document, scanTime, bonusPoints) {
+      function displayScanResults(docData, scanTime, bonusPoints) {
         const resultsDisplay = document.getElementById("results-display");
         if (!resultsDisplay) return;
 
@@ -10228,17 +10692,17 @@
         resultElement.className = "scan-result";
         resultElement.innerHTML = `
           <div class="result-header">
-            <span class="result-title">${document.icon} ${document.type}</span>
+            <span class="result-title">${docData.icon} ${docData.type}</span>
             <span class="result-time">${currentTime}</span>
           </div>
           <div class="result-content">
             <strong>Status:</strong> Digitalização concluída<br>
             <strong>Tempo:</strong> ${scanTimeSeconds}s<br>
             <strong>Qualidade:</strong> ${
-              document.isSecret ? "Confidencial" : "Normal"
+              docData.isSecret ? "Confidencial" : "Normal"
             }<br>
             <strong>Pontos Bonus:</strong> +${bonusPoints}<br>
-            <strong>Conteúdo:</strong> ${document.content}
+            <strong>Conteúdo:</strong> ${docData.content}
           </div>
         `;
 
@@ -10264,14 +10728,14 @@
       /**
        * Show validation panel
        */
-      function showValidationPanel(document) {
+      function showValidationPanel(docData) {
         const validationPanel = document.getElementById("validation-panel");
         const validationChecks = document.getElementById("validation-checks");
 
         if (!validationPanel || !validationChecks) return;
 
         // Generate validation checks
-        validationChecks.innerHTML = document.validationChecks
+        validationChecks.innerHTML = docData.validationChecks
           .map((check) => {
             const status = Math.random() > 0.2 || check.requirement; // 80% pass rate for required, 100% for optional
             return `
@@ -10293,12 +10757,12 @@
        * Approve document validation
        */
       function approveDocument() {
-        const document = scannerState.currentDocument;
-        if (!document) return;
+        const currentDoc = scannerState.currentDocument;
+        if (!currentDoc) return;
 
         // Mark document as processed in UI
         const documentElement = document.querySelector(
-          `[data-document-id="${document.id}"]`
+          `[data-document-id="${currentDoc.id}"]`
         );
         if (documentElement) {
           documentElement.classList.add("processed");
@@ -10328,8 +10792,8 @@
        * Reject document validation
        */
       function rejectDocument() {
-        const document = scannerState.currentDocument;
-        if (!document) return;
+        const currentDoc = scannerState.currentDocument;
+        if (!currentDoc) return;
 
         // Accuracy penalty
         scannerState.accuracyScore = Math.max(
@@ -10345,7 +10809,7 @@
 
         updateScannerMetrics();
         showToast(
-          `❌ ${document.type} rejeitado - Precisão reduzida`,
+          `❌ ${currentDoc.type} rejeitado - Precisão reduzida`,
           "warning",
           3000
         );

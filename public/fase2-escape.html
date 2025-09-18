@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAASI Escape Room - Fase 2: Identificação e Planeamento</title>
+    <style>
+      /* ===== TOAST SYSTEM - COPIED FROM FASE1-ESCAPE.HTML ===== */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+      }
+
+      .toast {
+        background: #333;
+        color: white;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        position: relative;
+        padding-right: 50px;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: #28a745;
+        border-left: 4px solid #1e7e34;
+      }
+
+      .toast.error {
+        background: #dc3545;
+        border-left: 4px solid #c82333;
+      }
+
+      .toast.warning {
+        background: #ffc107;
+        color: #212529;
+        border-left: 4px solid #e0a800;
+      }
+
+      .toast.info {
+        background: #17a2b8;
+        border-left: 4px solid #138496;
+      }
+
+      .toast-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+
+      .toast-close:hover {
+        opacity: 1;
+      }
+
+      /* ===== BASE STYLES - FOLLOWING FASE1-ESCAPE.HTML PATTERN ===== */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 20px;
+      }
+
+      .back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(108, 117, 125, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        z-index: 1000;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .back-button:hover {
+        background: rgba(84, 91, 98, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .score {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(51, 51, 51, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: rgba(245, 245, 245, 0.8);
+        backdrop-filter: blur(5px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .progress-bar {
+        background: #e0e0e0;
+        height: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+      }
+
+      .progress-fill {
+        background: #4caf50;
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s;
+        width: 0%;
+      }
+
+      .state {
+        display: none;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        margin: 20px 0;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .state.active {
+        display: block;
+        animation: slideIn 0.5s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        cursor: pointer;
+        margin: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* ===== PUZZLE 1: PROBLEM MAPPING & PRIORITIZATION ===== */
+      .problem-mapping-arena {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 20px 0;
+      }
+
+      .problems-pool {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+      .priority-zones {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .problem-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px 0;
+        border: 2px solid transparent;
+        cursor: grab;
+        transition: all 0.3s ease;
+        user-select: none;
+      }
+
+      .problem-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+      }
+
+      .problem-card.dragging {
+        opacity: 0.8;
+        transform: rotate(5deg);
+        cursor: grabbing;
+      }
+
+      .problem-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .urgency-indicator {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      .urgency-indicator.high {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .urgency-indicator.medium {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .urgency-indicator.low {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .problem-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 8px 0;
+        line-height: 1.4;
+      }
+
+      .problem-metrics {
+        display: flex;
+        gap: 10px;
+        font-size: 0.8rem;
+        color: #495057;
+      }
+
+      .priority-zone {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        border: 2px dashed #dee2e6;
+        min-height: 120px;
+        transition: all 0.3s ease;
+      }
+
+      .priority-zone.drop-target {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .priority-zone h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.1rem;
+      }
+
+      .priority-zone p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      /* ===== PUZZLE 2: BENEFITS ANALYSIS & OPTIMIZATION ===== */
+      .benefits-optimization-lab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 20px 0;
+      }
+
+      .current-situation-dashboard {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+      .financial-meter {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .income-bar,
+      .expenses-bar {
+        position: relative;
+        background: #e9ecef;
+        border-radius: 10px;
+        height: 40px;
+        overflow: hidden;
+      }
+
+      .label {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: 600;
+        z-index: 2;
+        color: #495057;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 15px;
+        font-weight: 600;
+        color: white;
+        transition: width 0.5s ease;
+      }
+
+      .income-bar .bar-fill {
+        background: linear-gradient(90deg, #4caf50, #66bb6a);
+      }
+
+      .expenses-bar .bar-fill {
+        background: linear-gradient(90deg, #f44336, #ef5350);
+      }
+
+      .balance-indicator {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+      }
+
+      .balance-indicator.positive {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .balance-indicator.negative {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .benefits-selection-area {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .benefit-card {
+        background: linear-gradient(135deg, #fff, #f8f9fa);
+        border-radius: 12px;
+        padding: 15px;
+        margin: 10px 0;
+        border: 2px solid #dee2e6;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .benefit-card:hover {
+        border-color: #4caf50;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+      }
+
+      .benefit-card.selected {
+        border-color: #4caf50;
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      }
+
+      .benefit-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .benefit-value {
+        color: #2e7d32;
+        font-weight: 600;
+        margin: 8px 0;
+      }
+
+      .eligibility-check {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 10px;
+      }
+
+      .requirement {
+        font-size: 0.8rem;
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+
+      .requirement.met {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .requirement.not-met {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .optimization-results {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .scenario-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .scenario {
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+      }
+
+      .scenario.current {
+        background: #fff3e0;
+        border: 2px solid #ff9800;
+      }
+
+      .scenario.optimized {
+        background: #e8f5e9;
+        border: 2px solid #4caf50;
+      }
+
+      .balance {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .improvement-indicator {
+        color: #2e7d32;
+        font-weight: 600;
+      }
+
+      /* ===== PUZZLE 3: ENTITY ARTICULATION NETWORK ===== */
+      .entity-network-map {
+        position: relative;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px 0;
+        min-height: 500px;
+      }
+
+      .network-canvas {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: radial-gradient(circle at center, #f8f9fa, #e9ecef);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .entity-node {
+        position: absolute;
+        width: 200px;
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #dee2e6;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .entity-node:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #4caf50;
+      }
+
+      .entity-node.connected {
+        border-color: #4caf50;
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      }
+
+      .entity-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      .entity-info h4 {
+        margin: 0 0 8px 0;
+        font-size: 0.9rem;
+        color: #2c3e50;
+      }
+
+      .specialties {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin: 8px 0;
+      }
+
+      .specialty {
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 2px 6px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 500;
+      }
+
+      .availability-status {
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      .availability-status.available {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .availability-status.busy {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .connection-ports {
+        display: none; /* Will be shown when implementing connections */
+      }
+
+      .connection-line {
+        position: absolute;
+        background: #4caf50;
+        height: 3px;
+        border-radius: 2px;
+        transform-origin: left center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .connection-line.active {
+        opacity: 1;
+      }
+
+      .coordination-panel {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .coordination-timeline {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .timeline-step {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        border-left: 4px solid #667eea;
+      }
+
+      .week-label {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .actions-list {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #6c757d;
+      }
+
+      /* ===== PUZZLE 4: INTERVENTION TIMELINE BUILDER ===== */
+      .timeline-builder-workspace {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+        margin: 20px 0;
+      }
+
+      .interventions-library {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .intervention-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .intervention-card {
+        background: linear-gradient(135deg, #fff, #f8f9fa);
+        border-radius: 12px;
+        padding: 15px;
+        border: 2px solid #dee2e6;
+        cursor: grab;
+        transition: all 0.3s ease;
+        user-select: none;
+      }
+
+      .intervention-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+      }
+
+      .intervention-card.dragging {
+        opacity: 0.8;
+        transform: scale(1.05);
+        cursor: grabbing;
+      }
+
+      .intervention-card.placed {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .intervention-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .intervention-icon {
+        font-size: 1.5rem;
+      }
+
+      .intervention-details {
+        font-size: 0.8rem;
+        color: #6c757d;
+        line-height: 1.4;
+      }
+
+      .duration,
+      .prerequisites,
+      .optimal-timing {
+        margin: 3px 0;
+      }
+
+      .timeline-canvas {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+      .timeline-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .btn-validate-timeline,
+      .btn-optimize-timeline {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+
+      .timeline-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 15px;
+      }
+
+      .month-column {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        border: 2px solid #dee2e6;
+      }
+
+      .month-header {
+        margin-bottom: 15px;
+      }
+
+      .month-header h4 {
+        margin: 0 0 8px 0;
+        font-size: 0.9rem;
+        color: #495057;
+      }
+
+      .capacity-indicator {
+        font-size: 0.8rem;
+        color: #6c757d;
+      }
+
+      .capacity-used {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .month-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-height: 150px;
+      }
+
+      .time-slot {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 10px;
+        min-height: 40px;
+        transition: all 0.3s ease;
+      }
+
+      .time-slot.drop-target {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .time-slot.occupied {
+        border-color: #4caf50;
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      }
+
+      .timeline-validation-panel {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .validation-results {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .validation-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .check-icon {
+        font-size: 1.2rem;
+      }
+
+      .check-status {
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .check-status.pending {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .check-status.valid {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .check-status.invalid {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      /* ===== MOBILE RESPONSIVENESS ===== */
+      @media (max-width: 1200px) {
+        .problem-mapping-arena,
+        .benefits-optimization-lab {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .timeline-builder-workspace {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .timeline-grid {
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          padding: 10px;
+        }
+
+        .container {
+          padding: 20px;
+        }
+
+        .back-button,
+        .score {
+          position: static;
+          display: inline-block;
+          margin: 5px;
+        }
+
+        .problem-card,
+        .benefit-card,
+        .intervention-card {
+          padding: 12px;
+          margin: 8px 0;
+        }
+
+        .entity-node {
+          width: 160px;
+          padding: 12px;
+        }
+
+        .timeline-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+          padding: 15px;
+          font-size: 16px;
+        }
+      }
+
+      /* ===== ANIMATIONS ===== */
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      /* ===== LOADING STATE ===== */
+      .loading {
+        text-align: center;
+        padding: 50px;
+      }
+
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <a href="index.html" class="back-button">← Voltar ao Menu</a>
+    <div class="score">Pontuação: <span id="score">0</span>/100</div>
+
+    <div class="main-container">
+      <div class="container">
+        <div class="header">
+          <h1>🎯 SAASI Escape Room - Fase 2</h1>
+          <h2>Identificação de Necessidades e Planeamento Interativo</h2>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+          </div>
+          <p>Progresso: <span id="progress-text">0%</span></p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+          <div class="loading-spinner"></div>
+          <h3>Inicializando Escape Room Fase 2...</h3>
+          <p>Preparando puzzles interativos para identificação e planeamento</p>
+        </div>
+
+        <!-- Estado 1: Início -->
+        <div id="state-inicio" class="state">
+          <h2>🎯 Bem-vindo à Fase 2 - Escape Room</h2>
+          <div id="phase1-summary">
+            <h3>📋 Resumo da Fase 1</h3>
+            <p>
+              <strong>Pontuação:</strong> <span id="phase1-score">0</span>/100
+            </p>
+            <p><strong>Nível:</strong> <span id="phase1-level">-</span></p>
+            <p>
+              <strong>Situação:</strong> <span id="phase1-situation">-</span>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #e3f2fd;
+              padding: 20px;
+              border-radius: 15px;
+              margin: 20px 0;
+            "
+          >
+            <h3>🎮 4 Puzzles Interativos:</h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 15px;
+              "
+            >
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>🗺️ Puzzle 1</h4>
+                <p>
+                  <strong>Mapeamento de Problemas</strong><br />Arraste
+                  problemas para zonas de prioridade
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>💰 Puzzle 2</h4>
+                <p>
+                  <strong>Otimização de Benefícios</strong><br />Calculadora
+                  interativa em tempo real
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>🤝 Puzzle 3</h4>
+                <p>
+                  <strong>Rede de Entidades</strong><br />Coordenação visual
+                  interativa
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>📅 Puzzle 4</h4>
+                <p>
+                  <strong>Timeline Builder</strong><br />Construção cronológica
+                  com validação
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px">
+            <button class="btn" onclick="startEscapeRoom()">
+              🚀 Iniciar Escape Room
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 2: Puzzle 1 - Mapeamento de Problemas -->
+        <div id="state-puzzle1" class="state">
+          <h2>🗺️ Puzzle 1: Mapeamento de Problemas</h2>
+          <p>
+            <strong>Objetivo:</strong> Arraste cada problema para a zona de
+            prioridade correta. Tempo limite: <span id="timer1">8:00</span>
+          </p>
+
+          <div class="problem-mapping-arena">
+            <div class="problems-pool">
+              <h3>📋 Problemas Identificados</h3>
+              <div id="problems-list">
+                <!-- Problems will be loaded dynamically -->
+              </div>
+            </div>
+
+            <div class="priority-zones">
+              <div class="priority-zone" data-priority="1">
+                <h3>🔴 Prioridade CRÍTICA</h3>
+                <p>Problemas que impedem qualquer progresso</p>
+                <div class="dropped-problems" data-zone="critical"></div>
+              </div>
+              <div class="priority-zone" data-priority="2">
+                <h3>🟡 Prioridade ALTA</h3>
+                <p>Problemas que limitam significativamente</p>
+                <div class="dropped-problems" data-zone="high"></div>
+              </div>
+              <div class="priority-zone" data-priority="3">
+                <h3>🟢 Prioridade MÉDIA</h3>
+                <p>Problemas importantes mas não bloqueadores</p>
+                <div class="dropped-problems" data-zone="medium"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px">
+            <p>
+              <strong>Progresso:</strong> <span id="puzzle1-progress">0</span>/6
+              problemas categorizados
+            </p>
+            <button
+              id="btn-continue-puzzle2"
+              class="btn"
+              onclick="nextPuzzle(2)"
+              style="display: none"
+            >
+              ➡️ Continuar para Puzzle 2
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 3: Puzzle 2 - Análise de Benefícios -->
+        <div id="state-puzzle2" class="state">
+          <h2>💰 Puzzle 2: Otimização de Benefícios</h2>
+          <p>
+            <strong>Objetivo:</strong> Otimize os apoios sociais para maximizar
+            o impacto financeiro. Meta: >20% melhoria
+          </p>
+
+          <div class="benefits-optimization-lab">
+            <div class="current-situation-dashboard">
+              <h3>📊 Situação Atual</h3>
+              <div class="financial-meter">
+                <div class="income-bar">
+                  <span class="label">Rendimentos</span>
+                  <div class="bar-fill" style="width: 60%">566,78€</div>
+                </div>
+                <div class="expenses-bar">
+                  <span class="label">Despesas</span>
+                  <div class="bar-fill" style="width: 48%">450€</div>
+                </div>
+                <div class="balance-indicator positive" id="current-balance">
+                  +116,78€
+                </div>
+              </div>
+            </div>
+
+            <div class="benefits-selection-area">
+              <h3>💼 Benefícios Disponíveis</h3>
+              <div id="benefits-list">
+                <!-- Benefits will be loaded dynamically -->
+              </div>
+            </div>
+
+            <div
+              class="optimization-results"
+              id="optimization-results"
+              style="display: none"
+            >
+              <h3>📈 Cenário Otimizado</h3>
+              <div class="scenario-comparison">
+                <div class="scenario current">
+                  <h4>Cenário Atual</h4>
+                  <div class="balance">+116,78€/mês</div>
+                </div>
+                <div class="scenario optimized">
+                  <h4>Cenário Otimizado</h4>
+                  <div class="balance improvement" id="optimized-balance">
+                    +0€/mês
+                  </div>
+                  <div class="improvement-indicator" id="improvement-amount">
+                    +0€ melhoria
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px">
+            <button class="btn" onclick="calculateOptimization()">
+              📊 Calcular Otimização
+            </button>
+            <button
+              id="btn-continue-puzzle3"
+              class="btn"
+              onclick="nextPuzzle(3)"
+              style="display: none"
+            >
+              ➡️ Continuar para Puzzle 3
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 4: Puzzle 3 - Articulação de Entidades -->
+        <div id="state-puzzle3" class="state">
+          <h2>🤝 Puzzle 3: Rede de Articulação</h2>
+          <p>
+            <strong>Objetivo:</strong> Conecte a Felisbina com as entidades
+            adequadas. Meta: 3+ conexões eficazes
+          </p>
+
+          <div class="entity-network-map">
+            <div class="network-canvas" id="network-canvas">
+              <!-- Central Felisbina node -->
+              <div
+                class="entity-node"
+                id="felisbina-node"
+                style="top: 45%; left: 45%; width: 120px"
+              >
+                <div class="entity-avatar">👤</div>
+                <div class="entity-info">
+                  <h4>Felisbina Santos</h4>
+                  <div class="specialties">
+                    <span class="specialty">Beneficiária</span>
+                  </div>
+                  <div class="availability-status available">
+                    Centro da Rede
+                  </div>
+                </div>
+              </div>
+
+              <!-- Entity nodes will be loaded dynamically -->
+              <div id="entity-nodes-container">
+                <!-- Entities will be positioned around Felisbina -->
+              </div>
+            </div>
+
+            <div class="coordination-panel">
+              <h3>🤝 Plano de Coordenação</h3>
+              <div class="coordination-timeline" id="coordination-timeline">
+                <!-- Timeline will be populated based on connections -->
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px">
+            <p>
+              <strong>Progresso:</strong> <span id="puzzle3-progress">0</span>/3
+              entidades conectadas
+            </p>
+            <button
+              id="btn-continue-puzzle4"
+              class="btn"
+              onclick="nextPuzzle(4)"
+              style="display: none"
+            >
+              ➡️ Continuar para Puzzle 4
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 5: Puzzle 4 - Timeline Builder -->
+        <div id="state-puzzle4" class="state">
+          <h2>📅 Puzzle 4: Construtor de Timeline</h2>
+          <p>
+            <strong>Objetivo:</strong> Organize intervenções numa sequência
+            lógica. Meta: cronograma válido sem conflitos
+          </p>
+
+          <div class="timeline-builder-workspace">
+            <div class="interventions-library">
+              <h3>📚 Intervenções Disponíveis</h3>
+              <div class="intervention-cards" id="interventions-library">
+                <!-- Interventions will be loaded dynamically -->
+              </div>
+            </div>
+
+            <div class="timeline-canvas">
+              <div class="timeline-header">
+                <h3>📅 Cronograma de 7 Meses</h3>
+                <div class="timeline-controls">
+                  <button
+                    class="btn-validate-timeline btn"
+                    onclick="validateTimeline()"
+                  >
+                    ✅ Validar Sequência
+                  </button>
+                  <button
+                    class="btn-optimize-timeline btn"
+                    onclick="optimizeTimeline()"
+                  >
+                    ⚡ Otimizar
+                  </button>
+                </div>
+              </div>
+
+              <div class="timeline-grid" id="timeline-grid">
+                <!-- Timeline months will be generated -->
+              </div>
+
+              <div class="timeline-validation-panel">
+                <h3>✅ Validação do Cronograma</h3>
+                <div class="validation-results">
+                  <div class="validation-item" data-check="prerequisites">
+                    <span class="check-icon">⏳</span>
+                    <span class="check-label">Pré-requisitos respeitados</span>
+                    <span class="check-status pending">Pendente</span>
+                  </div>
+                  <div class="validation-item" data-check="capacity">
+                    <span class="check-icon">📊</span>
+                    <span class="check-label">Capacidade das entidades</span>
+                    <span class="check-status pending">Pendente</span>
+                  </div>
+                  <div class="validation-item" data-check="sequencing">
+                    <span class="check-icon">🔄</span>
+                    <span class="check-label">Sequenciamento lógico</span>
+                    <span class="check-status pending">Pendente</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px">
+            <p>
+              <strong>Progresso:</strong>
+              <span id="puzzle4-progress">0</span>/10 intervenções planeadas
+            </p>
+            <button
+              id="btn-finalize"
+              class="btn"
+              onclick="nextState('conclusao')"
+              style="display: none"
+            >
+              🎉 Finalizar Fase 2
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 6: Conclusão -->
+        <div id="state-conclusao" class="state">
+          <h1>🎉 Fase 2 Escape Room Concluída!</h1>
+
+          <div
+            style="
+              text-align: center;
+              background: #e8f5e9;
+              padding: 30px;
+              border-radius: 10px;
+              margin: 20px 0;
+            "
+          >
+            <h2>Pontuação Final: <span id="final-score">0</span>/100</h2>
+            <h3 id="final-level">Técnico Especialista</h3>
+            <p>
+              <strong>Tempo Total:</strong>
+              <span id="total-time">0</span> minutos
+            </p>
+          </div>
+
+          <div id="final-report">
+            <h3>📊 Relatório de Performance por Puzzle:</h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+              "
+            >
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>🗺️ Puzzle 1: Mapeamento</h4>
+                <p>
+                  <strong>Pontos:</strong>
+                  <span id="puzzle1-final-score">0</span>/25
+                </p>
+                <p>
+                  <strong>Problemas:</strong>
+                  <span id="puzzle1-final-progress">0</span>/6
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>💰 Puzzle 2: Benefícios</h4>
+                <p>
+                  <strong>Pontos:</strong>
+                  <span id="puzzle2-final-score">0</span>/25
+                </p>
+                <p>
+                  <strong>Melhoria:</strong>
+                  <span id="puzzle2-final-improvement">0</span>%
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>🤝 Puzzle 3: Entidades</h4>
+                <p>
+                  <strong>Pontos:</strong>
+                  <span id="puzzle3-final-score">0</span>/25
+                </p>
+                <p>
+                  <strong>Conexões:</strong>
+                  <span id="puzzle3-final-connections">0</span>/3
+                </p>
+              </div>
+              <div
+                style="background: white; padding: 15px; border-radius: 10px"
+              >
+                <h4>📅 Puzzle 4: Timeline</h4>
+                <p>
+                  <strong>Pontos:</strong>
+                  <span id="puzzle4-final-score">0</span>/25
+                </p>
+                <p>
+                  <strong>Intervenções:</strong>
+                  <span id="puzzle4-final-interventions">0</span>/10
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px">
+            <button class="btn" onclick="restartPhase2()">
+              🔄 Repetir Fase 2
+            </button>
+            <button
+              class="btn"
+              onclick="continueToPhase3()"
+              style="background: #4caf50"
+            >
+              ➡️ Continuar para Fase 3
+            </button>
+            <a
+              href="index.html"
+              class="btn"
+              style="background: #6c757d; text-decoration: none"
+              >⬅️ Voltar ao Menu</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/fase2-escape-engine.js"></script>
+    <script>
+      // Game state following the exact pattern from fase1-escape.html
+      let gameState = {
+        currentState: "loading",
+        score: 0,
+        startTime: Date.now(),
+        progress: 0,
+        phase1Data: null,
+
+        // Puzzle-specific states
+        puzzle1: {
+          score: 0,
+          progress: 0,
+          timeLimit: 480, // 8 minutes
+          timeRemaining: 480,
+          problemsPlaced: {},
+          completed: false,
+        },
+        puzzle2: {
+          score: 0,
+          selectedBenefits: [],
+          currentBalance: 116.78,
+          optimizedBalance: 0,
+          improvement: 0,
+          completed: false,
+        },
+        puzzle3: {
+          score: 0,
+          progress: 0,
+          connectedEntities: [],
+          coordinationPlan: [],
+          completed: false,
+        },
+        puzzle4: {
+          score: 0,
+          progress: 0,
+          placedInterventions: {},
+          validationStatus: {
+            prerequisites: false,
+            capacity: false,
+            sequencing: false,
+          },
+          completed: false,
+        },
+      };
+
+      // Initialize the escape room
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadPhase1Data();
+        await delay(2000); // Show loading animation
+
+        // Initialize escape room engine
+        if (typeof EscapeRoomPhase2 !== "undefined") {
+          window.escapeRoom = new EscapeRoomPhase2(gameState);
+        }
+
+        startGame();
+      });
+
+      // Toast System - exact copy from fase1-escape.html
+      function showToast(message, type = "info", duration = 5000) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        toast.innerHTML = `
+                ${message}
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+        container.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add("show"), 100);
+
+        // Auto remove
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 300);
+        }, duration);
+      }
+
+      // Load Phase 1 data
+      async function loadPhase1Data() {
+        const savedData = localStorage.getItem("saasi_phase1_results");
+        if (!savedData) {
+          showToast(
+            "⚠️ Dados da Fase 1 não encontrados. Redirecionando...",
+            "error",
+            3000
+          );
+          setTimeout(() => (window.location.href = "fase1.html"), 3000);
+          return;
+        }
+
+        gameState.phase1Data = JSON.parse(savedData);
+        console.log("Phase 1 data loaded:", gameState.phase1Data);
+
+        // Update summary
+        document.getElementById("phase1-score").textContent =
+          gameState.phase1Data.score;
+        document.getElementById("phase1-level").textContent =
+          gameState.phase1Data.level.title;
+        document.getElementById("phase1-situation").textContent =
+          gameState.phase1Data.felisbinaData.situacao;
+      }
+
+      // Start the game
+      function startGame() {
+        changeState("inicio");
+      }
+
+      // Start escape room
+      function startEscapeRoom() {
+        changeState("puzzle1");
+        if (window.escapeRoom) {
+          window.escapeRoom.initializePuzzle1();
+        }
+      }
+
+      // Change state function - following fase1-escape.html pattern
+      function changeState(newState) {
+        // Hide current state
+        document.querySelectorAll(".state").forEach((state) => {
+          state.classList.remove("active");
+        });
+        document.getElementById("loading").style.display = "none";
+
+        // Show new state
+        document.getElementById(`state-${newState}`).classList.add("active");
+        gameState.currentState = newState;
+        updateProgress();
+
+        // Add fade-in animation
+        document.getElementById(`state-${newState}`).classList.add("fade-in");
+      }
+
+      // Next puzzle
+      function nextPuzzle(puzzleNumber) {
+        changeState(`puzzle${puzzleNumber}`);
+        if (window.escapeRoom) {
+          window.escapeRoom[`initializePuzzle${puzzleNumber}`]();
+        }
+      }
+
+      // Next state
+      function nextState(state) {
+        changeState(state);
+      }
+
+      // Update progress
+      function updateProgress() {
+        const states = [
+          "loading",
+          "inicio",
+          "puzzle1",
+          "puzzle2",
+          "puzzle3",
+          "puzzle4",
+          "conclusao",
+        ];
+        const currentIndex = states.indexOf(gameState.currentState);
+        const progress =
+          Math.max(0, (currentIndex - 1) / (states.length - 2)) * 100;
+
+        document.getElementById("progress").style.width = progress + "%";
+        document.getElementById("progress-text").textContent =
+          Math.round(progress) + "%";
+
+        // Update score display
+        updateScore();
+      }
+
+      // Update score
+      function updateScore() {
+        gameState.score =
+          gameState.puzzle1.score +
+          gameState.puzzle2.score +
+          gameState.puzzle3.score +
+          gameState.puzzle4.score;
+        document.getElementById("score").textContent = gameState.score;
+      }
+
+      // Add score
+      function addScore(points, puzzle = null) {
+        if (puzzle) {
+          gameState[puzzle].score = Math.min(
+            gameState[puzzle].score + points,
+            25
+          );
+        }
+        updateScore();
+      }
+
+      // Calculate optimization (Puzzle 2)
+      function calculateOptimization() {
+        if (window.escapeRoom) {
+          window.escapeRoom.calculateOptimization();
+        }
+      }
+
+      // Validate timeline (Puzzle 4)
+      function validateTimeline() {
+        if (window.escapeRoom) {
+          window.escapeRoom.validateTimeline();
+        }
+      }
+
+      // Optimize timeline (Puzzle 4)
+      function optimizeTimeline() {
+        if (window.escapeRoom) {
+          window.escapeRoom.optimizeTimeline();
+        }
+      }
+
+      // Show conclusion
+      function showConclusion() {
+        const duration = Math.round((Date.now() - gameState.startTime) / 60000);
+
+        // Calculate final level
+        let level = "Técnico Iniciante";
+        if (gameState.score >= 95) level = "Mestre SAASI";
+        else if (gameState.score >= 85) level = "Técnico Especialista";
+        else if (gameState.score >= 70) level = "Técnico Proficiente";
+        else if (gameState.score >= 50) level = "Técnico Competente";
+
+        document.getElementById("final-score").textContent = gameState.score;
+        document.getElementById("final-level").textContent = level;
+        document.getElementById("total-time").textContent = duration;
+
+        // Update puzzle reports
+        document.getElementById("puzzle1-final-score").textContent =
+          gameState.puzzle1.score;
+        document.getElementById("puzzle1-final-progress").textContent =
+          gameState.puzzle1.progress;
+        document.getElementById("puzzle2-final-score").textContent =
+          gameState.puzzle2.score;
+        document.getElementById("puzzle2-final-improvement").textContent =
+          Math.round(gameState.puzzle2.improvement);
+        document.getElementById("puzzle3-final-score").textContent =
+          gameState.puzzle3.score;
+        document.getElementById("puzzle3-final-connections").textContent =
+          gameState.puzzle3.progress;
+        document.getElementById("puzzle4-final-score").textContent =
+          gameState.puzzle4.score;
+        document.getElementById("puzzle4-final-interventions").textContent =
+          gameState.puzzle4.progress;
+      }
+
+      // Continue to Phase 3
+      function continueToPhase3() {
+        // Save Phase 2 results
+        const phase2Results = {
+          phase: 2,
+          score: gameState.score,
+          maxScore: 100,
+          percentage: gameState.score,
+          duration: Math.round((Date.now() - gameState.startTime) / 60000),
+          level: { title: getLevelTitle(gameState.score) },
+          puzzleResults: {
+            puzzle1: gameState.puzzle1,
+            puzzle2: gameState.puzzle2,
+            puzzle3: gameState.puzzle3,
+            puzzle4: gameState.puzzle4,
+          },
+          phase1Data: gameState.phase1Data,
+        };
+
+        localStorage.setItem(
+          "saasi_phase2_results",
+          JSON.stringify(phase2Results)
+        );
+
+        // Check unlock criteria: 60/100 points
+        if (gameState.score >= 60) {
+          showToast(
+            '🎉 Parabéns! Desbloqueou a Fase 3!<br><br>Código de desbloqueio: "PLANEAMENTO2025"<br><br>Pontuação: ' +
+              gameState.score +
+              "/100<br><br>Redirecionando para a Fase 3...",
+            "success",
+            3000
+          );
+          setTimeout(() => (window.location.href = "fase3-escape.html"), 3000);
+        } else {
+          showToast(
+            "⚠️ Pontuação insuficiente para Fase 3!<br><br>Necessário: 60/100 pontos<br>Obtido: " +
+              gameState.score +
+              "/100<br><br>Tente novamente!",
+            "error",
+            6000
+          );
+        }
+      }
+
+      // Restart Phase 2
+      function restartPhase2() {
+        localStorage.removeItem("saasi_phase2_results");
+        location.reload();
+      }
+
+      // Get level title
+      function getLevelTitle(score) {
+        if (score >= 95) return "Mestre SAASI";
+        if (score >= 85) return "Técnico Especialista";
+        if (score >= 70) return "Técnico Proficiente";
+        if (score >= 50) return "Técnico Competente";
+        return "Técnico Iniciante";
+      }
+
+      // Utility function for delays
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // When changing to conclusion, show the report
+      const originalChangeState = changeState;
+      changeState = function (newState) {
+        originalChangeState(newState);
+        if (newState === "conclusao") {
+          showConclusion();
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -654,12 +654,14 @@
           appState.phases.phase4.score = data.score || 0;
         }
 
-        // Calcular pontuação total
-        appState.totalScore =
+        // Calcular pontuação total (limitada ao máximo de 400)
+        appState.totalScore = Math.min(
           appState.phases.phase1.score +
-          appState.phases.phase2.score +
-          appState.phases.phase3.score +
-          appState.phases.phase4.score;
+            appState.phases.phase2.score +
+            appState.phases.phase3.score +
+            appState.phases.phase4.score,
+          400
+        );
       }
 
       // Atualizar interface
