@@ -1045,21 +1045,9 @@
         try {
           console.log("Performing complete reset...");
 
-          // Clear all localStorage keys
-          const keysToRemove = [
-            "saasi_phase1_results",
-            "saasi_phase2_results",
-            "saasi_phase3_results",
-            "saasi_phase4_results",
-            "saasi_settings",
-            "saasi_last_save",
-            "saasi_game_mode",
-          ];
-
-          keysToRemove.forEach((key) => {
-            localStorage.removeItem(key);
-            console.log(`Removed localStorage key: ${key}`);
-          });
+          // Clear ALL localStorage - not just specific keys
+          localStorage.clear();
+          console.log("All localStorage cleared");
 
           // Reset global app state to initial values
           window.appState = {
@@ -1097,6 +1085,12 @@
           window.selectedGameMode = "normal";
 
           console.log("Complete reset performed successfully");
+
+          // Refresh the page to ensure clean state
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+
           return true;
         } catch (error) {
           console.error("Error in performCompleteReset:", error);
@@ -1185,7 +1179,8 @@
                 "Esta ação irá:<br>" +
                 "• Apagar todos os resultados das 4 fases<br>" +
                 "• Remover todas as conquistas<br>" +
-                "• Limpar o progresso guardado<br><br>" +
+                "• Limpar o progresso guardado<br>" +
+                "• Recarregar a página automaticamente<br><br>" +
                 "⚠️ <strong>Esta ação não pode ser desfeita!</strong><br><br>" +
                 "Deseja continuar?",
               {
@@ -1198,26 +1193,10 @@
 
             if (confirmReset) {
               statusDiv.innerHTML =
-                '<span style="color: #e67e22;">⏳ A limpar dados...</span>';
+                '<span style="color: #e67e22;">⏳ A limpar dados e recarregar página...</span>';
 
-              // Use the comprehensive reset function
-              const resetSuccess = performCompleteReset();
-
-              // Show result and refresh UI
-              if (resetSuccess) {
-                statusDiv.innerHTML =
-                  '<span style="color: #27ae60;">✅ Dados limpos com sucesso!</span>';
-
-                // Refresh UI immediately without full page reload
-                refreshUIAfterReset();
-
-                setTimeout(() => {
-                  statusDiv.innerHTML = "";
-                }, 3000);
-              } else {
-                statusDiv.innerHTML =
-                  '<span style="color: #e74c3c;">❌ Erro ao limpar dados. Tente recarregar a página.</span>';
-              }
+              // Use the comprehensive reset function (will auto-refresh page)
+              performCompleteReset();
             } else {
               statusDiv.innerHTML =
                 '<span style="color: #666;">Operação cancelada.</span>';
@@ -1232,25 +1211,14 @@
 
             if (
               originalConfirm(
-                "🔄 REINICIAR JOGO COMPLETO\n\nEsta ação irá:\n• Apagar todos os resultados das 4 fases\n• Remover todas as conquistas\n• Limpar o progresso guardado\n\n⚠️ Esta ação não pode ser desfeita!\n\nDeseja continuar?"
+                "🔄 REINICIAR JOGO COMPLETO\n\nEsta ação irá:\n• Apagar todos os resultados das 4 fases\n• Remover todas as conquistas\n• Limpar o progresso guardado\n• Recarregar a página\n\n⚠️ Esta ação não pode ser desfeita!\n\nDeseja continuar?"
               )
             ) {
               statusDiv.innerHTML =
-                '<span style="color: #e67e22;">⏳ A limpar dados...</span>';
+                '<span style="color: #e67e22;">⏳ A limpar dados e recarregar página...</span>';
 
-              const resetSuccess = performCompleteReset();
-
-              if (resetSuccess) {
-                statusDiv.innerHTML =
-                  '<span style="color: #27ae60;">✅ Dados limpos com sucesso!</span>';
-                refreshUIAfterReset();
-                setTimeout(() => {
-                  statusDiv.innerHTML = "";
-                }, 3000);
-              } else {
-                statusDiv.innerHTML =
-                  '<span style="color: #e74c3c;">❌ Erro ao limpar dados.</span>';
-              }
+              // Use the comprehensive reset function (will auto-refresh page)
+              performCompleteReset();
             } else {
               statusDiv.innerHTML =
                 '<span style="color: #666;">Operação cancelada.</span>';
@@ -1266,24 +1234,16 @@
           const originalConfirm = window._originalConfirm || confirm;
           if (
             originalConfirm(
-              "Tem a certeza de que deseja reiniciar todo o progresso?"
+              "Tem a certeza de que deseja reiniciar todo o progresso? A página será recarregada."
             )
           ) {
-            const success = performCompleteReset();
-            if (success) {
-              refreshUIAfterReset();
-              if (statusDiv) {
-                statusDiv.innerHTML =
-                  '<span style="color: #27ae60;">✅ Reset concluído!</span>';
-                setTimeout(() => {
-                  statusDiv.innerHTML = "";
-                }, 3000);
-              }
-            } else {
-              // Nuclear option - clear everything and reload
-              localStorage.clear();
-              location.reload();
+            if (statusDiv) {
+              statusDiv.innerHTML =
+                '<span style="color: #e67e22;">⏳ A limpar dados e recarregar página...</span>';
             }
+
+            // Use the comprehensive reset function (will auto-refresh page)
+            performCompleteReset();
           }
         }
       }
@@ -1304,18 +1264,12 @@
             console.log("Using fallback confirmation");
             if (
               originalConfirm(
-                "Tem a certeza de que deseja reiniciar todo o progresso?"
+                "Tem a certeza de que deseja reiniciar todo o progresso? A página será recarregada."
               )
             ) {
-              const success = performCompleteReset();
-              if (success) {
-                refreshUIAfterReset();
-                console.log("Fallback reset completed successfully");
-              } else {
-                // Last resort - clear everything and reload
-                localStorage.clear();
-                location.reload();
-              }
+              // Use the comprehensive reset function (will auto-refresh page)
+              performCompleteReset();
+              console.log("Fallback reset initiated");
             }
           }
         }, 0);
