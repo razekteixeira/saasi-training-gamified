@@ -195,12 +195,12 @@ const crisisManagementPuzzle = {
       opcoes_resposta: [
         {
           id: "contactar_emergencia_social",
-          acao: "Contactar serviço de emergência social da Câmara",
+          acao: "Contactar serviço de emergência social",
           prazo_execucao: "imediato",
           probabilidade_sucesso: 80,
           pontos: 15,
           correto: true,
-          consequencias: "Alojamento temporário garantido em 24h"
+          consequencias: "Alojamento temporário garantido"
         },
         {
           id: "solicitar_apoio_familia",
