@@ -1130,59 +1130,548 @@
         font-size: 1rem;
       }
 
-      /* ===== PUZZLE 4: AUTONOMY TRANSITION ORCHESTRATOR ===== */
-      .autonomy-transition-orchestrator {
+      /* ===== PUZZLE 4: AUTONOMY PREPARATION CENTER ===== */
+      .autonomy-preparation-center {
         background: rgba(255, 255, 255, 0.9);
         border-radius: 15px;
         padding: 30px;
         margin: 20px 0;
       }
 
-      .transition-dashboard {
+      .autonomy-dashboard {
         margin-bottom: 30px;
       }
 
-      .autonomy-readiness-assessment {
-        text-align: center;
+      .autonomy-header {
+        background: linear-gradient(135deg, #9c27b0, #e1bee7);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
         margin-bottom: 30px;
       }
 
-      .readiness-radar {
+      .autonomy-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      .autonomy-score {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        to {
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+      }
+
+      /* ===== PUZZLE 4: ENHANCED AUTONOMY PREPARATION STYLING ===== */
+
+      /* Overview Dashboard */
+      .autonomy-overview-dashboard {
+        margin-bottom: 30px;
+      }
+
+      .autonomy-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .autonomy-metric-card {
+        background: linear-gradient(135deg, white, #f8f9fa);
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 4px solid var(--metric-color);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .autonomy-metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .autonomy-metric-card .metric-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+      }
+
+      .autonomy-metric-card .metric-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--metric-color);
+      }
+
+      .metric-status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .metric-status.critical {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .metric-status.improving {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .metric-status.good {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .metric-status.warning {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      /* Timeline */
+      .transition-timeline {
+        background: rgba(156, 39, 176, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .timeline-phases {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
         position: relative;
-        width: 300px;
-        height: 300px;
-        margin: 20px auto;
-        background: radial-gradient(circle, #f8f9fa, #e9ecef);
+      }
+
+      .timeline-phases::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #9c27b0, #e1bee7);
+        z-index: 1;
+      }
+
+      .phase-marker {
+        background: white;
+        border: 3px solid #9c27b0;
+        border-radius: 50px;
+        padding: 10px 15px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        min-width: 100px;
+      }
+
+      .phase-marker.current {
+        background: #9c27b0;
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .phase-marker.next {
+        background: #e1bee7;
+        border-color: #9c27b0;
+      }
+
+      .phase-marker.future {
+        background: #f3e5f5;
+        border-color: #ce93d8;
+        opacity: 0.7;
+      }
+
+      .phase-label {
+        font-weight: bold;
+        display: block;
+      }
+
+      .phase-status {
+        font-size: 0.8rem;
+        opacity: 0.9;
+      }
+
+      /* Section Headers */
+      .section-header {
+        text-align: center;
+        margin: 30px 0 20px 0;
+        padding: 20px;
+        background: rgba(156, 39, 176, 0.05);
+        border-radius: 10px;
+      }
+
+      .section-header h4 {
+        margin: 0 0 10px 0;
+        color: #9c27b0;
+      }
+
+      .section-header p {
+        margin: 0;
+        color: #666;
+        font-style: italic;
+      }
+
+      /* Autonomy Areas Grid */
+      .autonomy-areas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .autonomy-area-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+      }
+
+      .autonomy-area-card:hover {
+        border-color: #9c27b0;
+        box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2);
+      }
+
+      .area-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f5f5f5;
+      }
+
+      .area-icon {
+        font-size: 2rem;
+        background: linear-gradient(135deg, #9c27b0, #e1bee7);
+        color: white;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .radar-legend {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
+      .area-info h5 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
       }
 
-      .legend-item {
+      .area-progress {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .current-status,
+      .target-status {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 8px;
+      }
+
+      .status-label {
+        font-weight: 500;
+        color: #666;
+        font-size: 0.85rem;
+      }
+
+      .status-value {
+        background: #f8f9fa;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        color: #495057;
+      }
+
+      .status-value.target {
+        background: #e8f5e9;
+        color: #2e7d32;
+        font-weight: 500;
+      }
+
+      /* Actions Grid */
+      .actions-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .action-card {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .action-card:hover {
+        border-color: #9c27b0;
+        background: rgba(156, 39, 176, 0.05);
+      }
+
+      .action-card.selected {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .action-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .action-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .action-checkbox {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .action-checkbox input[type="checkbox"] {
+        display: none;
+      }
+
+      .checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .action-checkbox input[type="checkbox"]:checked + .checkmark {
+        background: #4caf50;
+        border-color: #4caf50;
+        color: white;
+      }
+
+      .action-checkbox input[type="checkbox"]:checked + .checkmark::after {
+        content: "✓";
+        font-weight: bold;
+      }
+
+      .action-points {
+        background: linear-gradient(135deg, #2196f3, #64b5f6);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .action-details h6 {
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .action-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 0.8rem;
+        color: #666;
+      }
+
+      .action-timeline,
+      .action-responsible {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* Maintenance Strategies */
+      .maintenance-strategies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .maintenance-strategy-card {
         background: white;
-        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
       }
 
-      .color-indicator {
-        width: 12px;
-        height: 12px;
+      .maintenance-strategy-card:hover {
+        border-color: #9c27b0;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(156, 39, 176, 0.2);
+      }
+
+      .maintenance-strategy-card.selected {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.05);
+      }
+
+      .maintenance-strategy-card.selected .strategy-selection-indicator {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .maintenance-strategy-card.inadequate {
+        border-color: #f44336;
+        background: rgba(244, 67, 54, 0.05);
+      }
+
+      .maintenance-strategy-card.inadequate:hover {
+        border-color: #d32f2f;
+      }
+
+      .strategy-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .strategy-icon {
+        font-size: 1.8rem;
+        background: linear-gradient(135deg, #9c27b0, #e1bee7);
+        color: white;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .transition-planning-workspace {
-        margin-top: 30px;
+      .strategy-info h5 {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+      }
+
+      .strategy-points {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .strategy-points.positive {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .strategy-points.negative {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .strategy-content p {
+        margin: 0 0 10px 0;
+        color: #555;
+        line-height: 1.4;
+      }
+
+      .strategy-warning {
+        background: #fff3e0;
+        border: 1px solid #ffcc02;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .warning-icon {
+        font-size: 1.1rem;
+        margin-top: 2px;
+      }
+
+      .warning-text {
+        font-size: 0.85rem;
+        color: #f57c00;
+        line-height: 1.3;
+      }
+
+      .strategy-selection-indicator {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s ease;
+      }
+
+      .selection-checkmark {
+        background: #4caf50;
+        color: white;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1200px) {
+        .autonomy-areas-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .maintenance-strategies-grid {
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .autonomy-metrics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .timeline-phases {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .timeline-phases::before {
+          display: none;
+        }
+
+        .area-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .action-meta {
+          flex-direction: column;
+          gap: 8px;
+        }
       }
 
       .transition-phases {
@@ -2330,129 +2819,54 @@
           </div>
         </div>
 
-        <!-- Estado 5: Puzzle 4 - Autonomy Transition Orchestrator -->
+        <!-- Estado 5: Puzzle 4 - Preparação para Autonomia -->
         <div id="state-puzzle4" class="state">
-          <h2>🌟 Puzzle 4: Orquestrador de Transição para Autonomia</h2>
+          <h2>🌟 Puzzle 4: Preparação para Autonomia</h2>
           <p>
-            <strong>Objetivo:</strong> Planear a transição sustentável para
-            autonomia. Meta: readiness score >90% com plano de manutenção
+            <strong>Objetivo:</strong> Defina estratégias de manutenção e
+            redução gradual do apoio para promover a autonomia sustentável da
+            Felisbina. Meta: configurar plano de transição completo
           </p>
 
-          <div class="autonomy-transition-orchestrator">
-            <div class="transition-dashboard">
-              <div class="autonomy-readiness-assessment">
-                <h3>🌟 Avaliação de Prontidão para Autonomia</h3>
-                <div class="readiness-radar">
-                  <div
-                    style="position: absolute; font-size: 2rem; color: #667eea"
-                  >
-                    📊
+          <div class="autonomy-preparation-center">
+            <div class="autonomy-dashboard">
+              <div class="autonomy-header">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                  "
+                >
+                  <div style="display: flex; align-items: center">
+                    <div class="autonomy-icon">🌟</div>
+                    <h3>Planeamento de Transição para Autonomia</h3>
                   </div>
-                </div>
-                <div class="radar-legend">
-                  <div class="legend-item">
-                    <span
-                      class="color-indicator"
-                      style="background: #4caf50"
-                    ></span>
-                    <span class="label">Competências Profissionais</span>
-                    <span class="value">85%</span>
-                  </div>
-                  <div class="legend-item">
-                    <span
-                      class="color-indicator"
-                      style="background: #ff9800"
-                    ></span>
-                    <span class="label">Autonomia Emocional</span>
-                    <span class="value">65%</span>
-                  </div>
-                  <div class="legend-item">
-                    <span
-                      class="color-indicator"
-                      style="background: #2196f3"
-                    ></span>
-                    <span class="label">Gestão Financeira</span>
-                    <span class="value">70%</span>
-                  </div>
-                  <div class="legend-item">
-                    <span
-                      class="color-indicator"
-                      style="background: #9c27b0"
-                    ></span>
-                    <span class="label">Rede Social</span>
-                    <span class="value">58%</span>
+                  <div class="autonomy-score" id="puzzle4-score">
+                    0/20 pontos
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="transition-planning-workspace">
-              <h3>📋 Planeamento da Transição</h3>
-              <div class="transition-phases" id="transition-phases">
-                <!-- Transition phases will be loaded dynamically -->
+              <div id="autonomy-preparation-container">
+                <!-- Planeamento de autonomia será carregado dinamicamente pelo fase4-escape-engine.js -->
               </div>
             </div>
 
-            <div class="support-reduction-planner">
-              <h3>📉 Planeador de Redução de Apoio</h3>
-              <div class="support-timeline">
-                <div class="timeline-header">
-                  <h4>Cronograma de Redução Gradual</h4>
-                  <div class="timeline-controls">
-                    <button
-                      class="btn-auto-generate"
-                      onclick="autoGenerateReduction()"
-                    >
-                      🤖 Gerar Automaticamente
-                    </button>
-                    <button
-                      class="btn-customize"
-                      onclick="customizeReduction()"
-                    >
-                      ✏️ Personalizar
-                    </button>
-                  </div>
-                </div>
-
-                <div class="support-categories" id="support-categories">
-                  <!-- Support categories will be loaded dynamically -->
-                </div>
-              </div>
+            <div style="text-align: center; margin-top: 20px">
+              <p>
+                <strong>Progresso:</strong>
+                <span id="puzzle4-progress">0</span>/4 áreas planeadas
+              </p>
+              <button
+                id="btn-finalize-escape-room"
+                class="btn"
+                onclick="nextState('conclusao')"
+                style="display: none"
+              >
+                🎉 Finalizar Escape Room SAASI
+              </button>
             </div>
-
-            <div class="maintenance-strategy-designer">
-              <h3>🔧 Designer de Estratégias de Manutenção</h3>
-              <div class="strategy-builder">
-                <div class="strategy-components">
-                  <h4>Componentes da Estratégia:</h4>
-                  <div class="components-grid" id="maintenance-components">
-                    <!-- Maintenance components will be loaded dynamically -->
-                  </div>
-                </div>
-
-                <div class="strategy-preview">
-                  <h4>Pré-visualização da Estratégia:</h4>
-                  <div class="strategy-timeline-preview" id="strategy-preview">
-                    <!-- Strategy preview will be populated -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="text-align: center; margin-top: 20px">
-            <p>
-              <strong>Progresso:</strong> <span id="puzzle4-progress">0</span>/4
-              áreas planeadas
-            </p>
-            <button
-              id="btn-finalize-escape-room"
-              class="btn"
-              onclick="nextState('conclusao')"
-              style="display: none"
-            >
-              🎉 Finalizar Escape Room SAASI
-            </button>
           </div>
         </div>
 
@@ -2489,6 +2903,152 @@
               <strong>Tempo Total:</strong>
               <span id="total-time">0</span> minutos
             </p>
+          </div>
+
+          <!-- FELISBINA'S CASE OUTCOME SUMMARY -->
+          <div
+            id="felisbina-case-summary"
+            style="
+              background: rgba(255, 255, 255, 0.95);
+              padding: 30px;
+              border-radius: 15px;
+              margin: 30px 0;
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <h3>👤 RESULTADO FINAL DO CASO: FELISBINA SANTOS</h3>
+            <p>
+              <em
+                >Acompanhamento e Resultado Final do Caso pela Técnica do
+                SAASI</em
+              >
+            </p>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin: 20px 0;
+              "
+            >
+              <!-- Perfil Inicial vs Final -->
+              <div
+                style="background: #f8f9fa; padding: 20px; border-radius: 10px"
+              >
+                <h4>📋 Perfil Inicial (Março 2025)</h4>
+                <ul style="text-align: left; font-size: 0.9rem">
+                  <li><strong>Idade:</strong> 56 anos, 9º ano escolaridade</li>
+                  <li><strong>Situação:</strong> Vive sozinha em pensão</li>
+                  <li><strong>Estado:</strong> Beneficiária RSI, PSI</li>
+                  <li><strong>Emprego:</strong> 6 meses exp. limpeza apenas</li>
+                  <li>
+                    <strong>Problemática:</strong> Dependência emocional do pai
+                  </li>
+                  <li>
+                    <strong>Suporte:</strong> Isolamento após rutura familiar
+                  </li>
+                </ul>
+              </div>
+
+              <div
+                style="background: #e8f5e9; padding: 20px; border-radius: 10px"
+              >
+                <h4>🎯 Estado Final (6 meses depois)</h4>
+                <ul
+                  style="text-align: left; font-size: 0.9rem"
+                  id="felisbina-final-status"
+                >
+                  <!-- Will be populated by JavaScript based on game performance -->
+                </ul>
+              </div>
+            </div>
+
+            <!-- Intervention Journey -->
+            <div
+              style="
+                background: #fff3e0;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 20px 0;
+              "
+            >
+              <h4>🗓️ Jornada de Intervenção SAASI (6 meses)</h4>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 15px;
+                  text-align: left;
+                "
+              >
+                <div>
+                  <h5>Fase 1: Acolhimento</h5>
+                  <p style="font-size: 0.85rem">
+                    ✅ Avaliação diagnóstica<br />✅ Identificação
+                    necessidades<br />✅ Estabelecimento vínculo
+                  </p>
+                </div>
+                <div>
+                  <h5>Fase 2: Planeamento</h5>
+                  <p style="font-size: 0.85rem">
+                    ✅ Objetivos definidos<br />✅ Estratégias selecionadas<br />✅
+                    Recursos mobilizados
+                  </p>
+                </div>
+                <div>
+                  <h5>Fase 3: Implementação</h5>
+                  <p style="font-size: 0.85rem">
+                    ✅ Programas ativados<br />✅ Apoios coordenados<br />✅
+                    Progresso monitorizado
+                  </p>
+                </div>
+                <div>
+                  <h5>Fase 4: Autonomia</h5>
+                  <p style="font-size: 0.85rem">
+                    ✅ Transição planeada<br />✅ Apoio reduzido<br />✅
+                    Sustentabilidade assegurada
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Success Indicators -->
+            <div
+              style="
+                background: #e3f2fd;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 20px 0;
+              "
+            >
+              <h4>📈 Indicadores de Sucesso da Intervenção</h4>
+              <div
+                id="success-indicators"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 15px;
+                "
+              >
+                <!-- Will be populated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- Professional Assessment -->
+            <div
+              style="
+                background: #f3e5f5;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 20px 0;
+              "
+            >
+              <h4>🏆 Avaliação Técnica Final</h4>
+              <div id="technical-assessment" style="text-align: left">
+                <!-- Will be populated by JavaScript based on total score -->
+              </div>
+            </div>
           </div>
 
           <div id="final-report">
@@ -2936,11 +3496,168 @@
         document.getElementById("final-social").textContent =
           Math.round(autonomyLevel - 12) + "%";
 
+        // Generate Felisbina case summary
+        generateFelisbinaCaseSummary(totalScore, autonomyLevel);
+
         // Generate achievements
         generateFinalAchievements(totalScore);
 
         // Save final results
         saveEscapeRoomResults(totalScore, level, certification, duration);
+      }
+
+      function generateFelisbinaCaseSummary(totalScore, autonomyLevel) {
+        // Calculate Felisbina's final status based on game performance
+        const employabilityLevel = Math.round(autonomyLevel - 5);
+        const wellbeingLevel = Math.round(autonomyLevel + 2);
+        const socialLevel = Math.round(autonomyLevel - 12);
+
+        // Determine final outcomes based on total score
+        const isSuccessful = totalScore >= 280; // 70% success threshold
+        const isExcellent = totalScore >= 340; // 85% excellence threshold
+
+        // Populate final status
+        const finalStatus = document.getElementById("felisbina-final-status");
+        const finalStatusItems = [];
+
+        if (isExcellent) {
+          finalStatusItems.push(
+            "<li><strong>Habitação:</strong> Apartamento próprio via habitação social ✅</li>",
+            "<li><strong>Emprego:</strong> Full-time estável com contrato efetivo ✅</li>",
+            "<li><strong>Autonomia:</strong> " +
+              Math.round(autonomyLevel) +
+              "% - Completamente independente ✅</li>",
+            "<li><strong>Saúde Mental:</strong> Estável, consultas mensais opcionais ✅</li>",
+            "<li><strong>Rede Social:</strong> Ativa em grupos comunitários ✅</li>",
+            "<li><strong>Situação Financeira:</strong> Autossuficiente com poupanças ✅</li>"
+          );
+        } else if (isSuccessful) {
+          finalStatusItems.push(
+            "<li><strong>Habitação:</strong> Quarto individual em residência apoiada 🟡</li>",
+            "<li><strong>Emprego:</strong> Part-time estável com perspectivas de crescimento 🟡</li>",
+            "<li><strong>Autonomia:</strong> " +
+              Math.round(autonomyLevel) +
+              "% - Independente com apoio mínimo 🟡</li>",
+            "<li><strong>Saúde Mental:</strong> Estável, seguimento quinzenal ✅</li>",
+            "<li><strong>Rede Social:</strong> Participa regularmente em 2-3 atividades 🟡</li>",
+            "<li><strong>Situação Financeira:</strong> Equilibrada, sem apoios sociais ✅</li>"
+          );
+        } else {
+          finalStatusItems.push(
+            "<li><strong>Habitação:</strong> Ainda em pensão, mas com apoio para mudança 🔴</li>",
+            "<li><strong>Emprego:</strong> Trabalho temporário, sem estabilidade 🔴</li>",
+            "<li><strong>Autonomia:</strong> " +
+              Math.round(autonomyLevel) +
+              "% - Ainda dependente de apoios 🔴</li>",
+            "<li><strong>Saúde Mental:</strong> Melhorias, mas ainda em acompanhamento semanal 🟡</li>",
+            "<li><strong>Rede Social:</strong> Contactos limitados, resistência a grupos 🔴</li>",
+            "<li><strong>Situação Financeira:</strong> Ainda beneficiária de apoios sociais 🔴</li>"
+          );
+        }
+
+        finalStatus.innerHTML = finalStatusItems.join("");
+
+        // Populate success indicators
+        const successIndicators = document.getElementById("success-indicators");
+        successIndicators.innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; color: ${
+              autonomyLevel >= 80
+                ? "#4caf50"
+                : autonomyLevel >= 60
+                ? "#ff9800"
+                : "#f44336"
+            };">
+              ${Math.round(autonomyLevel)}%
+            </div>
+            <p style="margin: 5px 0; font-weight: bold;">Autonomia Global</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; color: ${
+              employabilityLevel >= 70
+                ? "#4caf50"
+                : employabilityLevel >= 50
+                ? "#ff9800"
+                : "#f44336"
+            };">
+              ${employabilityLevel}%
+            </div>
+            <p style="margin: 5px 0; font-weight: bold;">Empregabilidade</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; color: ${
+              wellbeingLevel >= 80
+                ? "#4caf50"
+                : wellbeingLevel >= 60
+                ? "#ff9800"
+                : "#f44336"
+            };">
+              ${wellbeingLevel}%
+            </div>
+            <p style="margin: 5px 0; font-weight: bold;">Bem-estar Mental</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; color: ${
+              socialLevel >= 60
+                ? "#4caf50"
+                : socialLevel >= 40
+                ? "#ff9800"
+                : "#f44336"
+            };">
+              ${socialLevel}%
+            </div>
+            <p style="margin: 5px 0; font-weight: bold;">Integração Social</p>
+          </div>
+        `;
+
+        // Populate technical assessment
+        const technicalAssessment = document.getElementById(
+          "technical-assessment"
+        );
+        let assessment = "";
+
+        if (isExcellent) {
+          assessment = `
+            <p><strong>🏆 INTERVENÇÃO ALTAMENTE BEM-SUCEDIDA</strong></p>
+            <p>A Felisbina Santos alcançou uma transformação notável em 6 meses. A intervenção SAASI foi exemplar, demonstrando:</p>
+            <ul>
+              <li>✅ <strong>Avaliação precisa:</strong> Identificação correta de todas as necessidades prioritárias</li>
+              <li>✅ <strong>Planeamento eficaz:</strong> Estratégias adequadas e bem coordenadas</li>
+              <li>✅ <strong>Implementação excelente:</strong> Execução sem falhas significativas</li>
+              <li>✅ <strong>Transição sustentável:</strong> Autonomia consolidada e mantida</li>
+            </ul>
+            <p><strong>Impacto:</strong> Felisbina é agora uma pessoa autônoma, empregada e integrada socialmente. O investimento público teve retorno completo.</p>
+            <p><strong>Seguimento:</strong> Contacto trimestral opcional. Caso encerrado com sucesso total.</p>
+          `;
+        } else if (isSuccessful) {
+          assessment = `
+            <p><strong>🎯 INTERVENÇÃO BEM-SUCEDIDA</strong></p>
+            <p>A Felisbina Santos apresenta melhorias significativas em 6 meses. A intervenção SAASI foi eficaz:</p>
+            <ul>
+              <li>✅ <strong>Objetivos principais alcançados:</strong> Autonomia e empregabilidade melhoradas</li>
+              <li>✅ <strong>Estabilidade conseguida:</strong> Situação habitacional e de emprego estáveis</li>
+              <li>🟡 <strong>Algumas áreas a consolidar:</strong> Integração social ainda em desenvolvimento</li>
+              <li>✅ <strong>Sustentabilidade provável:</strong> Base sólida para manutenção dos progressos</li>
+            </ul>
+            <p><strong>Impacto:</strong> Felisbina reduziu significativamente a dependência de apoios sociais.</p>
+            <p><strong>Seguimento:</strong> Contactos mensais por 6 meses, depois trimestrais.</p>
+          `;
+        } else {
+          assessment = `
+            <p><strong>🔄 INTERVENÇÃO COM RESULTADOS PARCIAIS</strong></p>
+            <p>A Felisbina Santos apresenta algumas melhorias, mas ainda necessita apoio continuado:</p>
+            <ul>
+              <li>🟡 <strong>Progressos limitados:</strong> Algumas áreas melhoraram, outras necessitam mais trabalho</li>
+              <li>🔴 <strong>Autonomia ainda restrita:</strong> Dependência de apoios mantém-se em várias áreas</li>
+              <li>🟡 <strong>Estabilidade frágil:</strong> Conquistas ainda não consolidadas</li>
+              <li>🔄 <strong>Necessita continuidade:</strong> Plano de intervenção deve ser prolongado</li>
+            </ul>
+            <p><strong>Recomendação:</strong> Prolongar intervenção por mais 3-6 meses com foco em áreas deficitárias.</p>
+            <p><strong>Seguimento:</strong> Contactos semanais mantidos, reavaliação em 3 meses.</p>
+          `;
+        }
+
+        technicalAssessment.innerHTML = assessment;
       }
 
       function generateFinalAchievements(totalScore) {

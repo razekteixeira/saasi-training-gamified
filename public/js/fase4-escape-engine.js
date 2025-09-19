@@ -212,175 +212,86 @@ class EscapeRoomPhase4 {
     // PUZZLE 3: Strategy Adjustment Scenarios
     this.adjustmentScenarios = [
       {
-        id: "baixo_progresso_formacao",
-        title: "📉 Baixo Progresso na Formação",
-        currentStrategy: "Formação intensiva em Excel",
-        issue: "Felisbina tem dificuldades com conceitos avançados",
+        id: "dificuldades_programa_qualifica",
+        title: "📚 Dificuldades no Programa Qualifica",
+        currentStrategy:
+          "Formação teórica e prática em Higiene, Saúde e Segurança no Trabalho",
+        issue:
+          "Felisbina tem dificuldades na componente teórica do curso, causando ansiedade e baixa autoestima",
         adjustmentOptions: [
           {
-            id: "reducir_ritmo",
-            text: "Reduzir ritmo e focar em conceitos básicos",
-            impact: { time: +30, effectiveness: +25, stress: -20 },
-            cost: 200,
+            id: "foco_competencias_praticas",
+            text: "Priorizar componente prática e adiar teoria para mais tarde",
+            impact: { time: +15, effectiveness: +35, stress: -25 },
           },
           {
-            id: "tutor_individual",
-            text: "Arranjar tutor individual para apoio extra",
-            impact: { time: +10, effectiveness: +40, stress: -10 },
-            cost: 600,
+            id: "apoio_pedagogico_especializado",
+            text: "Solicitar apoio pedagógico individualizado para teoria",
+            impact: { time: +10, effectiveness: +40, stress: -15 },
           },
           {
-            id: "metodologia_alternativa",
-            text: "Mudar para metodologia visual/prática",
-            impact: { time: +15, effectiveness: +35, stress: -15 },
-            cost: 300,
+            id: "abandonar_qualifica",
+            text: "Abandonar formação e focar apenas na experiência prática",
+            impact: { time: -30, effectiveness: -20, stress: -10 },
           },
         ],
-        bestOption: "tutor_individual",
+        bestOption: "apoio_pedagogico_especializado",
       },
       {
-        id: "resistencia_autonomia",
-        title: "🔒 Resistência ao Desenvolvimento de Autonomia",
-        currentStrategy: "Sessões semanais de empoderamento",
-        issue: "Felisbina evita tomar decisões independentes",
+        id: "oportunidade_emprego_limpeza",
+        title: "💼 Oportunidade de Emprego em Limpezas Profissionais Porto",
+        currentStrategy:
+          "Aguardar conclusão do Programa Qualifica antes de trabalhar",
+        issue:
+          "Empresa oferece emprego part-time (20h) mas Felisbina só tem 50% do curso completo",
         adjustmentOptions: [
           {
-            id: "pequenos_passos",
-            text: "Começar com decisões muito pequenas e gradualmente aumentar",
-            impact: { time: +45, effectiveness: +30, stress: -5 },
-            cost: 100,
+            id: "aceitar_emprego_part_time",
+            text: "Aceitar emprego part-time e continuar formação em horário adaptado",
+            impact: { time: +5, effectiveness: +45, stress: +10 },
           },
           {
-            id: "peer_support",
-            text: "Integrar grupo de apoio com pessoas em situação similar",
-            impact: { time: +20, effectiveness: +45, stress: -25 },
-            cost: 250,
+            id: "recusar_aguardar_certificacao",
+            text: "Recusar emprego e completar primeiro a certificação",
+            impact: { time: +30, effectiveness: +20, stress: -5 },
           },
           {
-            id: "terapia_familiar",
-            text: "Incluir pai nas sessões para trabalhar dinâmica",
-            impact: { time: +25, effectiveness: +50, stress: +10 },
-            cost: 400,
+            id: "negociar_horario_flexivel",
+            text: "Negociar horário flexível para conciliar emprego e formação",
+            impact: { time: +10, effectiveness: +50, stress: +5 },
           },
         ],
-        bestOption: "peer_support",
+        bestOption: "negociar_horario_flexivel",
       },
       {
-        id: "oportunidades_emprego",
-        title: "🎯 Ajuste na Estratégia de Procura de Emprego",
-        currentStrategy: "Procura em escritórios e comércio",
-        issue: "Poucas oportunidades no mercado tradicional",
+        id: "resistencia_grupos_apoio",
+        title: "👥 Resistência aos Grupos de Apoio Social",
+        currentStrategy: "Participação em grupos genéricos de apoio social",
+        issue:
+          "Felisbina sente-se desconfortável e 'diferente' dos outros participantes, evitando as sessões",
         adjustmentOptions: [
           {
-            id: "economia_social",
-            text: "Focar em cooperativas e economia social",
-            impact: { time: +10, effectiveness: +20, stress: -10 },
-            cost: 150,
+            id: "grupo_mulheres_55_mais",
+            text: "Mudar para grupo específico de mulheres 55+ em situação similar",
+            impact: { time: +5, effectiveness: +40, stress: -20 },
           },
           {
-            id: "trabalho_remoto",
-            text: "Explorar oportunidades de trabalho remoto",
-            impact: { time: +30, effectiveness: +35, stress: +5 },
-            cost: 400,
+            id: "sessoes_individuais_preparacao",
+            text: "Sessões individuais para preparar gradualmente a participação em grupo",
+            impact: { time: +20, effectiveness: +30, stress: -15 },
           },
           {
-            id: "empreendedorismo",
-            text: "Desenvolver projeto de empreendedorismo social",
-            impact: { time: +60, effectiveness: +60, stress: +20 },
-            cost: 800,
+            id: "aceitar_abandono_grupos",
+            text: "Aceitar a resistência e focar noutras formas de apoio social",
+            impact: { time: -10, effectiveness: -15, stress: -25 },
           },
         ],
-        bestOption: "trabalho_remoto",
+        bestOption: "grupo_mulheres_55_mais",
       },
     ];
 
     // PUZZLE 4: Autonomy Transition Milestones
-    this.autonomyMilestones = [
-      {
-        id: "decisoes_basicas",
-        title: "Decisões Básicas do Dia-a-dia",
-        description: "Tomar decisões simples sem consultar outros",
-        currentLevel: 60,
-        targetLevel: 90,
-        activities: [
-          { text: "Escolher refeições da semana", completed: true, impact: 5 },
-          { text: "Gerir horário pessoal", completed: true, impact: 10 },
-          {
-            text: "Decidir compras do supermercado",
-            completed: false,
-            impact: 15,
-          },
-          { text: "Planear atividades de lazer", completed: false, impact: 10 },
-        ],
-      },
-      {
-        id: "gestao_financeira",
-        title: "Gestão Financeira Independente",
-        description: "Gerir dinheiro e orçamento pessoal",
-        currentLevel: 35,
-        targetLevel: 80,
-        activities: [
-          { text: "Criar orçamento mensal", completed: false, impact: 20 },
-          {
-            text: "Gerir conta bancária sozinha",
-            completed: false,
-            impact: 25,
-          },
-          { text: "Planear poupanças", completed: false, impact: 15 },
-          { text: "Negociar contratos", completed: false, impact: 20 },
-        ],
-      },
-      {
-        id: "relacoes_sociais",
-        title: "Relações Sociais Saudáveis",
-        description: "Desenvolver e manter relações equilibradas",
-        currentLevel: 25,
-        targetLevel: 75,
-        activities: [
-          {
-            text: "Participar em atividades comunitárias",
-            completed: false,
-            impact: 15,
-          },
-          {
-            text: "Estabelecer limites com família",
-            completed: false,
-            impact: 25,
-          },
-          { text: "Fazer novos amigos", completed: false, impact: 20 },
-          {
-            text: "Resolver conflitos de forma assertiva",
-            completed: false,
-            impact: 15,
-          },
-        ],
-      },
-      {
-        id: "carreira_profissional",
-        title: "Desenvolvimento da Carreira",
-        description: "Planear e gerir desenvolvimento profissional",
-        currentLevel: 50,
-        targetLevel: 85,
-        activities: [
-          {
-            text: "Definir objetivos profissionais",
-            completed: true,
-            impact: 15,
-          },
-          {
-            text: "Procurar emprego autonomamente",
-            completed: false,
-            impact: 20,
-          },
-          {
-            text: "Negociar condições de trabalho",
-            completed: false,
-            impact: 25,
-          },
-          { text: "Planear formação contínua", completed: false, impact: 15 },
-        ],
-      },
-    ];
+    // Puzzle 4 data is now defined in autonomyPreparationData object to align with fase4.html
   }
 
   // ===== PUZZLE 1: DYNAMIC PROGRESS MONITORING =====
@@ -1148,6 +1059,17 @@ class EscapeRoomPhase4 {
   // ===== PUZZLE 3: STRATEGIC ADAPTATION LABORATORY =====
   initializePuzzle3() {
     console.log("Initializing Puzzle 3: Strategic Adaptation Laboratory");
+
+    // Initialize puzzle3 object in gameState
+    if (!this.gameState.puzzle3) {
+      this.gameState.puzzle3 = {
+        adaptationChoices: {},
+        effectiveness: 67,
+        score: 0,
+        progress: 0,
+      };
+    }
+
     this.createAdaptationScenarios();
 
     showToast(
@@ -1230,12 +1152,6 @@ class EscapeRoomPhase4 {
                         }%
                                     </span>
                                 </div>
-                                <div class="metric">
-                                    <span class="metric-label">💰 Custo:</span>
-                                    <span class="metric-value">€${
-                                      option.cost
-                                    }</span>
-                                </div>
                             </div>
                         </div>
                     `
@@ -1263,8 +1179,35 @@ class EscapeRoomPhase4 {
     const isOptimal = optionId === scenario.bestOption;
     const points = isOptimal ? 25 : 10;
 
+    // Initialize puzzle3 object if it doesn't exist
+    if (!this.gameState.puzzle3) {
+      this.gameState.puzzle3 = { adaptationChoices: {}, effectiveness: 67 };
+    }
+    if (!this.gameState.puzzle3.adaptationChoices) {
+      this.gameState.puzzle3.adaptationChoices = {};
+    }
+
+    // Check if this scenario was already selected (for score adjustment)
+    const wasAlreadySelected =
+      this.gameState.puzzle3.adaptationChoices[scenarioId];
+    if (wasAlreadySelected) {
+      // Remove previous points
+      this.gameState.puzzle3Score -= wasAlreadySelected.points;
+    } else {
+      // Only increment progress for new scenarios
+      this.gameState.puzzle3Progress++;
+    }
+
+    // Add new points
     this.gameState.puzzle3Score += points;
-    this.gameState.puzzle3Progress++;
+
+    // Store the selection for analysis
+    this.gameState.puzzle3.adaptationChoices[scenarioId] = {
+      optionId: optionId,
+      option: option,
+      isOptimal: isOptimal,
+      points: points,
+    };
 
     // Update scenario status
     const statusElement = document.getElementById(
@@ -1280,12 +1223,13 @@ class EscapeRoomPhase4 {
       }`;
     }
 
-    // Disable other options
+    // Clear previous selections and highlight current one
     const scenarioCard = document.getElementById(`scenario-${scenarioId}`);
     const options = scenarioCard.querySelectorAll(".adjustment-option");
+
+    // Remove previous selections
     options.forEach((opt) => {
-      opt.style.pointerEvents = "none";
-      opt.style.opacity = "0.6";
+      opt.classList.remove("optimal", "selected");
     });
 
     // Highlight selected option
@@ -1293,11 +1237,14 @@ class EscapeRoomPhase4 {
       opt.onclick.toString().includes(optionId)
     );
     if (selectedOption) {
-      selectedOption.style.backgroundColor = isOptimal ? "#d4edda" : "#fff3cd";
-      selectedOption.style.border = isOptimal
-        ? "2px solid #28a745"
-        : "2px solid #ffc107";
+      selectedOption.classList.add(isOptimal ? "optimal" : "selected");
     }
+
+    // Update effectiveness gauge
+    this.updateEffectivenessGauge();
+
+    // Update results visualization
+    this.updateAdaptationResults();
 
     showToast(
       isOptimal
@@ -1309,9 +1256,194 @@ class EscapeRoomPhase4 {
 
     this.updateProgress3();
 
-    if (this.gameState.puzzle3Progress >= 3) {
+    console.log(
+      "Puzzle 3 Progress:",
+      this.gameState.puzzle3Progress,
+      "Selections:",
+      Object.keys(this.gameState.puzzle3.adaptationChoices || {}).length
+    );
+
+    // Check if all 3 scenarios have been answered
+    const totalScenarios = this.adjustmentScenarios.length;
+    const completedScenarios = Object.keys(
+      this.gameState.puzzle3.adaptationChoices || {}
+    ).length;
+
+    if (completedScenarios >= totalScenarios) {
       this.completePuzzle3();
     }
+  }
+
+  updateEffectivenessGauge() {
+    const gaugeFill = document.querySelector(".gauge-fill");
+    if (!gaugeFill) return;
+
+    // Calculate new effectiveness based on selections
+    let totalEffectiveness = 67; // Starting value
+    let optimalSelections = 0;
+    let totalSelections = 0;
+
+    if (this.gameState.puzzle3.adaptationChoices) {
+      Object.values(this.gameState.puzzle3.adaptationChoices).forEach(
+        (choice) => {
+          totalSelections++;
+          if (choice.isOptimal) {
+            optimalSelections++;
+            totalEffectiveness += 8; // Optimal choices boost effectiveness more
+          } else {
+            totalEffectiveness += 3; // Non-optimal still add some effectiveness
+          }
+        }
+      );
+    }
+
+    // Cap at 95%
+    totalEffectiveness = Math.min(95, totalEffectiveness);
+
+    gaugeFill.classList.add("updated");
+    gaugeFill.style.width = `${totalEffectiveness}%`;
+
+    const gaugeValue = document.querySelector(".gauge-value");
+    if (gaugeValue) {
+      gaugeValue.textContent = `${totalEffectiveness}%`;
+    }
+
+    // Update the effectiveness in gameState
+    this.gameState.puzzle3.effectiveness = totalEffectiveness;
+  }
+
+  updateAdaptationResults() {
+    const chartElement = document.getElementById("adaptation-chart");
+    const insightsElement = document.getElementById("key-insights");
+
+    if (!chartElement || !insightsElement) return;
+
+    const choices = this.gameState.puzzle3.adaptationChoices || {};
+    const numChoices = Object.keys(choices).length;
+
+    if (numChoices === 0) return;
+
+    // Update chart
+    chartElement.classList.add("active");
+    chartElement.innerHTML = `
+      <div style="text-align: center;">
+        <h4>📊 Análise de Impacto das Adaptações</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+          <div style="background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+            <div style="font-size: 1.8rem; color: #4caf50; font-weight: bold;">${
+              this.gameState.puzzle3.effectiveness || 67
+            }%</div>
+            <div style="font-size: 0.9rem; color: #6c757d;">Eficácia Atual</div>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 8px; border: 2px solid #17a2b8;">
+            <div style="font-size: 1.8rem; color: #17a2b8; font-weight: bold;">${numChoices}/3</div>
+            <div style="font-size: 0.9rem; color: #6c757d;">Adaptações</div>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 8px; border: 2px solid #ffc107;">
+            <div style="font-size: 1.8rem; color: #ffc107; font-weight: bold;">${
+              Object.values(choices).filter((c) => c.isOptimal).length
+            }</div>
+            <div style="font-size: 0.9rem; color: #6c757d;">Ótimas</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Update insights
+    const insights = this.generateInsights(choices);
+    insightsElement.innerHTML = insights
+      .map(
+        (insight) => `
+      <div class="insight ${insight.type}">
+        <span class="insight-icon">${insight.icon}</span>
+        <span class="insight-text">${insight.text}</span>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  generateInsights(choices) {
+    const insights = [];
+    const optimalCount = Object.values(choices).filter(
+      (c) => c.isOptimal
+    ).length;
+    const totalCount = Object.keys(choices).length;
+
+    // Performance insights
+    if (optimalCount === totalCount && totalCount >= 3) {
+      insights.push({
+        type: "positive",
+        icon: "🏆",
+        text: "Excelente! Todas as adaptações são estratégias ótimas!",
+      });
+    } else if (optimalCount >= totalCount * 0.67) {
+      insights.push({
+        type: "positive",
+        icon: "✅",
+        text: "Bom desempenho! Maioria das adaptações são eficazes.",
+      });
+    } else {
+      insights.push({
+        type: "warning",
+        icon: "⚠️",
+        text: "Pode melhorar! Analise as métricas antes de decidir.",
+      });
+    }
+
+    // Specific adaptation insights
+    Object.entries(choices).forEach(([scenarioId, choice]) => {
+      const scenario = this.adjustmentScenarios.find(
+        (s) => s.id === scenarioId
+      );
+      if (choice.isOptimal) {
+        if (scenarioId === "dificuldades_programa_qualifica") {
+          insights.push({
+            type: "positive",
+            icon: "🎯",
+            text: "Apoio pedagógico individualizado é crucial para o sucesso da Felisbina!",
+          });
+        } else if (scenarioId === "oportunidade_emprego_limpeza") {
+          insights.push({
+            type: "positive",
+            icon: "💼",
+            text: "Horário flexível permite conciliar experiência prática com certificação!",
+          });
+        } else if (scenarioId === "resistencia_grupos_apoio") {
+          insights.push({
+            type: "positive",
+            icon: "👥",
+            text: "Grupo específico para mulheres 55+ cria ambiente mais acolhedor!",
+          });
+        }
+      } else {
+        insights.push({
+          type: "info",
+          icon: "💡",
+          text: `${scenario.title}: Há estratégias mais eficazes disponíveis.`,
+        });
+      }
+    });
+
+    // Strategy insights based on overall performance
+    if (totalCount >= 3) {
+      const effectiveness = this.gameState.puzzle3.effectiveness || 67;
+      if (effectiveness >= 90) {
+        insights.push({
+          type: "positive",
+          icon: "🌟",
+          text: "Estratégia adaptativa altamente eficaz implementada!",
+        });
+      } else if (effectiveness >= 80) {
+        insights.push({
+          type: "info",
+          icon: "📈",
+          text: "Boa evolução estratégica. Continue a otimizar as intervenções.",
+        });
+      }
+    }
+
+    return insights.slice(0, 4); // Limit to 4 insights for better UX
   }
 
   updateProgress3() {
@@ -1322,301 +1454,609 @@ class EscapeRoomPhase4 {
   }
 
   completePuzzle3() {
-    showToast(
-      "🎉 Puzzle 3 COMPLETO! Laboratório de adaptação calibrado!",
-      "success",
-      4000
-    );
+    // Final effectiveness and insights update
+    this.updateEffectivenessGauge();
+    this.updateAdaptationResults();
+
+    // Calculate completion bonus based on performance
+    const choices = this.gameState.puzzle3.adaptationChoices || {};
+    const optimalCount = Object.values(choices).filter(
+      (c) => c.isOptimal
+    ).length;
+    const totalCount = Object.keys(choices).length;
+
+    let completionBonus = 15; // Base bonus
+    if (optimalCount === totalCount) {
+      completionBonus = 25; // Perfect performance bonus
+    } else if (optimalCount >= totalCount * 0.67) {
+      completionBonus = 20; // Good performance bonus
+    }
+
+    this.gameState.puzzle3Score += completionBonus;
+
+    // Show completion message based on performance
+    const effectiveness = this.gameState.puzzle3.effectiveness || 67;
+    let message = "🎉 Puzzle 3 COMPLETO! Laboratório de adaptação calibrado!";
+    if (effectiveness >= 90) {
+      message = "🏆 PERFEITO! Adaptação estratégica otimizada ao máximo!";
+    } else if (effectiveness >= 80) {
+      message = "⭐ EXCELENTE! Estratégias bem adaptadas e eficazes!";
+    }
+
+    showToast(message, "success", 4000);
+
+    // Show final summary
+    setTimeout(() => {
+      showToast(
+        `📊 Análise Final:<br>• Eficácia: ${effectiveness}%<br>• Adaptações ótimas: ${optimalCount}/${totalCount}<br>• Bónus: +${completionBonus} pontos`,
+        "info",
+        6000
+      );
+    }, 1000);
 
     const btnContinue = document.getElementById("btn-continue-puzzle4");
     if (btnContinue) {
       btnContinue.style.display = "block";
     }
 
-    this.gameState.puzzle3Score += 35; // Completion bonus
-    console.log(`Puzzle 3 completed! Score: ${this.gameState.puzzle3Score}`);
+    console.log(
+      `Puzzle 3 completed! Score: ${this.gameState.puzzle3Score}, Effectiveness: ${effectiveness}%`
+    );
   }
 
-  // ===== PUZZLE 4: AUTONOMY TRANSITION ORCHESTRATOR =====
+  // ===== PUZZLE 4: PREPARAÇÃO PARA AUTONOMIA (ALIGNED WITH FASE4.HTML) =====
   initializePuzzle4() {
-    console.log("Initializing Puzzle 4: Autonomy Transition Orchestrator");
-    this.createAutonomyMilestones();
-    this.createTransitionPlan();
+    console.log("Initializing Puzzle 4: Preparação para Autonomia");
+    this.initAutonomyPreparation();
 
     showToast(
-      "🎓 Configure o plano de transição para autonomia completa!",
+      "🌟 Defina estratégias de manutenção e redução gradual do apoio!",
       "info",
       4000
     );
   }
 
-  createAutonomyMilestones() {
-    const container = document.getElementById("autonomy-milestones");
-    if (!container) return;
+  // AUTONOMY PREPARATION DATA - ALIGNED WITH FASE4.HTML
+  initAutonomyPreparation() {
+    const container = document.getElementById("autonomy-preparation-container");
+    if (!container) {
+      console.error("Container autonomy-preparation-container not found!");
+      return;
+    }
 
     container.innerHTML = "";
 
-    this.autonomyMilestones.forEach((milestone) => {
-      const milestoneCard = document.createElement("div");
-      milestoneCard.className = "autonomy-milestone";
-      milestoneCard.id = `milestone-${milestone.id}`;
+    // Initialize selected items tracking
+    this.selectedAutonomyActions = {};
+    this.selectedMaintenanceStrategies = [];
 
-      const progressPercent =
-        (milestone.currentLevel / milestone.targetLevel) * 100;
+    // Create sophisticated visual components matching other puzzles
+    this.createAutonomyOverviewDashboard(container);
+    this.createAutonomyAreasGrid(container);
+    this.createMaintenanceStrategiesSection(container);
+  }
 
-      milestoneCard.innerHTML = `
-                <div class="milestone-header">
-                    <h3>${milestone.title}</h3>
-                    <div class="milestone-progress">
-                        <span class="current-level">${
-                          milestone.currentLevel
-                        }%</span>
-                        <span class="target-level">Meta: ${
-                          milestone.targetLevel
-                        }%</span>
-                    </div>
-                </div>
-                <div class="milestone-description">
-                    <p>${milestone.description}</p>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
-                    </div>
-                </div>
-                <div class="milestone-activities">
-                    <h4>📋 Atividades para Desenvolvimento:</h4>
-                    ${milestone.activities
-                      .map(
-                        (activity) => `
-                        <div class="activity-item ${
-                          activity.completed ? "completed" : ""
-                        }" 
-                             onclick="window.escapeRoom.toggleActivity('${
-                               milestone.id
-                             }', '${activity.text}')">
-                            <div class="activity-checkbox">
-                                ${activity.completed ? "✅" : "☐"}
-                            </div>
-                            <div class="activity-content">
-                                <span class="activity-text">${
-                                  activity.text
-                                }</span>
-                                <span class="activity-impact">+${
-                                  activity.impact
-                                }% de autonomia</span>
-                            </div>
-                        </div>
-                    `
-                      )
-                      .join("")}
-                </div>
-                <div class="milestone-status">
-                    <span class="gap-analysis">
-                        Gap para meta: ${
-                          milestone.targetLevel - milestone.currentLevel
-                        }%
-                    </span>
-                </div>
-            `;
+  createAutonomyOverviewDashboard(container) {
+    const dashboardDiv = document.createElement("div");
+    dashboardDiv.className = "autonomy-overview-dashboard";
+    dashboardDiv.innerHTML = `
+      <div class="autonomy-metrics-grid">
+        <div class="autonomy-metric-card" style="--metric-color: #9c27b0">
+          <div class="metric-icon">🏠</div>
+          <div class="metric-content">
+            <h4>Autonomia Habitacional</h4>
+            <div class="metric-value">25%</div>
+            <div class="metric-status critical">Dependente de apoio</div>
+          </div>
+        </div>
+        <div class="autonomy-metric-card" style="--metric-color: #2196f3">
+          <div class="metric-icon">💼</div>
+          <div class="metric-content">
+            <h4>Autonomia Profissional</h4>
+            <div class="metric-value">55%</div>
+            <div class="metric-status improving">Part-time com apoio</div>
+          </div>
+        </div>
+        <div class="autonomy-metric-card" style="--metric-color: #4caf50">
+          <div class="metric-icon">🧠</div>
+          <div class="metric-content">
+            <h4>Autonomia Emocional</h4>
+            <div class="metric-value">70%</div>
+            <div class="metric-status good">Progresso significativo</div>
+          </div>
+        </div>
+        <div class="autonomy-metric-card" style="--metric-color: #ff9800">
+          <div class="metric-icon">👥</div>
+          <div class="metric-content">
+            <h4>Autonomia Social</h4>
+            <div class="metric-value">35%</div>
+            <div class="metric-status warning">Participação limitada</div>
+          </div>
+        </div>
+      </div>
+      <div class="transition-timeline">
+        <h4>⏱️ Cronograma de Transição (6 meses)</h4>
+        <div class="timeline-phases">
+          <div class="phase-marker current">
+            <span class="phase-label">Mês 4</span>
+            <span class="phase-status">Implementação</span>
+          </div>
+          <div class="phase-marker next">
+            <span class="phase-label">Mês 5</span>
+            <span class="phase-status">Consolidação</span>
+          </div>
+          <div class="phase-marker future">
+            <span class="phase-label">Mês 6</span>
+            <span class="phase-status">Autonomia</span>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(dashboardDiv);
+  }
 
-      container.appendChild(milestoneCard);
+  createAutonomyAreasGrid(container) {
+    const areasSection = document.createElement("div");
+    areasSection.className = "autonomy-areas-section";
+    areasSection.innerHTML = `
+      <div class="section-header">
+        <h4>🎯 Áreas de Autonomia - Configuração de Ações</h4>
+        <p>Selecione pelo menos 2 ações por área para criar um plano de transição completo</p>
+      </div>
+    `;
+
+    const areasGrid = document.createElement("div");
+    areasGrid.className = "autonomy-areas-grid";
+
+    this.autonomyPreparationData.areas_autonomia.forEach((area) => {
+      const areaCard = document.createElement("div");
+      areaCard.className = "autonomy-area-card";
+      areaCard.innerHTML = `
+        <div class="area-header">
+          <div class="area-icon">${this.getAreaIcon(area.id)}</div>
+          <div class="area-info">
+            <h5>${area.nome}</h5>
+            <div class="area-progress">
+              <div class="current-status">
+                <span class="status-label">Estado atual:</span>
+                <span class="status-value">${area.status_atual.replace(
+                  /_/g,
+                  " "
+                )}</span>
+              </div>
+              <div class="target-status">
+                <span class="status-label">Meta 6 meses:</span>
+                <span class="status-value target">${area.meta_6_meses.replace(
+                  /_/g,
+                  " "
+                )}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions-grid">
+          ${area.acoes_necessarias
+            .map(
+              (acao, index) => `
+            <div class="action-card" data-area="${
+              area.id
+            }" data-index="${index}">
+              <div class="action-content">
+                <div class="action-header">
+                  <label class="action-checkbox">
+                    <input type="checkbox" onchange="window.escapeRoom.selectAutonomyAction('${
+                      area.id
+                    }', ${index}, this.checked)">
+                    <span class="checkmark"></span>
+                  </label>
+                  <div class="action-points">+${acao.pontos} pts</div>
+                </div>
+                <div class="action-details">
+                  <h6>${acao.acao}</h6>
+                  <div class="action-meta">
+                    <span class="action-timeline">⏱️ ${acao.prazo}</span>
+                    <span class="action-responsible">👤 ${acao.responsavel.replace(
+                      /_/g,
+                      " "
+                    )}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+      areasGrid.appendChild(areaCard);
     });
+
+    areasSection.appendChild(areasGrid);
+    container.appendChild(areasSection);
   }
 
-  createTransitionPlan() {
-    const container = document.getElementById("transition-timeline");
-    if (!container) return;
+  createMaintenanceStrategiesSection(container) {
+    const maintenanceSection = document.createElement("div");
+    maintenanceSection.className = "maintenance-strategies-section";
+    maintenanceSection.innerHTML = `
+      <div class="section-header">
+        <h4>🔧 Estratégias de Manutenção</h4>
+        <p>Selecione 3 estratégias para garantir a sustentabilidade do plano de autonomia</p>
+      </div>
+    `;
 
-    // Create a timeline showing progression plan
-    container.innerHTML = `
-            <div class="transition-phases">
-                <div class="phase-item current">
-                    <div class="phase-marker">1</div>
-                    <div class="phase-content">
-                        <h4>Fase Atual: Dependência Assistida</h4>
-                        <p>Apoio intensivo em todas as áreas</p>
-                        <div class="phase-duration">Duração: Atual</div>
-                    </div>
-                </div>
-                <div class="phase-item next">
-                    <div class="phase-marker">2</div>
-                    <div class="phase-content">
-                        <h4>Autonomia Supervisionada</h4>
-                        <p>Decisões independentes com supervisão</p>
-                        <div class="phase-duration">Duração: 3-6 meses</div>
-                    </div>
-                </div>
-                <div class="phase-item future">
-                    <div class="phase-marker">3</div>
-                    <div class="phase-content">
-                        <h4>Autonomia Apoiada</h4>
-                        <p>Independência com suporte pontual</p>
-                        <div class="phase-duration">Duração: 6-12 meses</div>
-                    </div>
-                </div>
-                <div class="phase-item target">
-                    <div class="phase-marker">4</div>
-                    <div class="phase-content">
-                        <h4>Autonomia Completa</h4>
-                        <p>Independência total com follow-up</p>
-                        <div class="phase-duration">Meta: 12-18 meses</div>
-                    </div>
-                </div>
+    const strategiesGrid = document.createElement("div");
+    strategiesGrid.className = "maintenance-strategies-grid";
+
+    this.autonomyPreparationData.estrategias_manutencao.forEach(
+      (estrategia) => {
+        const strategyCard = document.createElement("div");
+        strategyCard.className = `maintenance-strategy-card ${
+          !estrategia.adequado ? "inadequate" : ""
+        }`;
+        strategyCard.onclick = () =>
+          this.toggleMaintenanceStrategy(estrategia.id);
+
+        strategyCard.innerHTML = `
+        <div class="strategy-header">
+          <div class="strategy-icon">${this.getStrategyIcon(
+            estrategia.id
+          )}</div>
+          <div class="strategy-info">
+            <h5>${estrategia.nome}</h5>
+            <div class="strategy-points ${
+              estrategia.pontos < 0 ? "negative" : "positive"
+            }">
+              ${estrategia.pontos > 0 ? "+" : ""}${estrategia.pontos} pontos
             </div>
-            <div class="transition-controls">
-                <button class="plan-action-btn" onclick="window.escapeRoom.generateTransitionPlan()">
-                    📋 Gerar Plano Detalhado
-                </button>
-                <button class="validate-plan-btn" onclick="window.escapeRoom.validateTransitionPlan()">
-                    ✅ Validar Plano
-                </button>
+          </div>
+        </div>
+        <div class="strategy-content">
+          <p>${estrategia.descricao}</p>
+          ${
+            estrategia.justificacao
+              ? `
+            <div class="strategy-warning">
+              <span class="warning-icon">⚠️</span>
+              <span class="warning-text">${estrategia.justificacao}</span>
             </div>
-        `;
+          `
+              : ""
+          }
+        </div>
+        <div class="strategy-selection-indicator">
+          <div class="selection-checkmark">✓</div>
+        </div>
+      `;
+        strategiesGrid.appendChild(strategyCard);
+      }
+    );
+
+    maintenanceSection.appendChild(strategiesGrid);
+    container.appendChild(maintenanceSection);
   }
 
-  toggleActivity(milestoneId, activityText) {
-    const milestone = this.autonomyMilestones.find((m) => m.id === milestoneId);
-    const activity = milestone.activities.find((a) => a.text === activityText);
+  getAreaIcon(areaId) {
+    const icons = {
+      autonomia_habitacional: "🏠",
+      autonomia_profissional: "💼",
+      autonomia_emocional: "🧠",
+      autonomia_social: "👥",
+    };
+    return icons[areaId] || "🎯";
+  }
 
-    if (!milestone || !activity) return;
+  getStrategyIcon(estrategiaId) {
+    const icons = {
+      contactos_seguimento: "📞",
+      rede_apoio_emergencia: "🆘",
+      indicadores_alerta: "📊",
+      apoio_intensivo_permanente: "🔒",
+    };
+    return icons[estrategiaId] || "🔧";
+  }
 
-    activity.completed = !activity.completed;
+  // AUTONOMY PREPARATION DATA - EXACTLY FROM FASE4.HTML
+  autonomyPreparationData = {
+    areas_autonomia: [
+      {
+        id: "autonomia_habitacional",
+        nome: "Autonomia Habitacional",
+        status_atual: "dependente_apoio_emergencial",
+        meta_6_meses: "habitacao_independente",
+        acoes_necessarias: [
+          {
+            acao: "Inscrição habitação social",
+            prazo: "imediato",
+            responsavel: "tecnico_saasi",
+            pontos: 5,
+          },
+          {
+            acao: "Poupança para caução",
+            prazo: "3 meses",
+            responsavel: "felisbina_apoio_tecnico",
+            pontos: 4,
+          },
+          {
+            acao: "Procura ativa mercado privado",
+            prazo: "1 mês",
+            responsavel: "felisbina_autonoma",
+            pontos: 3,
+          },
+        ],
+      },
+      {
+        id: "autonomia_profissional",
+        nome: "Autonomia Profissional",
+        status_atual: "emprego_part_time_apoiado",
+        meta_6_meses: "emprego_estavel_autonomo",
+        acoes_necessarias: [
+          {
+            acao: "Certificação competências completa",
+            prazo: "2 meses",
+            responsavel: "iefp_felisbina",
+            pontos: 6,
+          },
+          {
+            acao: "Negociação full-time",
+            prazo: "4 meses",
+            responsavel: "felisbina_apoio_minimo",
+            pontos: 5,
+          },
+          {
+            acao: "Plano desenvolvimento carreira",
+            prazo: "6 meses",
+            responsavel: "felisbina_autonoma",
+            pontos: 4,
+          },
+        ],
+      },
+      {
+        id: "autonomia_emocional",
+        nome: "Autonomia Emocional",
+        status_atual: "progresso_significativo_apoio_ocasional",
+        meta_6_meses: "estabilidade_emocional_independente",
+        acoes_necessarias: [
+          {
+            acao: "Redução frequência consultas psicologia",
+            prazo: "1 mês",
+            responsavel: "centro_saude",
+            pontos: 4,
+          },
+          {
+            acao: "Estratégias gestão stress autonomas",
+            prazo: "2 meses",
+            responsavel: "felisbina_psicologo",
+            pontos: 5,
+          },
+          {
+            acao: "Rede apoio informal estabelecida",
+            prazo: "4 meses",
+            responsavel: "felisbina_apoio_minimo",
+            pontos: 6,
+          },
+        ],
+      },
+      {
+        id: "autonomia_social",
+        nome: "Autonomia Social",
+        status_atual: "participacao_limitada_apoio_necessario",
+        meta_6_meses: "rede_social_activa_independente",
+        acoes_necessarias: [
+          {
+            acao: "Participação regular atividades escolhidas",
+            prazo: "2 meses",
+            responsavel: "felisbina_apoio_tecnico",
+            pontos: 4,
+          },
+          {
+            acao: "Desenvolvimento amizades independentes",
+            prazo: "4 meses",
+            responsavel: "felisbina_apoio_minimo",
+            pontos: 5,
+          },
+          {
+            acao: "Papel ativo na comunidade",
+            prazo: "6 meses",
+            responsavel: "felisbina_autonoma",
+            pontos: 3,
+          },
+        ],
+      },
+    ],
+    estrategias_manutencao: [
+      {
+        id: "contactos_seguimento",
+        nome: "Contactos de Seguimento",
+        descricao: "Sistema de contactos regulares com frequência decrescente",
+        pontos: 8,
+        adequado: true,
+      },
+      {
+        id: "rede_apoio_emergencia",
+        nome: "Rede de Apoio de Emergência",
+        descricao: "Contactos para situações de crise ou dúvidas urgentes",
+        pontos: 6,
+        adequado: true,
+      },
+      {
+        id: "indicadores_alerta",
+        nome: "Sistema de Indicadores de Alerta",
+        descricao: "Sinais que indicam necessidade de reforço de apoio",
+        pontos: 5,
+        adequado: true,
+      },
+      {
+        id: "apoio_intensivo_permanente",
+        nome: "Manutenção Apoio Intensivo",
+        descricao: "Manter todos os apoios com mesma intensidade",
+        pontos: -8,
+        adequado: false,
+        justificacao: "Impede desenvolvimento autonomia e é insustentável",
+      },
+    ],
+  };
 
-    // Recalculate milestone level
-    const completedActivities = milestone.activities.filter((a) => a.completed);
-    const totalImpact = completedActivities.reduce(
-      (sum, a) => sum + a.impact,
-      0
+  selectAutonomyAction(areaId, actionIndex, checked) {
+    if (!this.selectedAutonomyActions[areaId]) {
+      this.selectedAutonomyActions[areaId] = [];
+    }
+
+    const area = this.autonomyPreparationData.areas_autonomia.find(
+      (a) => a.id === areaId
     );
-    milestone.currentLevel = Math.min(
-      milestone.targetLevel,
-      milestone.currentLevel +
-        (activity.completed ? activity.impact : -activity.impact)
-    );
+    const action = area.acoes_necessarias[actionIndex];
 
-    // Update display
-    this.createAutonomyMilestones();
-
-    if (activity.completed) {
-      this.gameState.puzzle4Score += 5;
+    if (checked) {
+      this.selectedAutonomyActions[areaId].push(actionIndex);
+      this.gameState.puzzle4Score += action.pontos;
       showToast(
-        `✅ Atividade concluída! Autonomia aumentou em ${activity.impact}%`,
+        `✅ Ação selecionada: ${action.acao} (+${action.pontos} pts)`,
         "success",
         2000
       );
     } else {
+      this.selectedAutonomyActions[areaId] = this.selectedAutonomyActions[
+        areaId
+      ].filter((i) => i !== actionIndex);
+      this.gameState.puzzle4Score -= action.pontos;
       showToast(
-        `↩️ Atividade desmarcada. Autonomia reduzida em ${activity.impact}%`,
+        `↩️ Ação removida: ${action.acao} (-${action.pontos} pts)`,
         "info",
         2000
       );
     }
 
-    this.checkPuzzle4Completion();
-  }
-
-  generateTransitionPlan() {
-    const plan = this.createDetailedTransitionPlan();
-
-    showToast(
-      "📋 Plano de transição gerado! Revise todas as fases.",
-      "info",
-      3000
-    );
-
-    // Show detailed plan in a modal or expand section
-    this.displayDetailedPlan(plan);
-
-    this.gameState.puzzle4Score += 15;
-    this.gameState.puzzle4Progress++;
-    this.updateProgress4();
-  }
-
-  createDetailedTransitionPlan() {
-    return {
-      phases: [
-        {
-          name: "Autonomia Supervisionada",
-          duration: "3-6 meses",
-          goals: [
-            "Decisões básicas independentes",
-            "Gestão financeira com apoio",
-          ],
-          support: "Técnico de referência + visitas semanais",
-          criteria: "70% autonomia em decisões básicas",
-        },
-        {
-          name: "Autonomia Apoiada",
-          duration: "6-12 meses",
-          goals: ["Gestão completa do orçamento", "Relações sociais saudáveis"],
-          support: "Contacto quinzenal + emergências",
-          criteria: "85% autonomia geral",
-        },
-        {
-          name: "Autonomia Completa",
-          duration: "12+ meses",
-          goals: ["Independência total", "Carreira estável"],
-          support: "Follow-up mensal opcional",
-          criteria: "95% autonomia + estabilidade 6 meses",
-        },
-      ],
+    this.gameState.autonomyPlanning = {
+      actions: this.selectedAutonomyActions,
+      maintenanceStrategies: this.selectedMaintenanceStrategies,
     };
+
+    // Calcular progresso (4 áreas)
+    this.gameState.puzzle4Progress = Object.keys(
+      this.selectedAutonomyActions
+    ).filter(
+      (areaId) => this.selectedAutonomyActions[areaId].length > 0
+    ).length;
+
+    this.updateProgress4();
+    this.checkAutonomyCompletion();
   }
 
-  displayDetailedPlan(plan) {
-    // This would show a detailed view of the transition plan
-    console.log("Detailed transition plan:", plan);
-  }
+  toggleMaintenanceStrategy(estrategiaId) {
+    const estrategia = this.autonomyPreparationData.estrategias_manutencao.find(
+      (e) => e.id === estrategiaId
+    );
+    const card = event.currentTarget;
 
-  validateTransitionPlan() {
-    const totalAutonomy =
-      this.autonomyMilestones.reduce((sum, m) => sum + m.currentLevel, 0) /
-      this.autonomyMilestones.length;
-
-    if (totalAutonomy >= 65) {
+    if (!estrategia.adequado) {
       showToast(
-        "✅ Plano VALIDADO! Felisbina está preparada para iniciar transição!",
-        "success",
-        4000
-      );
-      this.gameState.puzzle4Score += 25;
-      this.completePuzzle4();
-    } else {
-      showToast(
-        `⚠️ Plano precisa de ajustes. Autonomia atual: ${Math.round(
-          totalAutonomy
-        )}% (mínimo: 65%)`,
+        "⚠️ Esta estratégia não é adequada e pode impedir o desenvolvimento da autonomia.",
         "warning",
         4000
       );
-      this.gameState.puzzle4Score += 5;
+      // Ainda permitir seleção mas com penalização
     }
 
-    this.gameState.puzzle4Progress++;
+    if (this.selectedMaintenanceStrategies.includes(estrategiaId)) {
+      // Remover seleção
+      this.selectedMaintenanceStrategies =
+        this.selectedMaintenanceStrategies.filter((id) => id !== estrategiaId);
+      card.classList.remove("selected");
+      this.gameState.puzzle4Score -= estrategia.pontos;
+      showToast(
+        `↩️ Estratégia removida: ${estrategia.nome} (${
+          estrategia.pontos > 0 ? "-" : "+"
+        }${Math.abs(estrategia.pontos)} pts)`,
+        "info",
+        2000
+      );
+    } else {
+      // Adicionar seleção (máximo 3)
+      if (this.selectedMaintenanceStrategies.length >= 3) {
+        showToast(
+          "🚫 Pode selecionar no máximo 3 estratégias de manutenção.",
+          "warning"
+        );
+        return;
+      }
+
+      this.selectedMaintenanceStrategies.push(estrategiaId);
+      card.classList.add("selected");
+      this.gameState.puzzle4Score += estrategia.pontos;
+      showToast(
+        `✅ Estratégia selecionada: ${estrategia.nome} (+${estrategia.pontos} pts)`,
+        "success",
+        2000
+      );
+    }
+
+    this.gameState.autonomyPlanning = {
+      actions: this.selectedAutonomyActions,
+      maintenanceStrategies: this.selectedMaintenanceStrategies,
+    };
+
     this.updateProgress4();
+    this.checkAutonomyCompletion();
+  }
+
+  checkAutonomyCompletion() {
+    // Verificar se pode finalizar (pelo menos 2 ações por área e 3 estratégias de manutenção)
+    const areasWithActions = Object.keys(this.selectedAutonomyActions).filter(
+      (areaId) => this.selectedAutonomyActions[areaId].length >= 2
+    );
+
+    if (
+      areasWithActions.length >= 3 &&
+      this.selectedMaintenanceStrategies.length >= 3
+    ) {
+      const btnFinalize = document.getElementById("btn-finalize-escape-room");
+      if (btnFinalize) {
+        btnFinalize.style.display = "block";
+        showToast(
+          "🎉 Critérios mínimos atingidos! Pode finalizar o Escape Room!",
+          "success",
+          3000
+        );
+      }
+    }
   }
 
   updateProgress4() {
+    // Update score display
+    const scoreElement = document.getElementById("puzzle4-score");
+    if (scoreElement) {
+      scoreElement.textContent = `${this.gameState.puzzle4Score}/20 pontos`;
+    }
+
+    // Update progress span
     const progressSpan = document.getElementById("puzzle4-progress");
     if (progressSpan) {
       progressSpan.textContent = this.gameState.puzzle4Progress;
     }
+
+    // Update overall progress
+    this.updateTotalScore();
   }
 
   checkPuzzle4Completion() {
-    const completedActivities = this.autonomyMilestones.reduce(
-      (sum, m) => sum + m.activities.filter((a) => a.completed).length,
-      0
-    );
+    // Check if minimum requirements are met for completion
+    const totalActionsSelected = Object.values(
+      this.selectedAutonomyActions
+    ).reduce((sum, actions) => sum + actions.length, 0);
 
-    if (completedActivities >= 8) {
-      // Need at least 8 activities completed
-      const btnValidate = document.querySelector(".validate-plan-btn");
-      if (btnValidate) {
-        btnValidate.style.backgroundColor = "#28a745";
-        btnValidate.style.animation = "pulse 2s infinite";
-      }
+    const areasWithMinimumActions = Object.keys(
+      this.selectedAutonomyActions
+    ).filter(
+      (areaId) => this.selectedAutonomyActions[areaId].length >= 2
+    ).length;
+
+    if (
+      areasWithMinimumActions >= 3 &&
+      this.selectedMaintenanceStrategies.length >= 3 &&
+      totalActionsSelected >= 8
+    ) {
+      this.completePuzzle4();
     }
   }
 
@@ -1627,12 +2067,24 @@ class EscapeRoomPhase4 {
       4000
     );
 
-    setTimeout(() => {
-      this.completePhase4();
-    }, 2000);
+    // Add completion bonus
+    this.gameState.puzzle4Score += 10;
+    this.gameState.puzzle4Progress = 4; // Mark as complete
 
-    this.gameState.puzzle4Score += 40; // Completion bonus
+    // Update progress display
+    this.updateProgress4();
+
     console.log(`Puzzle 4 completed! Score: ${this.gameState.puzzle4Score}`);
+
+    // Show finalize button - MUST USE CORRECT ID FOR FASE4-ESCAPE.HTML
+    const btnFinalize = document.getElementById("btn-finalize-escape-room");
+    if (btnFinalize) {
+      btnFinalize.style.display = "block";
+      btnFinalize.textContent = "🎉 Finalizar Escape Room SAASI - COMPLETO!";
+      btnFinalize.style.background =
+        "linear-gradient(135deg, #28a745, #20c997)";
+      btnFinalize.style.animation = "pulse 2s infinite";
+    }
   }
 
   // ===== PHASE COMPLETION =====
@@ -1649,24 +2101,32 @@ class EscapeRoomPhase4 {
 
     this.gameState.score = totalScore;
 
-    // Save phase data
+    // Save phase data - ALIGNED WITH FASE4.HTML FORMAT
     const phase4Data = {
+      phase: 4,
       score: totalScore,
-      completionTime: totalTime,
+      maxScore: 100,
+      percentage: totalScore,
+      duration: Math.round(totalTime),
+      level: { title: this.getPerformanceLevel(totalScore) },
+      certification: this.getCertification(totalScore),
+      autonomyPlanning: this.gameState.autonomyPlanning,
       puzzleScores: {
         puzzle1: this.gameState.puzzle1Score,
         puzzle2: this.gameState.puzzle2Score,
         puzzle3: this.gameState.puzzle3Score,
         puzzle4: this.gameState.puzzle4Score,
       },
-      autonomyLevel: this.autonomyLevel,
+      completionTime: this.gameState.completionTime,
+      startTime: this.gameState.startTime,
       completedAt: new Date().toISOString(),
     };
 
-    localStorage.setItem("phase4-escape-data", JSON.stringify(phase4Data));
+    // Save using same format as other phases
+    localStorage.setItem("saasi_phase4_results", JSON.stringify(phase4Data));
 
     showToast(
-      "🎊 FASE 4 CONCLUÍDA! Sistema SAASI totalmente implementado!",
+      "🎊 FASE 4 CONCLUÍDA! Plano de autonomia implementado com sucesso!",
       "success",
       5000
     );
@@ -1676,31 +2136,58 @@ class EscapeRoomPhase4 {
     }, 3000);
   }
 
-  showCompletionScreen(score, timeMinutes) {
-    // Hide all puzzle states
-    document.querySelectorAll(".state").forEach((state) => {
-      state.style.display = "none";
-    });
+  getPerformanceLevel(score) {
+    if (score >= 95) return "Master SAASI";
+    if (score >= 85) return "Técnico Especialista";
+    if (score >= 70) return "Técnico Proficiente";
+    if (score >= 50) return "Técnico Competente";
+    return "Técnico Iniciante";
+  }
 
-    // Show conclusion
-    const conclusionState = document.getElementById("state-conclusion");
-    if (conclusionState) {
-      conclusionState.style.display = "block";
+  getCertification(score) {
+    if (score >= 95) return "Master SAASI";
+    if (score >= 85) return "Técnico Especialista SAASI";
+    if (score >= 70) return "Técnico Proficiente SAASI";
+    return "Técnico Competente SAASI";
+  }
 
-      // Update completion stats
-      document.getElementById("final-score").textContent = score;
-      document.getElementById("completion-time").textContent = `${Math.round(
-        timeMinutes
-      )} minutos`;
+  updateTotalScore() {
+    const totalScore =
+      this.gameState.puzzle1Score +
+      this.gameState.puzzle2Score +
+      this.gameState.puzzle3Score +
+      this.gameState.puzzle4Score;
 
-      // Calculate performance rating
-      let rating = "⭐⭐⭐⭐⭐ EXCELENTE!";
-      if (score < 200) rating = "⭐⭐⭐ BOM!";
-      if (score < 150) rating = "⭐⭐ ADEQUADO";
-      if (score < 100) rating = "⭐ PRECISA MELHORAR";
+    this.gameState.score = totalScore;
 
-      document.getElementById("performance-rating").textContent = rating;
+    // Update any total score displays
+    const totalScoreElement = document.getElementById("total-score-phase4");
+    if (totalScoreElement) {
+      totalScoreElement.textContent = totalScore;
     }
+  }
+
+  showCompletionScreen(score, timeMinutes) {
+    // NAVIGATE TO CONCLUSION STATE USING SAME PATTERN AS FASE4.HTML
+    console.log("Navigating to conclusion with score:", score);
+
+    // Use the same navigation function as the HTML if available
+    if (typeof changeState === "function") {
+      changeState("conclusao");
+    } else {
+      // Fallback: manually show conclusion state
+      document.querySelectorAll(".state").forEach((state) => {
+        state.classList.add("state-hidden");
+      });
+
+      const conclusionState = document.getElementById("state-conclusao");
+      if (conclusionState) {
+        conclusionState.classList.remove("state-hidden");
+      }
+    }
+
+    // The conclusion screen will be handled by the main fase4.html logic
+    console.log("Phase 4 completed successfully!");
   }
 
   // ===== NAVIGATION & UTILITIES =====
@@ -1792,6 +2279,12 @@ document.addEventListener("DOMContentLoaded", function () {
     puzzle3Progress: 0,
     puzzle4Score: 0,
     puzzle4Progress: 0,
+
+    // Puzzle 4 specific data
+    autonomyPlanning: {
+      actions: {},
+      maintenanceStrategies: [],
+    },
   };
 
   // Create escape room instance
