@@ -118,6 +118,23 @@
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
       }
 
+      /* Fix timer positioning to avoid overlap with back button */
+      [id*="timer"],
+      .timer-display {
+        position: fixed !important;
+        top: 80px !important; /* Below back button */
+        left: 220px !important; /* Right of back button */
+        background: rgba(51, 51, 51, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+        z-index: 999 !important;
+        font-size: 14px !important;
+      }
+
       .score {
         position: fixed;
         top: 20px;
@@ -513,15 +530,18 @@
         padding: 30px;
         margin: 20px 0;
         min-height: 500px;
+        height: auto;
       }
 
       .network-canvas {
         position: relative;
         width: 100%;
-        height: 400px;
+        min-height: 400px;
+        height: auto;
         background: radial-gradient(circle at center, #f8f9fa, #e9ecef);
         border-radius: 12px;
-        overflow: hidden;
+        overflow: visible;
+        padding-bottom: 20px;
       }
 
       .entity-node {
@@ -534,6 +554,7 @@
         border: 2px solid #dee2e6;
         cursor: pointer;
         transition: all 0.3s ease;
+        z-index: 10;
       }
 
       .entity-node:hover {
@@ -882,6 +903,14 @@
           margin: 5px;
         }
 
+        /* Fix timer positioning on mobile */
+        [id*="timer"],
+        .timer-display {
+          position: static !important;
+          display: inline-block !important;
+          margin: 5px !important;
+        }
+
         .problem-card,
         .benefit-card,
         .intervention-card {
@@ -1209,7 +1238,7 @@
           <h2>🤝 Puzzle 3: Rede de Articulação</h2>
           <p>
             <strong>Objetivo:</strong> Conecte a Felisbina com as entidades
-            adequadas. Meta: 3+ conexões eficazes
+            adequadas. Meta: 3 conexões eficazes
           </p>
 
           <div class="entity-network-map">
@@ -1448,14 +1477,11 @@
     </div>
 
     <script src="js/fase2-escape-engine.js"></script>
-<<<<<<< Updated upstream
     <script src="js/phase-data-generator.js"></script>
     <script src="js/url-navigation.js"></script>
-=======
     <script src="js/hints-system.js"></script>
     <script src="js/progress-system.js"></script>
     <script src="js/guidance-system.js"></script>
->>>>>>> Stashed changes
     <script>
       // Game state following the exact pattern from fase1-escape.html
       let gameState = {
@@ -1520,6 +1546,10 @@
               5000
             );
           }
+
+          // Fix timer positioning after everything loads
+          setTimeout(fixTimerPositioning, 500);
+          setInterval(fixTimerPositioning, 2000); // Check periodically
 
           startGame();
         } catch (error) {
@@ -1814,6 +1844,49 @@
       // Utility function for delays
       function delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Fix timer positioning to avoid overlap with back button
+      function fixTimerPositioning() {
+        // Find elements that might be the timer
+        const allDivs = document.querySelectorAll("div");
+        const timerElements = [];
+
+        allDivs.forEach((div) => {
+          const text = div.textContent || div.innerText || "";
+          if (
+            text.includes("TEMPO RESTANTE") ||
+            text.includes("RESTANTE") ||
+            text.includes("00:00")
+          ) {
+            timerElements.push(div);
+          }
+        });
+
+        // Also check for elements with timer in id or class
+        const timerById = document.querySelectorAll(
+          '[id*="timer"], [class*="timer"], [id*="Timer"], [class*="Timer"]'
+        );
+        timerById.forEach((el) => timerElements.push(el));
+
+        // Apply positioning fix to found timer elements
+        timerElements.forEach((timer) => {
+          if (timer && timer.style) {
+            timer.style.position = "fixed";
+            timer.style.top = "80px"; // Below back button
+            timer.style.left = "220px"; // Right of back button
+            timer.style.right = "auto";
+            timer.style.zIndex = "999";
+            timer.style.background = "rgba(51, 51, 51, 0.9)";
+            timer.style.color = "white";
+            timer.style.padding = "8px 16px";
+            timer.style.borderRadius = "20px";
+            timer.style.fontWeight = "600";
+            timer.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.2)";
+            timer.style.backdropFilter = "blur(10px)";
+            timer.style.fontSize = "14px";
+          }
+        });
       }
 
       // When changing to conclusion, show the report

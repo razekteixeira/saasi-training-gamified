@@ -289,64 +289,6 @@
             suporte familiar, isolamento social
           </p>
         </div>
-        <div style="text-align: center; margin-top: 20px">
-          <a
-            href="timeline.html"
-            style="
-              background: linear-gradient(135deg, #ff9800, #f57c00);
-              color: white;
-              text-decoration: none;
-              padding: 12px 25px;
-              border-radius: 25px;
-              font-weight: 600;
-              display: inline-block;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-              margin-right: 10px;
-            "
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 152, 0, 0.4)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255, 152, 0, 0.3)'"
-          >
-            🕐 Ver Timeline Completa
-          </a>
-          <a
-            href="navigation-test.html"
-            style="
-              background: linear-gradient(135deg, #2196f3, #1976d2);
-              color: white;
-              text-decoration: none;
-              padding: 12px 25px;
-              border-radius: 25px;
-              font-weight: 600;
-              display: inline-block;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-              margin-right: 10px;
-            "
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(33, 150, 243, 0.4)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(33, 150, 243, 0.3)'"
-          >
-            🧭 Teste de Navegação URL
-          </a>
-          <a
-            href="data-generation-demo.html"
-            style="
-              background: linear-gradient(135deg, #28a745, #20c997);
-              color: white;
-              text-decoration: none;
-              padding: 12px 25px;
-              border-radius: 25px;
-              font-weight: 600;
-              display: inline-block;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            "
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.4)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(40, 167, 69, 0.3)'"
-          >
-            🔄 Demo Geração de Dados
-          </a>
-        </div>
       </div>
 
       <div class="progress-overview">
@@ -593,54 +535,199 @@
         </div>
       </div>
 
-      <!-- Reset Game Section -->
+      <!-- Utility Buttons Section -->
       <div
-        class="reset-section"
-        id="reset-section"
+        class="utility-buttons"
         style="
-          text-align: center;
+          background: #f8f9fa;
+          padding: 25px;
+          border-radius: 15px;
           margin: 30px 0;
-          padding: 20px;
-          background: rgba(255, 193, 7, 0.1);
-          border-radius: 8px;
-          border-left: 4px solid #ffc107;
+          text-align: center;
+          border-left: 4px solid #28a745;
         "
       >
-        <h3 style="color: #e67e22; margin-bottom: 10px">
-          🔄 Gestão de Progresso
+        <h3 style="margin-top: 0; color: #28a745; margin-bottom: 20px">
+          🛠️ Ferramentas e Recursos
         </h3>
-        <p style="color: #666; margin-bottom: 15px; font-size: 14px">
-          Para testar ou recomeçar o jogo desde o início
-        </p>
-        <button
-          class="reset-btn"
-          onclick="handleResetClick()"
-          style="
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-          "
-          onmouseover="this.style.background='#c0392b'"
-          onmouseout="this.style.background='#e74c3c'"
-        >
-          🗑️ Reiniciar Jogo Completo
-        </button>
         <div
-          id="reset-status"
-          style="margin-top: 10px; font-size: 12px; color: #666"
-        ></div>
-      </div>
+          style="
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+          "
+        >
+          <a
+            href="timeline.html"
+            style="
+              background: linear-gradient(135deg, #ff9800, #f57c00);
+              color: white;
+              text-decoration: none;
+              padding: 12px 25px;
+              border-radius: 25px;
+              font-weight: 600;
+              display: inline-block;
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+              min-width: 200px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 152, 0, 0.4)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255, 152, 0, 0.3)'"
+          >
+            🕐 Ver Timeline Completa
+          </a>
+          <!-- <a
+            href="navigation-test.html"
+            style="
+              background: linear-gradient(135deg, #2196f3, #1976d2);
+              color: white;
+              text-decoration: none;
+              padding: 12px 25px;
+              border-radius: 25px;
+              font-weight: 600;
+              display: inline-block;
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+              min-width: 200px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(33, 150, 243, 0.4)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(33, 150, 243, 0.3)'"
+          >
+            🧭 Teste de Navegação URL
+          </a>
+          <a
+            href="data-generation-demo.html"
+            style="
+              background: linear-gradient(135deg, #28a745, #20c997);
+              color: white;
+              text-decoration: none;
+              padding: 12px 25px;
+              border-radius: 25px;
+              font-weight: 600;
+              display: inline-block;
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+              min-width: 200px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.4)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(40, 167, 69, 0.3)'"
+          >
+            🔄 Demo Geração de Dados
+          </a> -->
+        </div>
+
+        <!-- Dicas and Navegação buttons -->
+        <!-- <div
+          style="
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+          "
+        >
+          <h4 style="color: #6c757d; margin-bottom: 15px">
+            💡 Ajuda e Navegação
+          </h4>
+          <div
+            style="
+              display: flex;
+              gap: 15px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <button
+              id="hints-button"
+              onclick="showHintsInfo()"
+              style="
+                background: rgba(23, 162, 184, 0.9);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                min-width: 150px;
+              "
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(23, 162, 184, 0.4)'"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'"
+            >
+              💡 Dicas
+            </button>
+            <button
+              id="navigation-button"
+              onclick="showNavigationInfo()"
+              style="
+                background: rgba(108, 117, 125, 0.9);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                min-width: 150px;
+              "
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(108, 117, 125, 0.4)'"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'"
+            >
+              🧭 Navegação
+            </button>
+          </div>
+        </div>
+      </div> -->
 
       <div class="footer">
         <p>SAASI - Serviço de Atendimento e Acompanhamento Social Integrado</p>
         <p>Sistema de Formação Desenvolvido para Técnicos Especializados</p>
       </div>
     </div>
+
+    <!-- Reset Game Section -->
+    <div
+    class="reset-section"
+    id="reset-section"
+    style="
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(255, 193, 7, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid #ffc107;
+    "
+  >
+    <h3 style="color: #e67e22; margin-bottom: 10px">
+      🔄 Gestão de Progresso
+    </h3>
+    <p style="color: #666; margin-bottom: 15px; font-size: 14px">
+      Para testar ou recomeçar o jogo desde o início
+    </p>
+    <button
+      class="reset-btn"
+      onclick="handleResetClick()"
+      style="
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+      "
+      onmouseover="this.style.background='#c0392b'"
+      onmouseout="this.style.background='#e74c3c'"
+    >
+      🗑️ Reiniciar Jogo Completo
+    </button>
+    <div
+      id="reset-status"
+      style="margin-top: 10px; font-size: 12px; color: #666"
+    ></div>
+  </div>
 
     <script>
       // Estado global da aplicação
@@ -705,7 +792,6 @@
       // Atualizar interface
       function updateUI() {
         // Fase 1
-        const phase1Card = document.getElementById("phase-1");
         const phase1Btn = document.getElementById("phase1-btn");
         const phase1Score = document.getElementById("phase1-score");
         const phase1Status = document.getElementById("phase1-status");
@@ -713,11 +799,19 @@
         if (appState.phases.phase1.completed) {
           phase1Score.textContent = `${appState.phases.phase1.score}/100`;
           phase1Status.textContent = "✅";
-          phase1Btn.textContent = "Repetir Fase 1";
+          if (selectedGameMode === "escape") {
+            phase1Btn.innerHTML = "🎮 Repetir Missão";
+          } else {
+            phase1Btn.textContent = "Repetir Fase 1";
+          }
         } else {
           phase1Score.textContent = "--";
           phase1Status.textContent = "🎯";
-          phase1Btn.textContent = "Começar Fase 1";
+          if (selectedGameMode === "escape") {
+            phase1Btn.innerHTML = "🎮 Iniciar Missão";
+          } else {
+            phase1Btn.textContent = "Começar Fase 1";
+          }
         }
 
         // Fase 2
@@ -733,11 +827,19 @@
           if (appState.phases.phase2.completed) {
             phase2Score.textContent = `${appState.phases.phase2.score}/100`;
             phase2Status.textContent = "✅";
-            phase2Btn.textContent = "Repetir Fase 2";
+            if (selectedGameMode === "escape") {
+              phase2Btn.innerHTML = "🎮 Repetir Missão 2";
+            } else {
+              phase2Btn.textContent = "Repetir Fase 2";
+            }
           } else {
             phase2Score.textContent = "--";
             phase2Status.textContent = "🎯";
-            phase2Btn.textContent = "Começar Fase 2";
+            if (selectedGameMode === "escape") {
+              phase2Btn.innerHTML = "🎮 Missão 2";
+            } else {
+              phase2Btn.textContent = "Começar Fase 2";
+            }
           }
         } else {
           phase2Card.classList.add("locked");
@@ -760,11 +862,19 @@
           if (appState.phases.phase3.completed) {
             phase3Score.textContent = `${appState.phases.phase3.score}/100`;
             phase3Status.textContent = "✅";
-            phase3Btn.textContent = "Repetir Fase 3";
+            if (selectedGameMode === "escape") {
+              phase3Btn.innerHTML = "🎮 Repetir Missão 3";
+            } else {
+              phase3Btn.textContent = "Repetir Fase 3";
+            }
           } else {
             phase3Score.textContent = "--";
             phase3Status.textContent = "🎯";
-            phase3Btn.textContent = "Começar Fase 3";
+            if (selectedGameMode === "escape") {
+              phase3Btn.innerHTML = "🎮 Missão 3";
+            } else {
+              phase3Btn.textContent = "Começar Fase 3";
+            }
           }
         } else {
           phase3Card.classList.add("locked");
@@ -787,11 +897,19 @@
           if (appState.phases.phase4.completed) {
             phase4Score.textContent = `${appState.phases.phase4.score}/100`;
             phase4Status.textContent = "✅";
-            phase4Btn.textContent = "Repetir Fase 4";
+            if (selectedGameMode === "escape") {
+              phase4Btn.innerHTML = "🎮 Repetir Missão 4";
+            } else {
+              phase4Btn.textContent = "Repetir Fase 4";
+            }
           } else {
             phase4Score.textContent = "--";
             phase4Status.textContent = "🎯";
-            phase4Btn.textContent = "Começar Fase 4";
+            if (selectedGameMode === "escape") {
+              phase4Btn.innerHTML = "🎮 Missão 4";
+            } else {
+              phase4Btn.textContent = "Começar Fase 4";
+            }
           }
         } else {
           phase4Card.classList.add("locked");
@@ -936,19 +1054,59 @@
       }
 
       function updatePhaseLinks() {
-        const phase1Btn = document.getElementById("phase1-btn");
+        console.log("updatePhaseLinksASDASDASDASDASD");
+        // Update all phase buttons based on selected game mode
+        const phases = [
+          {
+            id: "phase1-btn",
+            normal: "fase1.html",
+            escape: "fase1-escape.html",
+            text: "Fase 1",
+          },
+          {
+            id: "phase2-btn",
+            normal: "fase2.html",
+            escape: "fase2-escape.html",
+            text: "Fase 2",
+          },
+          {
+            id: "phase3-btn",
+            normal: "fase3.html",
+            escape: "fase3-escape.html",
+            text: "Fase 3",
+          },
+          {
+            id: "phase4-btn",
+            normal: "fase4.html",
+            escape: "fase4-escape.html",
+            text: "Fase 4",
+          },
+        ];
 
-        if (selectedGameMode === "escape") {
-          phase1Btn.href = "fase1-escape.html";
-          phase1Btn.innerHTML = "🎮 Começar Missão";
-          phase1Btn.style.background =
-            "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)";
-        } else {
-          phase1Btn.href = "fase1.html";
-          phase1Btn.innerHTML = "📋 Começar Fase 1";
-          phase1Btn.style.background =
-            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-        }
+        phases.forEach((phase) => {
+          const btn = document.getElementById(phase.id);
+          if (btn) {
+            if (selectedGameMode === "escape") {
+              btn.href = phase.escape;
+              if (phase.id === "phase1-btn") {
+                btn.innerHTML = "🎮 Iniciar Missão";
+              } else {
+                btn.innerHTML = `🎮 Missão ${phase.text.split(" ")[1]}`;
+              }
+              btn.style.background =
+                "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)";
+            } else {
+              btn.href = phase.normal;
+              if (phase.id === "phase1-btn") {
+                btn.innerHTML = "📋 Começar Fase 1";
+              } else {
+                btn.innerHTML = `📋 Começar ${phase.text}`;
+              }
+              btn.style.background =
+                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+            }
+          }
+        });
       }
 
       function loadGameModePreference() {
@@ -1311,6 +1469,49 @@
             }
           }
         }, 0);
+      }
+
+      // Functions for Dicas and Navegação buttons
+      function showHintsInfo() {
+        if (window.ModalSystem) {
+          ModalSystem.alert(
+            `<h3>💡 Sistema de Dicas</h3>
+            <p>As dicas estão disponíveis durante as fases do jogo:</p>
+            <ul style="text-align: left; margin: 15px 0;">
+              <li>🎯 <strong>Modo Formação:</strong> Orientações contextuais para aprendizagem</li>
+              <li>🎮 <strong>Modo Escape Room:</strong> Pistas para resolver puzzles e encontrar códigos</li>
+              <li>🔍 <strong>Dicas Específicas:</strong> Cada fase tem dicas personalizadas</li>
+              <li>⭐ <strong>Dicas Progressivas:</strong> Ajuda aumenta conforme a dificuldade</li>
+            </ul>
+            <p><strong>💡 Dica:</strong> As dicas aparecem automaticamente nas fases quando necessário!</p>`,
+            "info"
+          );
+        } else {
+          alert(
+            "💡 Sistema de Dicas\n\nAs dicas estão disponíveis durante as fases do jogo para ajudar na aprendizagem e resolução de puzzles."
+          );
+        }
+      }
+
+      function showNavigationInfo() {
+        if (window.ModalSystem) {
+          ModalSystem.alert(
+            `<h3>🧭 Sistema de Navegação</h3>
+            <p>Navegue facilmente entre as diferentes seções:</p>
+            <ul style="text-align: left; margin: 15px 0;">
+              <li>🏠 <strong>Página Principal:</strong> Visão geral e seleção de fases</li>
+              <li>📊 <strong>Timeline:</strong> Visualização completa do caso Felisbina</li>
+              <li>🔧 <strong>Testes:</strong> Ferramentas de desenvolvimento e teste</li>
+              <li>📈 <strong>Progresso:</strong> Acompanhamento automático do seu avanço</li>
+            </ul>
+            <p><strong>🎯 Dica:</strong> Use os botões de navegação nas fases para voltar facilmente!</p>`,
+            "info"
+          );
+        } else {
+          alert(
+            "🧭 Sistema de Navegação\n\nUse os menus e botões para navegar entre as diferentes seções do sistema SAASI."
+          );
+        }
       }
 
       console.log(

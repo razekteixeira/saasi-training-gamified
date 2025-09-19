@@ -120,7 +120,7 @@
 
       .score {
         position: fixed;
-        top: 20px;
+        top: 80px; /* Moved below the back button */
         right: 20px;
         background: rgba(51, 51, 51, 0.9);
         backdrop-filter: blur(10px);
@@ -130,6 +130,23 @@
         font-weight: 600;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         z-index: 1000;
+      }
+
+      /* Fix timer positioning to avoid overlap with back button */
+      [id*="timer"],
+      .timer-display {
+        position: fixed !important;
+        top: 80px !important; /* Below back button */
+        left: 220px !important; /* Right of back button */
+        background: rgba(51, 51, 51, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+        z-index: 999 !important;
+        font-size: 14px !important;
       }
 
       .header {
@@ -1574,6 +1591,14 @@
           margin: 5px;
         }
 
+        /* Fix timer positioning on mobile */
+        [id*="timer"],
+        .timer-display {
+          position: static !important;
+          display: inline-block !important;
+          margin: 5px !important;
+        }
+
         .crisis-card,
         .scenario-card,
         .phase-card {
@@ -2922,5 +2947,8 @@ Obrigado por completar o ESCAPE ROOM SAASI! 🎉
         }
       };
     </script>
+
+    <!-- Load Hints System for consistent navigation -->
+    <script src="js/hints-system.js"></script>
   </body>
 </html>

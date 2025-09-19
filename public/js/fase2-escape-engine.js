@@ -60,7 +60,7 @@ class EscapeRoomPhase2 {
         description: "Nova responsabilidade após morte do pai",
         category: "competencias",
         correctPriority: 2, // High
-        urgency: "medium",
+        urgency: "high",
         impact: 6,
         complexity: 4,
         points: 4,
@@ -82,7 +82,7 @@ class EscapeRoomPhase2 {
         description: "Apenas 6 meses de trabalho em limpeza",
         category: "profissional",
         correctPriority: 3, // Medium
-        urgency: "low",
+        urgency: "high",
         impact: 4,
         complexity: 3,
         points: 3,
@@ -125,15 +125,6 @@ class EscapeRoomPhase2 {
         eligible: true,
         requirements: ["RSI ativo", "Idade 18-64"],
         points: 4,
-      },
-      {
-        id: "subsidio_arrendamento",
-        title: "🏠 Subsídio ao Arrendamento",
-        value: 100, // €/month
-        duration: 12,
-        eligible: false,
-        requirements: ["Contrato arrendamento", "Rendimentos >500€"],
-        points: -2, // Penalty for wrong selection
       },
     ];
 
@@ -346,18 +337,11 @@ class EscapeRoomPhase2 {
       card.innerHTML = `
                 <div class="problem-header">
                     <h4>${problem.title}</h4>
-                    <span class="urgency-indicator ${
-                      problem.urgency
-                    }">${problem.urgency.toUpperCase()}</span>
                 </div>
                 <p class="problem-description">${problem.description}</p>
                 <div class="problem-metrics">
-                    <span class="impact-score">Impacto: ${
-                      problem.impact
-                    }/10</span>
-                    <span class="complexity-score">Complexidade: ${
-                      problem.complexity
-                    }/10</span>
+                    <span class="impact-score">Impacto: ${problem.impact}/10</span>
+                    <span class="complexity-score">Complexidade: ${problem.complexity}/10</span>
                 </div>
             `;
 
@@ -696,9 +680,6 @@ class EscapeRoomPhase2 {
                         ${entity.specialties
                           .map((s) => `<span class="specialty">${s}</span>`)
                           .join("")}
-                    </div>
-                    <div class="availability-status ${statusClass}">
-                        ${entity.adequate ? "Adequado" : "Não prioritário"}
                     </div>
                 </div>
             `;

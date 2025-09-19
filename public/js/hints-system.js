@@ -16,6 +16,7 @@ class HintsSystem {
     if (url.includes("fase1-escape")) return "fase1";
     if (url.includes("fase2-escape")) return "fase2";
     if (url.includes("fase3-escape")) return "fase3";
+    if (url.includes("fase4-escape")) return "fase4";
     return "unknown";
   }
 
@@ -105,6 +106,32 @@ class HintsSystem {
           "✅ Validação completa desbloqueia próxima fase",
         ],
       },
+      fase4: {
+        general: [
+          "🔍 Monitore indicadores de progresso e sinais de alerta",
+          "💡 Ajuste estratégias com base no feedback da Felisbina",
+          "🎯 Cada situação requer uma abordagem personalizada",
+          "⭐ Códigos aparecem quando toma decisões acertadas",
+        ],
+        puzzle1: [
+          "📋 Analise cuidadosamente cada situação apresentada",
+          "🎯 Considere o impacto das suas decisões no bem-estar da Felisbina",
+          "💭 Use as competências SAASI para orientar as suas escolhas",
+          "🔍 Códigos estão nas decisões mais apropriadas",
+        ],
+        puzzle2: [
+          "🔗 Conecte as necessidades da Felisbina com os recursos disponíveis",
+          "📊 Observe os sinais de progresso e dificuldades",
+          "🧩 Cada intervenção deve ser justificada e documentada",
+          "💡 Códigos aparecem quando faz intervenções eficazes",
+        ],
+        puzzle3: [
+          "⚖️ Balance apoio e promoção da autonomia",
+          "📈 Avalie continuamente o progresso e ajuste o plano",
+          "🎯 Prepare a Felisbina para a transição e sustentabilidade",
+          "🔍 Códigos estão nas estratégias de empoderamento",
+        ],
+      },
     };
   }
 
@@ -128,28 +155,81 @@ class HintsSystem {
     style.textContent = `
       .hints-button, .navigation-button {
         position: fixed;
-        top: 80px;
-        right: 20px;
-        background: rgba(23, 162, 184, 0.9);
+        top: 240px; /* Positioned below timer with appropriate spacing */
+        left: 20px;
+        background: rgba(23, 162, 184, 0.95);
         color: white;
         border: none;
-        padding: 12px 20px;
-        border-radius: 25px;
+        padding: 14px 22px;
+        border-radius: 30px;
         cursor: pointer;
         font-weight: 600;
         z-index: 1000;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        font-size: 14px;
+        min-width: 120px;
       }
 
       .navigation-button {
-        top: 130px;
-        background: rgba(108, 117, 125, 0.9);
+        top: 180px; /* Above hints button */
+        left: 20px;
+        background: rgba(108, 117, 125, 0.95);
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .hints-button, .navigation-button {
+          left: 15px;
+          padding: 12px 18px;
+          font-size: 13px;
+          min-width: 100px;
+        }
+        
+        .hints-button {
+          top: 220px;
+        }
+        
+        .navigation-button {
+          top: 160px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .hints-button, .navigation-button {
+          left: 15px;
+          padding: 10px 16px;
+          font-size: 12px;
+          min-width: 90px;
+        }
+        
+        .hints-button {
+          top: 200px;
+        }
+        
+        .navigation-button {
+          top: 140px;
+        }
       }
 
       .hints-button:hover, .navigation-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+      
+      .hints-button:hover {
+        background: rgba(23, 162, 184, 1);
+        box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+      }
+      
+      .navigation-button:hover {
+        background: rgba(108, 117, 125, 1);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+      }
+      
+      .hints-button:active, .navigation-button:active {
+        transform: translateY(-1px);
       }
 
       .hints-modal, .navigation-modal {

@@ -52,7 +52,6 @@ class EscapeRoomPhase3 {
           qualification: 90,
         },
         problemsCovered: ["baixa_qualificacao", "experiencia_limitada"],
-        budgetCost: 2500,
         hiddenCode: "ADQ1",
       },
       {
@@ -536,7 +535,6 @@ class EscapeRoomPhase3 {
               .join("")}
           </div>
           <div style="margin-top: 10px;">
-            <strong>Orçamento:</strong> €${program.budgetCost}
             <span style="float: right; font-size: 0.8rem; color: #666;">
               Código: <span class="hidden-code" style="cursor: pointer;" onclick="window.escapeRoom.revealCode('${
                 program.hiddenCode
@@ -806,13 +804,19 @@ class EscapeRoomPhase3 {
       node.className = `entity-node ${entity.status}`;
       node.dataset.entityId = entity.id;
 
-      // Position nodes around Felisbina
+      // Position nodes around Felisbina with proper bounds checking
       const angle = (index / this.entitiesData.length) * 2 * Math.PI;
-      const radius = 200;
+      const radiusPercent = 30; // 30% radius from center
       const centerX = 50; // Center of the visualization
       const centerY = 50;
-      const x = centerX + (radius * Math.cos(angle)) / 4; // Adjust for percentage
-      const y = centerY + (radius * Math.sin(angle)) / 4;
+
+      // Calculate position with bounds checking
+      let x = centerX + radiusPercent * Math.cos(angle);
+      let y = centerY + radiusPercent * Math.sin(angle);
+
+      // Ensure nodes stay within bounds (leave 15% margin from edges)
+      x = Math.max(15, Math.min(85, x));
+      y = Math.max(15, Math.min(85, y));
 
       node.style.left = `${x}%`;
       node.style.top = `${y}%`;
@@ -1330,6 +1334,9 @@ class EscapeRoomPhase3 {
       centro_saude_ramalde: "centro_saude",
       ipss_solidariedade: "ipss",
     };
+    console.log(entityCode);
+    console.log(entityMap);
+    console.log(entityMap[entityCode] || "geral");
     return entityMap[entityCode] || "geral";
   }
 
@@ -1492,6 +1499,7 @@ class EscapeRoomPhase3 {
     );
   }
 
+  // @deprecated
   optimizeIntelligent() {
     showToast("⚡ Otimização inteligente iniciada...", "info", 2000);
 

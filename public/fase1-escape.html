@@ -250,7 +250,7 @@
 
       .timer-container {
         position: fixed;
-        top: 20px;
+        top: 80px; /* Moved below the back button */
         left: 20px;
         background: rgba(0, 0, 0, 0.8);
         color: white;
@@ -4824,7 +4824,7 @@
 
             <div class="evidence-board-area">
               <div class="board-column risk-column">
-                <h4>🔴 Área Vermelha</h4>
+                <h4>🔴 Fatores de Risco</h4>
                 <div
                   class="evidence-drop-zone"
                   id="risk-zone"
@@ -4843,7 +4843,7 @@
               </div>
 
               <div class="board-column protection-column">
-                <h4>🟢 Área Verde</h4>
+                <h4>🟢 Fatores de Proteção</h4>
                 <div
                   class="evidence-drop-zone"
                   id="protection-zone"
@@ -5116,7 +5116,7 @@
                 <div class="validation-checks" id="validation-checks">
                   <!-- Validation checks will appear here -->
                 </div>
-                <div class="validation-actions">
+                <!-- <div class="validation-actions">
                   <button
                     class="validation-btn approve"
                     onclick="approveDocument()"
@@ -5129,7 +5129,7 @@
                   >
                     ❌ Rejeitar
                   </button>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -10354,7 +10354,7 @@
           description: "CV de Felisbina Santos - Experiência Profissional",
           priority: "high",
           icon: "📄",
-          scanTime: 8000, // 8 seconds
+          scanTime: 3000, // 3 seconds
           validationChecks: [
             { name: "Dados Pessoais Completos", requirement: true },
             { name: "Experiência Documentada", requirement: true },
@@ -10370,7 +10370,7 @@
           description: "Escolaridade: 9º ano (1968)",
           priority: "medium",
           icon: "🎓",
-          scanTime: 6000,
+          scanTime: 3000,
           validationChecks: [
             { name: "Assinatura Digital Válida", requirement: true },
             { name: "Selo Oficial Presente", requirement: true },
@@ -10385,7 +10385,7 @@
           description: "Avaliação de capacidade laboral",
           priority: "high",
           icon: "🏥",
-          scanTime: 10000,
+          scanTime: 3000,
           validationChecks: [
             { name: "Assinatura Médica Válida", requirement: true },
             { name: "Carimbo Hospitalar", requirement: true },
@@ -10400,7 +10400,7 @@
           description: "Situação fiscal atual",
           priority: "medium",
           icon: "💰",
-          scanTime: 7000,
+          scanTime: 3000,
           validationChecks: [
             { name: "Código de Validação AT", requirement: true },
             { name: "Período Fiscal Correto", requirement: true },
@@ -10415,7 +10415,7 @@
           description: "Referência confidencial do anterior empregador",
           priority: "low",
           icon: "✉️",
-          scanTime: 12000,
+          scanTime: 3000,
           validationChecks: [
             { name: "Selo de Confidencialidade", requirement: true },
             { name: "Assinatura Reconhecida", requirement: true },
