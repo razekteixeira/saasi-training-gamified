@@ -1175,7 +1175,7 @@ class EscapeRoomPhase3 {
             (_, month) => `
             <div class="time-slot" data-month="${
               month + 1
-            }" data-entity="${entityName.toLowerCase().replace(" ", "_")}">
+            }" data-entity="${this.getEntityDataAttribute(entityName)}">
               <!-- Activities will be dropped here -->
             </div>
           `
@@ -1311,7 +1311,11 @@ class EscapeRoomPhase3 {
     this.updateLogicalSequencing();
 
     // Check completion
-    if (Object.keys(this.gameState.puzzle3.placedActivities).length >= 8) {
+    const placedCount = Object.keys(
+      this.gameState.puzzle3.placedActivities
+    ).length;
+    console.log(`Puzzle 3 Progress: ${placedCount}/12 activities placed`);
+    if (placedCount >= 12) {
       this.completePuzzle3();
     }
 
@@ -1338,6 +1342,17 @@ class EscapeRoomPhase3 {
     console.log(entityMap);
     console.log(entityMap[entityCode] || "geral");
     return entityMap[entityCode] || "geral";
+  }
+
+  getEntityDataAttribute(entityDisplayName) {
+    // Map display names to data attribute values to ensure consistency
+    const displayNameMap = {
+      IEFP: "iefp",
+      "Centro Saúde": "centro_saude",
+      IPSS: "ipss",
+      Geral: "geral",
+    };
+    return displayNameMap[entityDisplayName] || "geral";
   }
 
   removeActivity(activityId, slot) {
@@ -1383,7 +1398,13 @@ class EscapeRoomPhase3 {
     const utilizationBar = document.getElementById("resource-utilization");
     if (utilizationBar) {
       utilizationBar.style.width = utilization + "%";
-      utilizationBar.nextElementSibling.textContent = utilization + "%";
+      // Find the value span in the same metric container
+      const valueSpan = utilizationBar
+        .closest(".metric")
+        .querySelector(".value");
+      if (valueSpan) {
+        valueSpan.textContent = utilization + "%";
+      }
     }
 
     document.getElementById("puzzle3-progress").textContent = usedSlots;
@@ -1420,7 +1441,13 @@ class EscapeRoomPhase3 {
     const sequencingBar = document.getElementById("logical-sequencing");
     if (sequencingBar) {
       sequencingBar.style.width = sequencing + "%";
-      sequencingBar.nextElementSibling.textContent = sequencing + "%";
+      // Find the value span in the same metric container
+      const valueSpan = sequencingBar
+        .closest(".metric")
+        .querySelector(".value");
+      if (valueSpan) {
+        valueSpan.textContent = sequencing + "%";
+      }
     }
   }
 
