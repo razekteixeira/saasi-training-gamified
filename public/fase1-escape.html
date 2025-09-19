@@ -4633,7 +4633,7 @@
               <div class="metric-info">
                 <span class="metric-label">Interações</span>
                 <span class="metric-value"
-                  ><span id="interactions">0</span>/6</span
+                  ><span id="interactions">0</span>/5</span
                 >
                 <div class="metric-bar">
                   <div class="metric-progress" id="interactions-progress"></div>
@@ -5667,14 +5667,11 @@
     <script src="js/case-data-felisbina.js"></script>
     <script src="js/modal-system.js"></script>
     <script src="js/shared.js"></script>
-<<<<<<< Updated upstream
     <script src="js/phase-data-generator.js"></script>
     <script src="js/url-navigation.js"></script>
-=======
     <script src="js/hints-system.js"></script>
     <script src="js/progress-system.js"></script>
     <script src="js/guidance-system.js"></script>
->>>>>>> Stashed changes
 
     <script>
       // Simple function to create native-style dialogs
@@ -5716,6 +5713,10 @@
         availability: null,
         capacity: null,
         elementsPlaced: 0,
+        // Puzzle scoring system
+        puzzle1: { score: 0, maxScore: 50, completed: false }, // Conversation
+        puzzle2: { score: 0, maxScore: 50, completed: false }, // Analysis
+        puzzle3: { score: 0, maxScore: 50, completed: false }, // Documentation/Assessment
       };
 
       // DADOS DOS DIÁLOGOS (mantidos originais)
@@ -6063,11 +6064,23 @@
         document.getElementById("current-puzzle").textContent = puzzleNumber;
       }
 
-      function addBonusPoints(points, reason) {
+      function addBonusPoints(points, reason, puzzleNumber = null) {
         escapeRoomState.bonusPoints += points;
-        gameState.score += points;
-        showToast(`🎉 Bonus: +${points} pontos! ${reason}`, "success", 5000);
-        updateScoreDisplay();
+
+        if (puzzleNumber) {
+          // Add to specific puzzle
+          const actualPoints = addPuzzleScore(puzzleNumber, points);
+          showToast(
+            `🎉 Bonus: +${actualPoints} pontos! ${reason}`,
+            "success",
+            5000
+          );
+        } else {
+          // Legacy: add to total score directly (for backward compatibility)
+          gameState.score = Math.min(gameState.score + points, 150);
+          updateScoreDisplay();
+          showToast(`🎉 Bonus: +${points} pontos! ${reason}`, "success", 5000);
+        }
       }
 
       function updateScoreDisplay() {
@@ -6154,6 +6167,35 @@
       // Função para atualizar pontuação com limite
       function addScore(points) {
         gameState.score = Math.min(gameState.score + points, 150); // Aumentado para 150
+        updateScoreDisplay();
+      }
+
+      // Add score to specific puzzle with cap
+      function addPuzzleScore(puzzleNumber, points) {
+        const puzzle = gameState[`puzzle${puzzleNumber}`];
+        if (puzzle) {
+          const oldScore = puzzle.score;
+          puzzle.score = Math.min(puzzle.score + points, puzzle.maxScore);
+          const actualPointsAdded = puzzle.score - oldScore;
+
+          // Update total score
+          gameState.score =
+            gameState.puzzle1.score +
+            gameState.puzzle2.score +
+            gameState.puzzle3.score;
+          updateScoreDisplay();
+
+          return actualPointsAdded;
+        }
+        return 0;
+      }
+
+      // Calculate total score from all puzzles
+      function updateTotalScore() {
+        gameState.score =
+          gameState.puzzle1.score +
+          gameState.puzzle2.score +
+          gameState.puzzle3.score;
         updateScoreDisplay();
       }
 
@@ -7629,34 +7671,44 @@
       }
 
       function calculateConversationBonuses(completionMinutes) {
-        // Speed bonus (under 3 minutes)
-        if (completionMinutes <= 3) {
-          addBonusPoints(15, "Velocidade na conversa!");
-        }
+        // Puzzle 1 (Conversation) scoring
+        let puzzle1Score = 0;
+
+        // Base conversation score (up to 25 points)
+        puzzle1Score += Math.min(
+          25,
+          Math.round(
+            (gameState.empathy / 30) * 15 + (gameState.information / 75) * 10
+          )
+        );
 
         // Perfect empathy bonus (25/25 empathy)
         if (gameState.empathy >= 25) {
-          addBonusPoints(30, "Empatia perfeita!");
+          puzzle1Score += 10;
         }
 
         // No repetition bonus (used all different response types)
         if (conversationState.usedResponses.size >= dialogueData.length * 0.8) {
-          addBonusPoints(25, "Variedade de respostas!");
+          puzzle1Score += 8;
         }
 
         // Information target bonus (≥70% information)
         if (gameState.information >= 70) {
           if (gameState.information >= 85) {
-            addBonusPoints(20, "Informação excelente!");
+            puzzle1Score += 5;
           } else {
-            addBonusPoints(10, "Boa recolha de informação!");
+            puzzle1Score += 3;
           }
         }
 
-        // Perfect information bonus (100% information)
-        if (gameState.information >= 100) {
-          addBonusPoints(50, "Informação perfeita!");
+        // Speed bonus
+        if (completionMinutes <= 3) {
+          puzzle1Score += 2;
         }
+
+        // Add to puzzle 1 with cap
+        addPuzzleScore(1, puzzle1Score);
+        gameState.puzzle1.completed = true;
       }
 
       function getFelisbinaFinalMessage() {
@@ -8078,14 +8130,13 @@
 
         if (isCorrect) {
           evidenceState.correctPlacements++;
-          addScore(evidence.points);
-          showToast(`✅ Correto! +${evidence.points} pontos`, "success", 3000);
+          const points = addPuzzleScore(2, evidence.points);
+          showToast(`✅ Correto! +${points} pontos`, "success", 3000);
         } else {
-          addScore(Math.max(1, Math.floor(evidence.points / 2))); // Partial points
+          const partialPoints = Math.max(1, Math.floor(evidence.points / 2));
+          const points = addPuzzleScore(2, partialPoints);
           showToast(
-            `❌ Categoria incorreta, mas +${Math.floor(
-              evidence.points / 2
-            )} pontos pelo esforço`,
+            `❌ Categoria incorreta, mas +${points} pontos pelo esforço`,
             "warning",
             4000
           );
@@ -8363,19 +8414,30 @@
         if (
           evidenceState.categorizedEvidence.size >= evidenceState.totalEvidence
         ) {
-          // Calculate completion bonus
-          const accuracyBonus = Math.round(
-            (evidenceState.correctPlacements / evidenceState.totalEvidence) * 25
-          );
-          const connectionBonus = evidenceState.connections.length * 10;
+          // Puzzle 2 (Analysis) scoring
+          let puzzle2Score = 0;
 
-          addBonusPoints(accuracyBonus, `Precisão na categorização!`);
-          if (connectionBonus > 0) {
-            addBonusPoints(connectionBonus, `Conexões descobertas!`);
+          // Base score for categorization accuracy (up to 30 points)
+          puzzle2Score += Math.round(
+            (evidenceState.correctPlacements / evidenceState.totalEvidence) * 30
+          );
+
+          // Connection bonus (up to 15 points)
+          puzzle2Score += evidenceState.connections.length * 5;
+
+          // Examination thoroughness bonus (up to 5 points)
+          if (
+            evidenceState.examinedEvidence.size >= evidenceState.totalEvidence
+          ) {
+            puzzle2Score += 5;
           }
 
+          // Add to puzzle 2 with cap
+          addPuzzleScore(2, puzzle2Score);
+          gameState.puzzle2.completed = true;
+
           showToast(
-            "🎉 Puzzle 3 concluído! Investigação completa!",
+            "🎉 Puzzle 2 concluído! Investigação completa!",
             "success",
             5000
           );
@@ -8986,12 +9048,45 @@
         gameState.availability = availability;
         gameState.capacity = capacity;
 
-        // Calculate assessment score using existing logic
+        // Puzzle 3 (Assessment) scoring
+        let puzzle3Score = 0;
+
+        // Base assessment score (up to 30 points)
         if (typeof ScoringSystem !== "undefined") {
           const assessmentScore =
             ScoringSystem.calculateAssessmentScore(gameState);
-          gameState.score += Math.round(assessmentScore * 25); // Convert to points
+          puzzle3Score += Math.round(assessmentScore * 30);
+        } else {
+          // Fallback scoring based on decisions
+          if (availability === "alta" && capacity === "alta") {
+            puzzle3Score += 30;
+          } else if (availability === "media" || capacity === "media") {
+            puzzle3Score += 20;
+          } else {
+            puzzle3Score += 10;
+          }
         }
+
+        // Bonus for documentation completeness (up to 10 points)
+        if (gameState.docsIdentified >= 3) {
+          puzzle3Score += 10;
+        } else if (gameState.docsIdentified >= 2) {
+          puzzle3Score += 5;
+        }
+
+        // Time efficiency bonus (up to 10 points)
+        const timeUsed = escapeRoomState.startTime
+          ? Math.round((Date.now() - escapeRoomState.startTime) / 60000)
+          : 0;
+        if (timeUsed <= 25) {
+          puzzle3Score += 10;
+        } else if (timeUsed <= 35) {
+          puzzle3Score += 5;
+        }
+
+        // Add to puzzle 3 with cap
+        addPuzzleScore(3, puzzle3Score);
+        gameState.puzzle3.completed = true;
 
         // Show completion message
         showToast("🎉 Avaliação DLD concluída com sucesso!", "success", 4000);
@@ -9439,14 +9534,7 @@
                    ondragstart="handleResponseDragStart(event)"
                    ondragend="handleResponseDragEnd(event)"
                    onclick="selectConversationCard(this)">
-                <div class="response-card-header">
-                  <span class="response-quality-badge ${card.quality}">${card.quality}</span>
-                </div>
                 <div class="response-card-content">${card.content}</div>
-                <div class="response-card-stats">
-                  <span>❤️ ${card.empathy}</span>
-                  <span>📊 ${card.info}</span>
-                </div>
               </div>
             `
               )
@@ -9605,7 +9693,7 @@
             75,
             gameState.information + responseCard.info
           );
-          gameState.interactions = Math.min(6, gameState.interactions + 1);
+          gameState.interactions = Math.min(5, gameState.interactions + 1);
         }
 
         // Time bonus
@@ -9636,18 +9724,22 @@
           qualityTexts[responseCard.quality] || "Resposta registada";
 
         feedbackPanel.innerHTML = `
-          <div class="feedback-content">
-            <div class="response-quality">${qualityText}</div>
-            <div class="empathy-gain">❤️ Empatia: +${responseCard.empathy}</div>
-            <div class="information-gain">📊 Informação: +${responseCard.info}</div>
-            <div class="time-info">⏱️ Tempo: ${responseTime}s</div>
-          </div>
           <button class="btn continue-btn" onclick="continueConversation()">
             Próximo Tópico →
           </button>
         `;
 
         feedbackPanel.style.display = "block";
+
+        // Clear the response cards from the middle section
+        const responseArea = document.getElementById("response-cards-area");
+        if (responseArea) {
+          responseArea.innerHTML = `
+            <div class="cards-instruction" style="text-align: center; color: #666; font-style: italic; padding: 20px;">
+              Resposta selecionada! Aguarde o próximo tópico.
+            </div>
+          `;
+        }
 
         // Update Felisbina's reaction
         const reactionEmojis = {
@@ -9755,14 +9847,29 @@
         const totalTime = Date.now() - cardGameState.gameStartTime;
         const totalMinutes = Math.round(totalTime / 60000);
 
+        // Puzzle 1 (Conversation) scoring for card game
+        let puzzle1Score = 0;
+
+        // Base conversation score (up to 30 points)
+        puzzle1Score += Math.min(
+          30,
+          Math.round(
+            (gameState.empathy / 30) * 20 + (gameState.information / 75) * 10
+          )
+        );
+
         // Final bonuses
         if (totalMinutes < 5) {
-          addBonusPoints(10, "Conversa eficiente!");
+          puzzle1Score += 10;
         }
 
         if (gameState.empathy >= 25) {
-          addBonusPoints(15, "Alta empatia alcançada!");
+          puzzle1Score += 10;
         }
+
+        // Add to puzzle 1 with cap
+        addPuzzleScore(1, puzzle1Score);
+        gameState.puzzle1.completed = true;
 
         // Show completion message
         updateFelisbinaAvatar(
@@ -9820,7 +9927,7 @@
         // Update progress bars
         updateProgressBar("empathy-progress", gameState.empathy, 30);
         updateProgressBar("information-progress", gameState.information, 75);
-        updateProgressBar("interactions-progress", gameState.interactions, 6);
+        updateProgressBar("interactions-progress", gameState.interactions, 5);
       }
 
       /**

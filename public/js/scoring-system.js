@@ -16,12 +16,12 @@
 const SCORING_LIMITS = {
   empathy: { min: 0, max: 30 }, // Aumentado para permitir atingir máximo apenas com todas as questões
   information: { min: 0, max: 75 }, // Máximo reduzido para 75% como indicado no feedback
-  interactions: { min: 0, max: 6 }, // Corrigido para permitir 6/6
-  phase1_total: { min: 0, max: 100 },
-  phase2_total: { min: 0, max: 100 },
-  phase3_total: { min: 0, max: 100 },
-  phase4_total: { min: 0, max: 100 },
-  global_total: { min: 0, max: 400 },
+  interactions: { min: 0, max: 5 }, // Corrigido para 5 interactions
+  phase1_total: { min: 0, max: 150 }, // Phase 1 has 150 points (3 puzzles × 50 each)
+  phase2_total: { min: 0, max: 100 }, // Phase 2 has 100 points (4 puzzles: 25+20+25+30)
+  phase3_total: { min: 0, max: 100 }, // Phase 3 has 100 points (4 puzzles: 25+25+30+20)
+  phase4_total: { min: 0, max: 100 }, // Phase 4 has 100 points (4 puzzles: 25+30+25+20)
+  global_total: { min: 0, max: 450 }, // Total: 150+100+100+100
 };
 
 /**
