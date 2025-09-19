@@ -14,16 +14,44 @@
         "destination": "/timeline.html"
       },
       {
+        "source": "/navigation-test",
+        "destination": "/navigation-test.html"
+      },
+      {
+        "source": "/data-generation-demo",
+        "destination": "/data-generation-demo.html"
+      },
+      {
         "source": "/fase1",
         "destination": "/fase1.html"
+      },
+      {
+        "source": "/fase1-escape",
+        "destination": "/fase1-escape.html"
       },
       {
         "source": "/fase2",
         "destination": "/fase2.html"
       },
       {
+        "source": "/fase2-escape",
+        "destination": "/fase2-escape.html"
+      },
+      {
         "source": "/fase3",
         "destination": "/fase3.html"
+      },
+      {
+        "source": "/fase3-escape",
+        "destination": "/fase3-escape.html"
+      },
+      {
+        "source": "/fase4",
+        "destination": "/fase4.html"
+      },
+      {
+        "source": "/fase4-escape",
+        "destination": "/fase4-escape.html"
       }
     ],
     "cleanUrls": true,

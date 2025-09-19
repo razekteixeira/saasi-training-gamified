@@ -1448,6 +1448,8 @@
     </div>
 
     <script src="js/fase2-escape-engine.js"></script>
+    <script src="js/phase-data-generator.js"></script>
+    <script src="js/url-navigation.js"></script>
     <script>
       // Game state following the exact pattern from fase1-escape.html
       let gameState = {
@@ -1496,15 +1498,32 @@
 
       // Initialize the escape room
       document.addEventListener("DOMContentLoaded", async () => {
-        await loadPhase1Data();
-        await delay(2000); // Show loading animation
+        try {
+          await loadPhase1Data();
+          await delay(2000); // Show loading animation
 
-        // Initialize escape room engine
-        if (typeof EscapeRoomPhase2 !== "undefined") {
-          window.escapeRoom = new EscapeRoomPhase2(gameState);
+          // Initialize escape room engine
+          if (typeof EscapeRoomPhase2 !== "undefined") {
+            window.escapeRoom = new EscapeRoomPhase2(gameState);
+            console.log("Escape Room Phase 2 initialized successfully");
+          } else {
+            console.error("EscapeRoomPhase2 class not found");
+            showToast(
+              "⚠️ Erro ao carregar o motor do jogo. Verifique os ficheiros JavaScript.",
+              "error",
+              5000
+            );
+          }
+
+          startGame();
+        } catch (error) {
+          console.error("Error initializing Phase 2:", error);
+          showToast(
+            "❌ Erro ao inicializar a Fase 2. Recarregue a página.",
+            "error",
+            5000
+          );
         }
-
-        startGame();
       });
 
       // Toast System - exact copy from fase1-escape.html
@@ -1535,24 +1554,44 @@
         const savedData = localStorage.getItem("saasi_phase1_results");
         if (!savedData) {
           showToast(
-            "⚠️ Dados da Fase 1 não encontrados. Redirecionando...",
-            "error",
+            "⚠️ Dados da Fase 1 não encontrados. Criando dados de demonstração...",
+            "warning",
             3000
           );
-          setTimeout(() => (window.location.href = "fase1.html"), 3000);
-          return;
+          // Create demo data for testing
+          gameState.phase1Data = {
+            score: 75,
+            level: { title: "Técnico Competente" },
+            situacao: "Acolhimento realizado com sucesso",
+          };
+        } else {
+          try {
+            gameState.phase1Data = JSON.parse(savedData);
+            console.log("Phase 1 data loaded:", gameState.phase1Data);
+          } catch (error) {
+            console.error("Error parsing Phase 1 data:", error);
+            showToast(
+              "⚠️ Erro ao carregar dados da Fase 1. Usando dados padrão.",
+              "warning",
+              3000
+            );
+            gameState.phase1Data = {
+              score: 70,
+              level: { title: "Técnico Competente" },
+              situacao: "Dados de demonstração",
+            };
+          }
         }
 
-        gameState.phase1Data = JSON.parse(savedData);
-        console.log("Phase 1 data loaded:", gameState.phase1Data);
-
-        // Update summary
+        // Update summary with safe property access
         document.getElementById("phase1-score").textContent =
-          gameState.phase1Data.score;
+          gameState.phase1Data.score || 0;
         document.getElementById("phase1-level").textContent =
-          gameState.phase1Data.level.title;
+          gameState.phase1Data.level?.title || "Técnico Iniciante";
         document.getElementById("phase1-situation").textContent =
-          gameState.phase1Data.felisbinaData.situacao;
+          gameState.phase1Data.situacao ||
+          gameState.phase1Data.felisbinaData?.situacao ||
+          "Situação não especificada";
       }
 
       // Start the game
@@ -1565,6 +1604,13 @@
         changeState("puzzle1");
         if (window.escapeRoom) {
           window.escapeRoom.initializePuzzle1();
+        } else {
+          console.error("Escape room engine not initialized");
+          showToast(
+            "⚠️ Motor do jogo não inicializado. Recarregue a página.",
+            "error",
+            4000
+          );
         }
       }
 
@@ -1623,11 +1669,13 @@
 
       // Update score
       function updateScore() {
-        gameState.score =
+        gameState.score = Math.min(
           gameState.puzzle1.score +
-          gameState.puzzle2.score +
-          gameState.puzzle3.score +
-          gameState.puzzle4.score;
+            gameState.puzzle2.score +
+            gameState.puzzle3.score +
+            gameState.puzzle4.score,
+          100
+        );
         document.getElementById("score").textContent = gameState.score;
       }
 

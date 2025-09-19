@@ -205,7 +205,7 @@ class EscapeRoomPhase2 {
         frequency: "Única",
         priority: "Alta",
         entity: "IEFP",
-        correctMonth: 1,
+        correctMonth: 2,
         prerequisites: [],
         points: 4,
       },
@@ -217,7 +217,7 @@ class EscapeRoomPhase2 {
         frequency: "Diária",
         priority: "Alta",
         entity: "IEFP",
-        correctMonth: 2,
+        correctMonth: 3,
         prerequisites: ["avaliacao_iefp"],
         points: 5,
       },
@@ -241,7 +241,7 @@ class EscapeRoomPhase2 {
         frequency: "Quinzenal",
         priority: "Alta",
         entity: "Centro de Saúde",
-        correctMonth: 2,
+        correctMonth: 3,
         prerequisites: ["consulta_psicologia_inicial"],
         points: 4,
       },
@@ -253,7 +253,7 @@ class EscapeRoomPhase2 {
         frequency: "Semanal",
         priority: "Média",
         entity: "IEFP",
-        correctMonth: 3,
+        correctMonth: 4,
         prerequisites: ["inicio_qualifica"],
         points: 4,
       },
@@ -265,7 +265,7 @@ class EscapeRoomPhase2 {
         frequency: "Semanal",
         priority: "Média",
         entity: "IPSS",
-        correctMonth: 3,
+        correctMonth: 4,
         prerequisites: ["grupos_apoio_inicio"],
         points: 3,
       },
@@ -277,7 +277,7 @@ class EscapeRoomPhase2 {
         frequency: "Semanal",
         priority: "Média",
         entity: "IEFP",
-        correctMonth: 4,
+        correctMonth: 5,
         prerequisites: ["rvcc_desenvolvimento"],
         points: 4,
       },
@@ -289,7 +289,7 @@ class EscapeRoomPhase2 {
         frequency: "Única",
         priority: "Média",
         entity: "Centro de Saúde",
-        correctMonth: 4,
+        correctMonth: 5,
         prerequisites: ["consultas_regulares"],
         points: 3,
       },
@@ -301,7 +301,7 @@ class EscapeRoomPhase2 {
         frequency: "Diária",
         priority: "Alta",
         entity: "IEFP",
-        correctMonth: 5,
+        correctMonth: 6,
         prerequisites: ["formacao_competencias"],
         points: 5,
       },
@@ -427,7 +427,10 @@ class EscapeRoomPhase2 {
       // Correct placement
       card.style.borderColor = "#4caf50";
       card.style.background = "linear-gradient(135deg, #e8f5e9, #c8e6c9)";
-      this.gameState.puzzle1.score += problem.points;
+      this.gameState.puzzle1.score = Math.min(
+        this.gameState.puzzle1.score + problem.points,
+        25
+      );
       this.gameState.puzzle1.problemsPlaced[problemId] = true;
 
       showToast(
@@ -482,7 +485,10 @@ class EscapeRoomPhase2 {
 
     // Bonus for time remaining
     const timeBonus = Math.floor(this.gameState.puzzle1.timeRemaining / 60) * 2;
-    this.gameState.puzzle1.score += timeBonus;
+    this.gameState.puzzle1.score = Math.min(
+      this.gameState.puzzle1.score + timeBonus,
+      25
+    );
 
     document.getElementById("btn-continue-puzzle2").style.display = "block";
     showToast(
@@ -715,7 +721,10 @@ class EscapeRoomPhase2 {
       this.gameState.puzzle3.progress--;
 
       if (entity.adequate) {
-        this.gameState.puzzle3.score -= entity.points;
+        this.gameState.puzzle3.score = Math.max(
+          this.gameState.puzzle3.score - entity.points,
+          0
+        );
       }
 
       showToast(`➖ ${entity.name} desconectado`, "info", 2000);
@@ -726,14 +735,20 @@ class EscapeRoomPhase2 {
       this.gameState.puzzle3.progress++;
 
       if (entity.adequate) {
-        this.gameState.puzzle3.score += entity.points;
+        this.gameState.puzzle3.score = Math.min(
+          this.gameState.puzzle3.score + entity.points,
+          25
+        );
         showToast(
           `✅ ${entity.name} conectado! (+${entity.points} pontos)`,
           "success",
           2500
         );
       } else {
-        this.gameState.puzzle3.score += entity.points; // Usually low points
+        this.gameState.puzzle3.score = Math.min(
+          this.gameState.puzzle3.score + entity.points,
+          25
+        ); // Usually low points
         showToast(
           `⚠️ ${entity.name} conectado (não prioritário para o caso)`,
           "warning",
@@ -863,7 +878,7 @@ class EscapeRoomPhase2 {
                     }</div>
                     <div class="optimal-timing">Ideal: Mês ${
                       intervention.correctMonth
-                    }</div>
+                    } (${this.months[intervention.correctMonth - 1]})</div>
                 </div>
             `;
 
@@ -1025,7 +1040,10 @@ class EscapeRoomPhase2 {
     );
 
     if (month === intervention.correctMonth) {
-      this.gameState.puzzle4.score += intervention.points;
+      this.gameState.puzzle4.score = Math.min(
+        this.gameState.puzzle4.score + intervention.points,
+        25
+      );
       showToast(
         `✅ ${intervention.title} - Mês CORRETO! (+${intervention.points} pontos)`,
         "success",
@@ -1034,7 +1052,10 @@ class EscapeRoomPhase2 {
     } else if (Math.abs(month - intervention.correctMonth) === 1) {
       // Close enough, partial points
       const partialPoints = Math.floor(intervention.points * 0.7);
-      this.gameState.puzzle4.score += partialPoints;
+      this.gameState.puzzle4.score = Math.min(
+        this.gameState.puzzle4.score + partialPoints,
+        25
+      );
       showToast(
         `🟡 ${intervention.title} - Mês ACEITÁVEL (+${partialPoints} pontos)`,
         "warning",
@@ -1082,7 +1103,10 @@ class EscapeRoomPhase2 {
     allValid = allValid && sequencingValid;
 
     if (allValid) {
-      this.gameState.puzzle4.score += 5; // Bonus for valid timeline
+      this.gameState.puzzle4.score = Math.min(
+        this.gameState.puzzle4.score + 5,
+        25
+      ); // Bonus for valid timeline
       showToast(
         "✅ Timeline válida! Cronograma aprovado (+5 bónus)",
         "success",
