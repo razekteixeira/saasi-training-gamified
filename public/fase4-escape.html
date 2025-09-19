@@ -1557,6 +1557,196 @@
         color: #6c757d;
       }
 
+      /* ===== PUZZLE 3: ADAPTATION SCENARIOS STYLING ===== */
+      .adaptation-scenario {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        border: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .adaptation-scenario:hover {
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+      }
+
+      .scenario-header h3 {
+        color: #2c3e50;
+        margin: 0 0 15px 0;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .current-strategy,
+      .identified-issue {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid #17a2b8;
+      }
+
+      .identified-issue {
+        border-left-color: #ffc107;
+      }
+
+      .adjustment-options h4 {
+        color: #495057;
+        margin: 20px 0 15px 0;
+        font-size: 1.1rem;
+      }
+
+      .adjustment-option {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        padding: 18px;
+        margin: 12px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .adjustment-option:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+      }
+
+      .adjustment-option.selected {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .adjustment-option.optimal {
+        border-color: #28a745;
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      }
+
+      .option-header {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        font-size: 1rem;
+      }
+
+      .impact-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .impact-metrics .metric {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 8px 10px;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 0.85rem;
+      }
+
+      .metric-label {
+        display: block;
+        color: #6c757d;
+        font-size: 0.75rem;
+        margin-bottom: 2px;
+      }
+
+      .metric-value {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .metric-value.positive {
+        color: #28a745;
+      }
+
+      .metric-value.negative {
+        color: #dc3545;
+      }
+
+      .metric-value.neutral {
+        color: #6c757d;
+      }
+
+      .scenario-status {
+        background: #e9ecef;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .status-label {
+        color: #6c757d;
+        margin-right: 8px;
+      }
+
+      .status-value {
+        font-weight: 600;
+      }
+
+      .status-value.success {
+        color: #28a745;
+      }
+
+      .status-value.warning {
+        color: #ffc107;
+      }
+
+      .status-value.info {
+        color: #17a2b8;
+      }
+
+      /* Effectiveness gauge updates */
+      .gauge-fill.updated {
+        transition: width 1s ease-in-out;
+      }
+
+      /* Results visualization improvements */
+      .comparison-chart.active {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        border: 2px solid #2196f3;
+        color: #1565c0;
+        font-weight: 600;
+      }
+
+      .insight {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin: 8px 0;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .insight.positive {
+        background: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+      }
+
+      .insight.warning {
+        background: #fff3cd;
+        color: #856404;
+        border-left: 4px solid #ffc107;
+      }
+
+      .insight.info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+      }
+
       /* ===== MOBILE RESPONSIVENESS ===== */
       @media (max-width: 1200px) {
         .monitoring-dashboard,

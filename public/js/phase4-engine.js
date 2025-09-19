@@ -534,7 +534,7 @@ class Phase4Engine {
           {
             id: "aceitar_abandonar_grupos",
             acao: "Aceitar decisão e focar noutras intervenções",
-            probabilidade_sucesso: 100,
+            probabilidade_sucesso: 30,
             pontos: 3,
             correto: false,
             consequencias: "Problema de isolamento social não resolvido",
@@ -542,7 +542,7 @@ class Phase4Engine {
           {
             id: "encontrar_grupo_alternativo",
             acao: "Procurar grupo mais adequado ao seu perfil",
-            probabilidade_sucesso: 85,
+            probabilidade_sucesso: 75,
             pontos: 12,
             correto: true,
             consequencias: "Melhor adaptação e participação ativa",
@@ -550,7 +550,7 @@ class Phase4Engine {
           {
             id: "sessoes_individuais_preparacao",
             acao: "Sessões individuais para preparar participação em grupo",
-            probabilidade_sucesso: 75,
+            probabilidade_sucesso: 85,
             pontos: 10,
             correto: true,
             consequencias: "Preparação gradual para integração social",
