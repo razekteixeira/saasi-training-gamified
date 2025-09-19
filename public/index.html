@@ -486,7 +486,6 @@
           <button
             class="btn"
             id="phase3-btn"
-            onclick="window.location.href='fase3.html'"
             disabled
           >
             Requer Fase 2 (60+ pontos)
@@ -518,7 +517,6 @@
           <button
             class="btn"
             id="phase4-btn"
-            onclick="window.location.href='fase4.html'"
             disabled
           >
             Requer Fase 3 (65+ pontos)
@@ -1087,7 +1085,13 @@
           const btn = document.getElementById(phase.id);
           if (btn) {
             if (selectedGameMode === "escape") {
-              btn.href = phase.escape;
+              // Handle both anchor tags (href) and button elements (onclick)
+              if (btn.tagName.toLowerCase() === 'a') {
+                btn.href = phase.escape;
+              } else if (btn.tagName.toLowerCase() === 'button') {
+                btn.onclick = () => window.location.href = phase.escape;
+              }
+              
               if (phase.id === "phase1-btn") {
                 btn.innerHTML = "🎮 Iniciar Missão";
               } else {
@@ -1096,7 +1100,13 @@
               btn.style.background =
                 "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)";
             } else {
-              btn.href = phase.normal;
+              // Handle both anchor tags (href) and button elements (onclick)
+              if (btn.tagName.toLowerCase() === 'a') {
+                btn.href = phase.normal;
+              } else if (btn.tagName.toLowerCase() === 'button') {
+                btn.onclick = () => window.location.href = phase.normal;
+              }
+              
               if (phase.id === "phase1-btn") {
                 btn.innerHTML = "📋 Começar Fase 1";
               } else {

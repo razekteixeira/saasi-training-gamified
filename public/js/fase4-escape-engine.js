@@ -387,9 +387,8 @@ class EscapeRoomPhase4 {
   initializePuzzle1() {
     console.log("Initializing Puzzle 1: Dynamic Progress Monitoring");
     this.createProgressDashboard();
-    this.createProgramMonitors();
+    this.createInteractiveProgramMonitors();
     this.createPredictiveAnalytics();
-    this.startProgressSimulation();
 
     showToast(
       "📊 Analise os dados e identifique áreas que precisam de ajuste!",
@@ -420,6 +419,160 @@ class EscapeRoomPhase4 {
     this.progressMetrics.forEach((metric) => {
       this.updateMetricCard(metric);
     });
+  }
+
+  // Create interactive program evaluation dropdowns (essential for puzzle progression)
+  createInteractiveProgramMonitors() {
+    const container = document.getElementById("programs-monitoring");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    // Define program data that matches fase4.html structure
+    const programsData = [
+      {
+        id: "consultas_psicologia",
+        nome: "Consultas de Psicologia",
+        entidade: "Centro de Saúde de Ramalde",
+        progresso_atual: 66.7,
+        status: "em_curso",
+        observacoes:
+          "Progresso consistente. Redução significativa da dependência emocional do pai.",
+        proxima_acao: "continuar_conforme_planeado",
+        pontos_avaliacao_correta: 8,
+      },
+      {
+        id: "programa_qualifica",
+        nome: "Programa Qualifica - Limpeza",
+        entidade: "IEFP Porto",
+        progresso_atual: 50,
+        status: "com_dificuldades",
+        observacoes:
+          "Dificuldades na componente teórica. Precisa apoio adicional.",
+        proxima_acao: "ajustar_metodologia",
+        pontos_avaliacao_correta: 10,
+      },
+      {
+        id: "grupos_apoio_social",
+        nome: "Grupos de Apoio Social",
+        entidade: "IPSS Solidariedade",
+        progresso_atual: 40,
+        status: "resistencia",
+        observacoes:
+          "Resistência à participação. Sente-se 'diferente' dos outros participantes.",
+        proxima_acao: "estrategia_alternativa",
+        pontos_avaliacao_correta: 12,
+      },
+    ];
+
+    programsData.forEach((programa) => {
+      const card = document.createElement("div");
+      card.className = "program-monitor active";
+      card.innerHTML = `
+        <div class="monitor-header">
+          <div style="display: flex; align-items: center;">
+            <div class="program-icon">📊</div>
+            <div>
+              <h4>${programa.nome}</h4>
+              <p><strong>Entidade:</strong> ${programa.entidade}</p>
+            </div>
+          </div>
+          <div class="status-indicator ${
+            programa.status === "em_curso"
+              ? "active"
+              : programa.status === "com_dificuldades"
+              ? "warning"
+              : "error"
+          }">
+            ${
+              programa.status === "em_curso"
+                ? "Em Curso"
+                : programa.status === "com_dificuldades"
+                ? "Dificuldades"
+                : "Resistência"
+            }
+          </div>
+        </div>
+        <div class="progress-visualization">
+          <div class="progress-chart">
+            <div class="chart-bar" style="width: ${programa.progresso_atual}%">
+              ${programa.progresso_atual}%
+            </div>
+          </div>
+        </div>
+        <div class="progress-details">
+          <div class="detail-item">
+            <span class="label">Observações:</span>
+            <span class="value">${programa.observacoes}</span>
+          </div>
+        </div>
+        <div style="margin-top: 15px;">
+          <label><strong>Próxima ação recomendada:</strong></label>
+          <select onchange="window.escapeRoom.evaluateProgram('${
+            programa.id
+          }', this.value)" 
+                  class="form-control" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 2px solid #ddd;">
+            <option value="">Selecione uma ação...</option>
+            <option value="continuar_conforme_planeado">Continuar conforme planeado</option>
+            <option value="ajustar_metodologia">Ajustar metodologia</option>
+            <option value="estrategia_alternativa">Estratégia alternativa</option>
+            <option value="reforcar_apoio">Reforçar apoio</option>
+            <option value="reduzir_intensidade">Reduzir intensidade</option>
+          </select>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Store program data for evaluation
+    this.programsData = programsData;
+  }
+
+  // Program evaluation method that actually progresses the puzzle
+  evaluateProgram(programId, action) {
+    console.log("Evaluating program:", programId, "Action:", action);
+
+    if (!action) return;
+
+    const programa = this.programsData.find((p) => p.id === programId);
+    if (!programa) {
+      console.error("Program not found:", programId);
+      return;
+    }
+
+    const isCorrect = action === programa.proxima_acao;
+    const points = isCorrect ? programa.pontos_avaliacao_correta : 2;
+
+    // Update game state
+    this.gameState.puzzle1.monitoringActions[programId] = action;
+    if (isCorrect) {
+      this.gameState.puzzle1.alertsAnalyzed.push(programId);
+      this.gameState.puzzle1.score += points;
+      showToast(`✅ Avaliação correta! +${points} pontos`, "success");
+    } else {
+      this.gameState.puzzle1.score += points;
+      showToast(`⚠️ Avaliação parcial. +${points} pontos`, "warning");
+    }
+
+    this.gameState.puzzle1.progress++;
+    this.updateProgress1();
+
+    // Update main score display
+    if (typeof updateScore === "function") {
+      updateScore();
+    }
+
+    // Check if puzzle 1 is complete (3 evaluations made)
+    if (this.gameState.puzzle1.progress >= 3) {
+      this.completePuzzle1();
+    }
+
+    console.log(
+      "Program evaluation completed. Score:",
+      this.gameState.puzzle1.score,
+      "Progress:",
+      this.gameState.puzzle1.progress
+    );
   }
 
   updateMetricCard(metric) {
@@ -621,12 +774,12 @@ class EscapeRoomPhase4 {
   updateProgress1() {
     const progressSpan = document.getElementById("puzzle1-progress");
     if (progressSpan) {
-      progressSpan.textContent = this.gameState.puzzle1Progress;
+      progressSpan.textContent = this.gameState.puzzle1.progress;
     }
   }
 
   completePuzzle1() {
-    clearInterval(this.progressInterval);
+    this.gameState.puzzle1.completed = true;
 
     showToast(
       "🎉 Puzzle 1 COMPLETO! Sistema de monitorização calibrado!",
@@ -639,8 +792,14 @@ class EscapeRoomPhase4 {
       btnContinue.style.display = "block";
     }
 
-    this.gameState.puzzle1Score += 25; // Completion bonus
-    console.log(`Puzzle 1 completed! Score: ${this.gameState.puzzle1Score}`);
+    this.gameState.puzzle1.score += 5; // Completion bonus
+
+    // Update main score display
+    if (typeof updateScore === "function") {
+      updateScore();
+    }
+
+    console.log(`Puzzle 1 completed! Score: ${this.gameState.puzzle1.score}`);
   }
 
   // ===== PUZZLE 2: CRISIS MANAGEMENT SIMULATION =====
@@ -657,172 +816,287 @@ class EscapeRoomPhase4 {
   }
 
   createCrisisScenarios() {
-    const container = document.getElementById("crisis-scenarios");
-    if (!container) return;
+    const container = document.getElementById("active-crises");
+    if (!container) {
+      console.error("Crisis container not found: active-crises");
+      return;
+    }
 
     container.innerHTML = "";
 
-    this.crisisScenarios.forEach((crisis, index) => {
-      const crisisCard = document.createElement("div");
-      crisisCard.className = `crisis-scenario ${crisis.severity}`;
-      crisisCard.id = `crisis-${crisis.id}`;
+    // Define crisis scenarios data that matches fase4.html pattern
+    const crisisScenariosData = [
+      {
+        id: "crise_habitacional",
+        titulo: "Crise Habitacional Urgente",
+        descricao:
+          "A Felisbina foi despejada da pensão por atraso no pagamento. Está temporariamente na casa de uma conhecida, mas só pode ficar 3 dias.",
+        urgencia: "alta",
+        tempo_limite: 180,
+        opcoes_resposta: [
+          {
+            id: "contactar_emergencia_social",
+            acao: "Contactar serviço de emergência social da Câmara",
+            probabilidade_sucesso: 80,
+            pontos: 15,
+            correto: true,
+            consequencias: "Alojamento temporário garantido em 24h",
+          },
+          {
+            id: "solicitar_apoio_familia",
+            acao: "Contactar familiares para apoio temporário",
+            probabilidade_sucesso: 30,
+            pontos: 5,
+            correto: false,
+            consequencias: "Família não tem condições para ajudar",
+          },
+          {
+            id: "parar_programas_procurar_casa",
+            acao: "Suspender programas para procurar habitação",
+            probabilidade_sucesso: 60,
+            pontos: 3,
+            correto: false,
+            consequencias: "Interrupção do progresso nos programas",
+          },
+        ],
+      },
+      {
+        id: "oportunidade_emprego",
+        titulo: "Oportunidade de Emprego Inesperada",
+        descricao:
+          "Empresa de limpeza contactou o IEFP. Têm vaga imediata, mas Felisbina só tem 50% do Programa Qualifica completo.",
+        urgencia: "media",
+        tempo_limite: 240,
+        opcoes_resposta: [
+          {
+            id: "aceitar_emprego_suspender_qualifica",
+            acao: "Aceitar emprego e suspender Programa Qualifica",
+            probabilidade_sucesso: 90,
+            pontos: 8,
+            correto: false,
+            consequencias: "Emprego a curto prazo mas sem certificação",
+          },
+          {
+            id: "negociar_emprego_part_time",
+            acao: "Negociar horário part-time para manter ambos",
+            probabilidade_sucesso: 70,
+            pontos: 18,
+            correto: true,
+            consequencias: "Conciliação ideal entre emprego e formação",
+          },
+          {
+            id: "recusar_completar_qualifica",
+            acao: "Recusar emprego para completar formação",
+            probabilidade_sucesso: 100,
+            pontos: 5,
+            correto: false,
+            consequencias: "Formação completa mas oportunidade perdida",
+          },
+        ],
+      },
+      {
+        id: "resistencia_grupos_apoio",
+        titulo: "Resistência aos Grupos de Apoio",
+        descricao:
+          "Felisbina quer abandonar grupos de apoio. Sente que 'não encaixa' e que os outros participantes 'têm problemas piores'.",
+        urgencia: "baixa",
+        tempo_limite: 300,
+        opcoes_resposta: [
+          {
+            id: "aceitar_abandonar_grupos",
+            acao: "Aceitar decisão e focar noutras intervenções",
+            probabilidade_sucesso: 100,
+            pontos: 3,
+            correto: false,
+            consequencias: "Problema de isolamento social não resolvido",
+          },
+          {
+            id: "encontrar_grupo_alternativo",
+            acao: "Procurar grupo mais adequado ao seu perfil",
+            probabilidade_sucesso: 85,
+            pontos: 12,
+            correto: true,
+            consequencias: "Melhor adaptação e participação ativa",
+          },
+          {
+            id: "sessoes_individuais_preparacao",
+            acao: "Sessões individuais para preparar participação em grupo",
+            probabilidade_sucesso: 75,
+            pontos: 10,
+            correto: true,
+            consequencias: "Preparação gradual para integração social",
+          },
+        ],
+      },
+    ];
 
-      crisisCard.innerHTML = `
-                <div class="crisis-header">
-                    <h3>${crisis.title}</h3>
-                    <div class="severity-badge ${crisis.severity}">
-                        ${
-                          crisis.severity === "critical"
-                            ? "🔴 CRÍTICO"
-                            : "🟡 ALTO"
-                        }
-                    </div>
-                </div>
-                <div class="crisis-description">
-                    <p>${crisis.description}</p>
-                </div>
-                <div class="crisis-timer">
-                    <span class="timer-label">⏰ Tempo para responder:</span>
-                    <span class="timer-value" id="timer-${crisis.id}">${
-        crisis.timeToRespond
-      }h</span>
-                </div>
-                <div class="impact-areas">
-                    <strong>🎯 Áreas Afetadas:</strong>
-                    ${crisis.impactAreas
-                      .map((area) => `<span class="impact-tag">${area}</span>`)
-                      .join("")}
-                </div>
-                <div class="response-options">
-                    <h4>💡 Opções de Resposta:</h4>
-                    ${crisis.availableResponses
-                      .map(
-                        (response) => `
-                        <div class="response-option" onclick="window.escapeRoom.selectCrisisResponse('${
-                          crisis.id
-                        }', '${response.id}')">
-                            <div class="response-header">
-                                <strong>${response.text}</strong>
-                                <div class="response-metrics">
-                                    <span class="effectiveness">Eficácia: ${
-                                      response.effectiveness
-                                    }%</span>
-                                    <span class="cost">Custo: €${
-                                      response.cost
-                                    }</span>
-                                    <span class="time">Tempo: ${
-                                      response.timeRequired
-                                    }h</span>
-                                </div>
-                            </div>
-                            <div class="consequences">
-                                <strong>Consequências:</strong>
-                                <ul>
-                                    ${response.consequences
-                                      .map((cons) => `<li>${cons}</li>`)
-                                      .join("")}
-                                </ul>
-                            </div>
-                        </div>
-                    `
-                      )
-                      .join("")}
-                </div>
-                <div class="crisis-status" id="status-${crisis.id}">
-                    <span class="status-label">Status:</span>
-                    <span class="status-value">⏳ Aguardando resposta</span>
-                </div>
-            `;
+    crisisScenariosData.forEach((cenario) => {
+      const card = document.createElement("div");
+      card.className = "crisis-card";
+      card.innerHTML = `
+        <div class="crisis-timer" id="timer-${cenario.id}">${Math.floor(
+        cenario.tempo_limite / 60
+      )}:${(cenario.tempo_limite % 60).toString().padStart(2, "0")}</div>
+        <h4>🚨 ${cenario.titulo}</h4>
+        <p><strong>Urgência:</strong> ${cenario.urgencia.toUpperCase()}</p>
+        <p>${cenario.descricao}</p>
+        <div class="crisis-response-options" id="options-${cenario.id}">
+          ${cenario.opcoes_resposta
+            .map(
+              (opcao) => `
+            <div class="response-option" onclick="window.escapeRoom.selectCrisisOption('${cenario.id}', '${opcao.id}')">
+              <div class="option-header">
+                <h5>${opcao.acao}</h5>
+                <span class="success-probability">${opcao.probabilidade_sucesso}% sucesso</span>
+              </div>
+              <div class="option-details">
+                <p><strong>Consequências:</strong> ${opcao.consequencias}</p>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+        <div class="crisis-decision-panel">
+          <button onclick="window.escapeRoom.confirmCrisisResponse('${
+            cenario.id
+          }')" class="btn btn-crisis-action" id="confirm-${
+        cenario.id
+      }" disabled>
+            Confirmar Resposta
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
 
-      container.appendChild(crisisCard);
+      // Start timer
+      this.startCrisisTimer(cenario.id, cenario.tempo_limite);
     });
+
+    // Store scenarios data for evaluation
+    this.crisisScenariosData = crisisScenariosData;
+  }
+
+  startCrisisTimer(cenarioId, tempoLimite) {
+    let timeRemaining = tempoLimite;
+    const timerElement = document.getElementById(`timer-${cenarioId}`);
+
+    const interval = setInterval(() => {
+      timeRemaining--;
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      timerElement.textContent = `${minutes}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
+
+      if (timeRemaining <= 0) {
+        clearInterval(interval);
+        timerElement.textContent = "TEMPO ESGOTADO";
+        timerElement.style.background = "#f44336";
+
+        // Auto-confirm response if selected
+        if (
+          this.selectedCrisisOptions &&
+          this.selectedCrisisOptions[cenarioId]
+        ) {
+          this.confirmCrisisResponse(cenarioId);
+        } else {
+          // Penalize for not responding
+          this.gameState.puzzle2.progress++;
+          this.updateProgress2();
+          showToast("⚠️ Tempo esgotado! Crise não resolvida.", "error", 3000);
+        }
+      }
+    }, 1000);
   }
 
   startCrisisSimulation() {
-    // Simulate time pressure for each crisis
-    this.crisisTimers = {};
-
-    this.crisisScenarios.forEach((crisis) => {
-      this.crisisTimers[crisis.id] = crisis.timeToRespond;
-
-      const interval = setInterval(() => {
-        this.crisisTimers[crisis.id]--;
-
-        const timerElement = document.getElementById(`timer-${crisis.id}`);
-        if (timerElement) {
-          timerElement.textContent = `${this.crisisTimers[crisis.id]}h`;
-
-          if (this.crisisTimers[crisis.id] <= 0) {
-            clearInterval(interval);
-            this.handleCrisisTimeout(crisis.id);
-          } else if (
-            this.crisisTimers[crisis.id] <=
-            crisis.timeToRespond * 0.25
-          ) {
-            timerElement.style.color = "#e74c3c"; // Red when critical
-            timerElement.style.fontWeight = "bold";
-          }
-        }
-      }, 2000); // Every 2 seconds for demo purposes
-    });
+    // This method is called after scenarios are created
+    // Individual timers are started in createCrisisScenarios
+    showToast(
+      "🚨 Crises ativas! Responda rapidamente para evitar agravamento.",
+      "warning",
+      4000
+    );
   }
 
-  selectCrisisResponse(crisisId, responseId) {
-    const crisis = this.crisisScenarios.find((c) => c.id === crisisId);
-    const response = crisis.availableResponses.find((r) => r.id === responseId);
+  // Crisis selection methods (two-step process like fase4.html)
+  selectCrisisOption(cenarioId, opcaoId) {
+    // Remove previous selection
+    document
+      .querySelectorAll(`#options-${cenarioId} .response-option`)
+      .forEach((option) => {
+        option.classList.remove("selected");
+      });
 
-    if (!crisis || !response) return;
+    // Select new option
+    event.target.closest(".response-option").classList.add("selected");
 
-    const isCorrect = responseId === crisis.correctStrategy;
-    const points = isCorrect ? 20 : 5;
+    // Store selection
+    if (!this.selectedCrisisOptions) {
+      this.selectedCrisisOptions = {};
+    }
+    this.selectedCrisisOptions[cenarioId] = opcaoId;
 
-    this.gameState.puzzle2Score += points;
-    this.gameState.puzzle2Progress++;
+    // Enable confirm button
+    document.getElementById(`confirm-${cenarioId}`).disabled = false;
+  }
 
-    // Update crisis status
-    const statusElement = document.getElementById(`status-${crisisId}`);
-    if (statusElement) {
-      const statusValue = statusElement.querySelector(".status-value");
-      statusValue.innerHTML = isCorrect
-        ? "✅ Resposta ÓTIMA! Crise resolvida eficazmente"
-        : "⚠️ Resposta aceitável, mas podia ser melhor";
-      statusValue.className = `status-value ${
-        isCorrect ? "success" : "warning"
-      }`;
+  confirmCrisisResponse(cenarioId) {
+    const cenario = this.crisisScenariosData.find((c) => c.id === cenarioId);
+    const opcaoId = this.selectedCrisisOptions[cenarioId];
+    const opcao = cenario.opcoes_resposta.find((o) => o.id === opcaoId);
+
+    if (!opcao) return;
+
+    // Update game state
+    this.gameState.puzzle2.responseChoices[cenarioId] = opcaoId;
+
+    if (opcao.correto) {
+      this.gameState.puzzle2.score += opcao.pontos;
+      document
+        .querySelector(`#options-${cenarioId} .response-option.selected`)
+        .classList.add("correct");
+      showToast(`✅ Resposta adequada! +${opcao.pontos} pontos`, "success");
+    } else {
+      this.gameState.puzzle2.score += Math.max(opcao.pontos, 0);
+      document
+        .querySelector(`#options-${cenarioId} .response-option.selected`)
+        .classList.add("incorrect");
+      showToast(
+        `⚠️ Resposta pode ser melhorada. +${Math.max(opcao.pontos, 0)} pontos`,
+        "warning"
+      );
     }
 
-    // Disable other options
-    const crisisCard = document.getElementById(`crisis-${crisisId}`);
-    const options = crisisCard.querySelectorAll(".response-option");
-    options.forEach((option) => {
-      option.style.pointerEvents = "none";
-      option.style.opacity = "0.6";
-    });
+    this.gameState.puzzle2.progress++;
 
-    // Highlight selected option
-    const selectedOption = Array.from(options).find((opt) =>
-      opt.onclick.toString().includes(responseId)
-    );
-    if (selectedOption) {
-      selectedOption.style.backgroundColor = isCorrect ? "#d4edda" : "#fff3cd";
-      selectedOption.style.border = isCorrect
-        ? "2px solid #28a745"
-        : "2px solid #ffc107";
-    }
-
-    showToast(
-      isCorrect
-        ? `🎯 Excelente! Estratégia ótima selecionada! (+${points} pontos)`
-        : `📝 Resposta registada. Há estratégias mais eficazes. (+${points} pontos)`,
-      isCorrect ? "success" : "warning",
-      3000
-    );
+    // Disable options
+    document
+      .querySelectorAll(`#options-${cenarioId} .response-option`)
+      .forEach((option) => {
+        option.style.pointerEvents = "none";
+      });
+    document.getElementById(`confirm-${cenarioId}`).disabled = true;
 
     this.updateProgress2();
 
-    if (this.gameState.puzzle2Progress >= 3) {
+    // Update main score display
+    if (typeof updateScore === "function") {
+      updateScore();
+    }
+
+    // Check if puzzle 2 is complete (3 crises resolved)
+    if (this.gameState.puzzle2.progress >= 3) {
       this.completePuzzle2();
     }
+
+    console.log(
+      "Crisis response completed. Score:",
+      this.gameState.puzzle2.score,
+      "Progress:",
+      this.gameState.puzzle2.progress
+    );
   }
 
   handleCrisisTimeout(crisisId) {
@@ -843,11 +1117,13 @@ class EscapeRoomPhase4 {
   updateProgress2() {
     const progressSpan = document.getElementById("puzzle2-progress");
     if (progressSpan) {
-      progressSpan.textContent = this.gameState.puzzle2Progress;
+      progressSpan.textContent = this.gameState.puzzle2.progress;
     }
   }
 
   completePuzzle2() {
+    this.gameState.puzzle2.completed = true;
+
     showToast(
       "🎉 Puzzle 2 COMPLETO! Protocolos de crise estabelecidos!",
       "success",
@@ -859,8 +1135,14 @@ class EscapeRoomPhase4 {
       btnContinue.style.display = "block";
     }
 
-    this.gameState.puzzle2Score += 30; // Completion bonus
-    console.log(`Puzzle 2 completed! Score: ${this.gameState.puzzle2Score}`);
+    this.gameState.puzzle2.score += 5; // Completion bonus
+
+    // Update main score display
+    if (typeof updateScore === "function") {
+      updateScore();
+    }
+
+    console.log(`Puzzle 2 completed! Score: ${this.gameState.puzzle2.score}`);
   }
 
   // ===== PUZZLE 3: STRATEGIC ADAPTATION LABORATORY =====
