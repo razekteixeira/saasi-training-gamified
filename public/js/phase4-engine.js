@@ -500,7 +500,7 @@ class Phase4Engine {
           {
             id: "aceitar_emprego_suspender_qualifica",
             acao: "Aceitar emprego e suspender Programa Qualifica",
-            probabilidade_sucesso: 90,
+            probabilidade_sucesso: 60,
             pontos: 8,
             correto: false,
             consequencias: "Emprego a curto prazo mas sem certificação",
@@ -508,7 +508,7 @@ class Phase4Engine {
           {
             id: "negociar_emprego_part_time",
             acao: "Negociar horário part-time para manter ambos",
-            probabilidade_sucesso: 70,
+            probabilidade_sucesso: 90,
             pontos: 18,
             correto: true,
             consequencias: "Conciliação ideal entre emprego e formação",
@@ -516,7 +516,7 @@ class Phase4Engine {
           {
             id: "recusar_completar_qualifica",
             acao: "Recusar emprego para completar formação",
-            probabilidade_sucesso: 100,
+            probabilidade_sucesso: 50,
             pontos: 5,
             correto: false,
             consequencias: "Formação completa mas oportunidade perdida",
