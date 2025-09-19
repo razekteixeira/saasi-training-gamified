@@ -830,7 +830,7 @@ class EscapeRoomPhase4 {
         id: "crise_habitacional",
         titulo: "Crise Habitacional Urgente",
         descricao:
-          "A Felisbina foi despejada da pensão por atraso no pagamento. Está temporariamente na casa de uma conhecida, mas só pode ficar 3 dias.",
+          "A Felisbina vai ser despejada da pensão por atraso no pagamento. Tem até ao último dia do corrente mês para encontrar uma nova habitação.",
         urgencia: "alta",
         tempo_limite: 180,
         opcoes_resposta: [
