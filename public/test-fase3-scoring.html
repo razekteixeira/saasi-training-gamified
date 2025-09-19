@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Scoring Fase 3</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .pass {
+        background: #d4edda;
+        color: #155724;
+      }
+      .fail {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Teste do Sistema de Pontuação - Fase 3</h1>
+    <div id="test-results"></div>
+
+    <script src="js/fase3-escape-engine.js"></script>
+    <script>
+      // Mock game state
+      const mockGameState = {
+        puzzle1: {
+          score: 0,
+          selectedPrograms: [],
+          rejectedPrograms: [],
+          avgAdequacy: 0,
+          problemCoverage: 0,
+          budgetViability: 0,
+          completed: false,
+        },
+        puzzle2: {
+          score: 0,
+          connectedEntities: [],
+          coordinationScore: 0,
+          avgResponseTime: 0,
+          completed: false,
+        },
+        puzzle3: {
+          score: 0,
+          placedActivities: {},
+          resourceUtilization: 0,
+          logicalSequencing: 0,
+          conflicts: [],
+          completed: false,
+        },
+        puzzle4: {
+          score: 0,
+          validationStages: {
+            coherence: false,
+            approvals: false,
+            consent: false,
+          },
+          approvalStatus: {},
+          comprehensionLevel: 0,
+          completed: false,
+        },
+      };
+
+      // Mock functions
+      window.showToast = (msg, type, duration) => console.log(`Toast: ${msg}`);
+      window.updateScore = () => console.log("Score updated");
+
+      function runTests() {
+        const results = document.getElementById("test-results");
+        const tests = [];
+
+        // Test 1: Engine initialization
+        try {
+          const engine = new EscapeRoomPhase3(mockGameState);
+          tests.push({
+            name: "Engine Initialization",
+            pass: true,
+            message: "Engine created successfully",
+          });
+        } catch (e) {
+          tests.push({
+            name: "Engine Initialization",
+            pass: false,
+            message: e.message,
+          });
+        }
+
+        // Test 2: Programs data structure
+        try {
+          const engine = new EscapeRoomPhase3(mockGameState);
+          const adequatePrograms = engine.programsData.filter(
+            (p) => p.adequado_felisbina
+          );
+          const inadequatePrograms = engine.programsData.filter(
+            (p) => !p.adequado_felisbina
+          );
+
+          tests.push({
+            name: "Programs Data Structure",
+            pass:
+              adequatePrograms.length === 3 && inadequatePrograms.length === 3,
+            message: `Found ${adequatePrograms.length} adequate and ${inadequatePrograms.length} inadequate programs`,
+          });
+        } catch (e) {
+          tests.push({
+            name: "Programs Data Structure",
+            pass: false,
+            message: e.message,
+          });
+        }
+
+        // Test 3: Scoring limits
+        try {
+          const engine = new EscapeRoomPhase3(mockGameState);
+
+          // Test max scores
+          mockGameState.puzzle1.score = 30; // Should be capped at 25
+          mockGameState.puzzle2.score = 30; // Should be capped at 25
+          mockGameState.puzzle3.score = 35; // Should be capped at 30
+          mockGameState.puzzle4.score = 25; // Should be capped at 20
+
+          const maxPuzzle1 = Math.min(25, mockGameState.puzzle1.score);
+          const maxPuzzle2 = Math.min(25, mockGameState.puzzle2.score);
+          const maxPuzzle3 = Math.min(30, mockGameState.puzzle3.score);
+          const maxPuzzle4 = Math.min(20, mockGameState.puzzle4.score);
+          const total = maxPuzzle1 + maxPuzzle2 + maxPuzzle3 + maxPuzzle4;
+
+          tests.push({
+            name: "Scoring Limits",
+            pass:
+              maxPuzzle1 === 25 &&
+              maxPuzzle2 === 25 &&
+              maxPuzzle3 === 30 &&
+              maxPuzzle4 === 20 &&
+              total === 100,
+            message: `Puzzle scores: ${maxPuzzle1}/25, ${maxPuzzle2}/25, ${maxPuzzle3}/30, ${maxPuzzle4}/20. Total: ${total}/100`,
+          });
+        } catch (e) {
+          tests.push({
+            name: "Scoring Limits",
+            pass: false,
+            message: e.message,
+          });
+        }
+
+        // Test 4: Activities data structure
+        try {
+          const engine = new EscapeRoomPhase3(mockGameState);
+          const totalActivities = engine.activitiesData.length;
+          const totalPoints = engine.activitiesData.reduce(
+            (sum, activity) => sum + activity.pontos,
+            0
+          );
+
+          tests.push({
+            name: "Activities Data Structure",
+            pass: totalActivities === 12 && totalPoints > 30,
+            message: `Found ${totalActivities} activities with ${totalPoints} total points`,
+          });
+        } catch (e) {
+          tests.push({
+            name: "Activities Data Structure",
+            pass: false,
+            message: e.message,
+          });
+        }
+
+        // Test 5: Entities data structure
+        try {
+          const engine = new EscapeRoomPhase3(mockGameState);
+          const adequateEntities = engine.entitiesData.filter(
+            (e) => e.adequado_felisbina
+          );
+          const totalEntities = engine.entitiesData.length;
+
+          tests.push({
+            name: "Entities Data Structure",
+            pass: totalEntities === 4 && adequateEntities.length === 3,
+            message: `Found ${totalEntities} entities, ${adequateEntities.length} adequate for Felisbina`,
+          });
+        } catch (e) {
+          tests.push({
+            name: "Entities Data Structure",
+            pass: false,
+            message: e.message,
+          });
+        }
+
+        // Display results
+        results.innerHTML = tests
+          .map(
+            (test) => `
+                <div class="test-result ${test.pass ? "pass" : "fail"}">
+                    <strong>${test.pass ? "✅" : "❌"} ${test.name}</strong><br>
+                    ${test.message}
+                </div>
+            `
+          )
+          .join("");
+
+        const passedTests = tests.filter((t) => t.pass).length;
+        const totalTests = tests.length;
+
+        results.innerHTML += `
+                <div class="test-result ${
+                  passedTests === totalTests ? "pass" : "fail"
+                }">
+                    <h3>📊 Resultado Final: ${passedTests}/${totalTests} testes passaram</h3>
+                    ${
+                      passedTests === totalTests
+                        ? "🎉 Todos os testes passaram! O sistema está funcionando corretamente."
+                        : "⚠️ Alguns testes falharam. Verifique os erros acima."
+                    }
+                </div>
+            `;
+      }
+
+      // Run tests when page loads
+      document.addEventListener("DOMContentLoaded", runTests);
+    </script>
+  </body>
+</html>

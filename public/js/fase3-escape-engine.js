@@ -1,15 +1,15 @@
 /**
  * SAASI Escape Room - Phase 3 Engine
- * Complete Advanced Implementation following ESCAPE_ROOM_COMPLETE_SPECIFICATION.md
- * Pattern: Following fase1-escape.html exactly
+ * Enhanced Interactive Training Experience
+ * Following fase3.html structure and scoring (25+25+30+20=100 points max)
  *
- * 4 Advanced Puzzles:
- * 1. Enhanced Program Selection Matrix (adequacy scoring)
- * 2. Dynamic Entity Coordination Hub (network visualization)
- * 3. Advanced Timeline Orchestrator (conflict detection)
- * 4. Comprehensive Validation & Approval System (multi-stage)
+ * 4 Interactive Puzzles with Escape Room Elements:
+ * 1. Program Selection Matrix with Hidden Codes (25 points max)
+ * 2. Entity Network Coordination Hub (25 points max)
+ * 3. Timeline Orchestrator with Conflict Detection (30 points max)
+ * 4. Multi-Stage Validation System (20 points max)
  *
- * @version 1.0
+ * @version 2.0 - Enhanced Escape Room Edition
  * @date January 2025
  */
 
@@ -17,20 +17,31 @@ class EscapeRoomPhase3 {
   constructor(gameState) {
     this.gameState = gameState;
     this.connectionLines = [];
+    this.hiddenCodes = {
+      puzzle1: "ADEQUACAO",
+      puzzle2: "COORDENACAO",
+      puzzle3: "CRONOGRAMA",
+      puzzle4: "VALIDACAO",
+    };
+    this.unlockedCodes = [];
 
-    // Enhanced Programs Data with detailed adequacy analysis
+    // Enhanced Programs Data - EXACTLY from fase3.html to maintain compliance
     this.programsData = [
       {
         id: "programa_qualifica",
-        name: "Medida + Emprego - Programa Qualifica",
-        icon: "💼",
-        category: "emprego_formacao",
-        adequateForFelisbina: true,
+        nome: "Medida + Emprego - Programa Qualifica",
+        categoria: "emprego_formacao",
+        adequado_felisbina: true,
+        pontos_se_selecionado: 6,
+        pontos_se_rejeitado: -2,
+        entidade_responsavel: "IEFP",
+        duracao_meses: 6,
+        justificacao_correta:
+          "Adequado: Felisbina tem 9º ano, experiência em limpeza e disponibilidade total",
+        icone: "💼",
+        cor: "#2196f3",
+        // Enhanced escape room properties
         adequacyScore: 85,
-        pointsIfSelected: 8,
-        pointsIfRejected: -3,
-        entity: "IEFP",
-        duration: 6,
         requirements: [
           { text: "9º ano completo", met: true },
           { text: "Experiência profissional", met: true },
@@ -42,400 +53,426 @@ class EscapeRoomPhase3 {
         },
         problemsCovered: ["baixa_qualificacao", "experiencia_limitada"],
         budgetCost: 2500,
+        hiddenCode: "ADQ1",
       },
       {
         id: "apoio_psicossocial",
-        name: "Medida + Inclusão - Apoio Psicossocial",
-        icon: "🧠",
-        category: "apoio_psicossocial",
-        adequateForFelisbina: true,
-        adequacyScore: 92,
-        pointsIfSelected: 9,
-        pointsIfRejected: -4,
-        entity: "centro_saude",
-        duration: 8,
+        nome: "Medida + Inclusão - Apoio Psicossocial",
+        categoria: "apoio_psicossocial",
+        adequado_felisbina: true,
+        pontos_se_selecionado: 6,
+        pontos_se_rejeitado: -3,
+        entidade_responsavel: "centro_saude",
+        duracao_meses: 8,
+        justificacao_correta:
+          "Essencial: Dependência emocional e isolamento social são problemas prioritários",
+        icone: "🧠",
+        cor: "#e91e63",
+        // Enhanced escape room properties
+        adequacyScore: 95,
         requirements: [
-          { text: "Referenciação médica", met: true },
-          { text: "Disponibilidade horária", met: true },
+          { text: "Problemas psicossociais identificados", met: true },
+          { text: "Disponibilidade para acompanhamento", met: true },
           { text: "Motivação para mudança", met: true },
         ],
         impactMetrics: {
           mentalHealth: 85,
-          autonomy: 75,
+          socialIntegration: 75,
         },
         problemsCovered: ["dependencia_emocional", "isolamento_social"],
-        budgetCost: 1200,
+        budgetCost: 1800,
+        hiddenCode: "PSI2",
       },
       {
         id: "grupos_apoio_social",
-        name: "Grupos de Apoio Social - IPSS",
-        icon: "👥",
-        category: "apoio_social",
-        adequateForFelisbina: true,
-        adequacyScore: 78,
-        pointsIfSelected: 6,
-        pointsIfRejected: -2,
-        entity: "ipss_local",
-        duration: 6,
+        nome: "Grupos de Apoio Social - IPSS",
+        categoria: "apoio_social",
+        adequado_felisbina: true,
+        pontos_se_selecionado: 5,
+        pontos_se_rejeitado: -2,
+        entidade_responsavel: "ipss_local",
+        duracao_meses: 6,
+        justificacao_correta:
+          "Adequado: Isolamento social severo necessita intervenção específica",
+        icone: "👥",
+        cor: "#ff9800",
+        // Enhanced escape room properties
+        adequacyScore: 80,
         requirements: [
-          { text: "Compromisso participação", met: true },
-          { text: "Disponibilidade semanal", met: true },
+          { text: "Isolamento social identificado", met: true },
+          { text: "Capacidade de participação em grupo", met: true },
+          { text: "Disponibilidade horária", met: true },
         ],
         impactMetrics: {
           socialIntegration: 80,
           selfEsteem: 65,
         },
         problemsCovered: ["isolamento_social"],
-        budgetCost: 400,
+        budgetCost: 800,
+        hiddenCode: "SOC3",
       },
       {
         id: "formacao_digital",
-        name: "Formação Modular - Competências Digitais",
-        icon: "📚",
-        category: "formacao_especializada",
-        adequateForFelisbina: false,
-        adequacyScore: 35,
-        pointsIfSelected: -4,
-        pointsIfRejected: 3,
-        entity: "centro_formacao",
-        duration: 3,
+        nome: "Formação Modular - Competências Digitais",
+        categoria: "formacao_especializada",
+        adequado_felisbina: false,
+        pontos_se_selecionado: -3,
+        pontos_se_rejeitado: 3,
+        entidade_responsavel: "centro_formacao",
+        duracao_meses: 3,
+        justificacao_correta:
+          "Inadequado: Competências digitais muito limitadas, não é prioridade atual",
+        icone: "📚",
+        cor: "#9c27b0",
+        // Enhanced escape room properties
+        adequacyScore: 25,
         requirements: [
           { text: "Competências digitais básicas", met: false },
           { text: "Motivação para tecnologia", met: false },
+          { text: "Prioridade atual", met: false },
         ],
         impactMetrics: {
-          digitalSkills: 60,
-          employability: 45,
+          digitalSkills: 30,
+          employability: 20,
         },
         problemsCovered: [],
-        budgetCost: 800,
+        budgetCost: 1200,
+        hiddenCode: "DIG4",
       },
       {
         id: "trabalho_necessario",
-        name: "Trabalho Socialmente Necessário",
-        icon: "🛡️",
-        category: "emprego_protegido",
-        adequateForFelisbina: false,
-        adequacyScore: 25,
-        pointsIfSelected: -6,
-        pointsIfRejected: 5,
-        entity: "camara_municipal",
-        duration: 12,
+        nome: "Trabalho Socialmente Necessário",
+        categoria: "emprego_protegido",
+        adequado_felisbina: false,
+        pontos_se_selecionado: -5,
+        pontos_se_rejeitado: 4,
+        entidade_responsavel: "camara_municipal",
+        duracao_meses: 12,
+        justificacao_correta:
+          "Inadequado: Felisbina tem capacidade para emprego regular com apoio adequado",
+        icone: "🛡️",
+        cor: "#607d8b",
+        // Enhanced escape room properties
+        adequacyScore: 15,
         requirements: [
-          { text: "Incapacidade emprego regular", met: false },
-          { text: "Vulnerabilidade extrema", met: false },
+          { text: "Incapacidade para emprego regular", met: false },
+          { text: "Necessidade de proteção social", met: false },
+          { text: "Limitações severas", met: false },
         ],
         impactMetrics: {
-          income: 55,
-          dignity: 40,
+          employment: 40,
+          independence: 20,
         },
         problemsCovered: [],
-        budgetCost: 5000,
+        budgetCost: 3000,
+        hiddenCode: "TSN5",
       },
       {
         id: "estagios_iniciar",
-        name: "Estágios INICIAR - Inclusão Social",
-        icon: "🌱",
-        category: "estagio_inclusao",
-        adequateForFelisbina: false,
-        adequacyScore: 45,
-        pointsIfSelected: -3,
-        pointsIfRejected: 2,
-        entity: "ipss_local",
-        duration: 4,
+        nome: "Estágios INICIAR - Inclusão Social",
+        categoria: "estagio_inclusao",
+        adequado_felisbina: false,
+        pontos_se_selecionado: -2,
+        pontos_se_rejeitado: 1,
+        entidade_responsavel: "ipss_local",
+        duracao_meses: 4,
+        justificacao_correta:
+          "Inadequado: Conflito temporal com Programa Qualifica que é prioritário",
+        icone: "🌱",
+        cor: "#4caf50",
+        // Enhanced escape room properties
+        adequacyScore: 35,
         requirements: [
-          { text: "Conflito temporal com Qualifica", met: false },
-          { text: "Prioridade mais baixa", met: false },
+          { text: "Disponibilidade temporal", met: false },
+          { text: "Prioridade vs Qualifica", met: false },
+          { text: "Necessidade de inclusão", met: true },
         ],
         impactMetrics: {
-          workExperience: 50,
-          socialIntegration: 60,
+          socialInclusion: 60,
+          workExperience: 45,
         },
-        problemsCovered: ["experiencia_limitada"],
+        problemsCovered: ["isolamento_social"],
         budgetCost: 1500,
+        hiddenCode: "EST6",
       },
     ];
 
-    // Enhanced Entities Data with coordination capabilities
+    // Enhanced Entities Data - EXACTLY from fase3.html to maintain compliance
     this.entitiesData = [
       {
         id: "iefp_porto",
-        name: "IEFP Porto",
-        icon: "🏢",
-        specialties: ["Qualifica", "Formação", "Emprego"],
-        position: { angle: 0, distance: 180 }, // Top
-        responseTime: "3-5 dias úteis",
-        adequate: true,
-        points: 9,
-        services: ["programa_qualifica", "formacao_profissional"],
-        availability: "online",
-        currentCapacity: 75,
+        nome: "IEFP - Instituto do Emprego e Formação Profissional",
+        localizacao: "Porto",
+        contacto: "225 073 000",
+        email: "porto@iefp.pt",
+        especialidade: [
+          "qualifica",
+          "medidas_emprego",
+          "formacao_profissional",
+        ],
+        tempo_resposta: "3-5 dias úteis",
+        adequado_felisbina: true,
+        pontos: 8,
+        // Enhanced escape room properties
+        position: { x: 20, y: 20 },
+        status: "offline",
+        services: ["Programa Qualifica", "Medidas Emprego", "RVCC"],
+        avatar: "🏢",
+        connectionCode: "IEFP2025",
       },
       {
         id: "centro_saude_ramalde",
-        name: "Centro de Saúde Ramalde",
-        icon: "🏥",
-        specialties: ["Psicologia", "Psiquiatria"],
-        position: { angle: 60, distance: 180 }, // Top-right
-        responseTime: "2-3 semanas",
-        adequate: true,
-        points: 8,
-        services: ["apoio_psicossocial", "consultas_psicologia"],
-        availability: "online",
-        currentCapacity: 60,
+        nome: "Centro de Saúde de Ramalde",
+        localizacao: "Porto - Ramalde",
+        contacto: "225 073 200",
+        email: "ramalde@arsnorte.min-saude.pt",
+        especialidade: ["psicologia", "psiquiatria", "apoio_psicossocial"],
+        tempo_resposta: "2-3 semanas",
+        adequado_felisbina: true,
+        pontos: 9,
+        // Enhanced escape room properties
+        position: { x: 80, y: 30 },
+        status: "online",
+        services: ["Psicologia", "Psiquiatria", "Apoio Social"],
+        avatar: "🏥",
+        connectionCode: "SAUDE2025",
       },
       {
         id: "ipss_solidariedade",
-        name: "IPSS Solidariedade",
-        icon: "🤝",
-        specialties: ["Grupos Apoio", "Atividades Sociais"],
-        position: { angle: 120, distance: 180 }, // Bottom-right
-        responseTime: "1-2 semanas",
-        adequate: true,
-        points: 7,
-        services: ["grupos_apoio_social", "atividades_sociais"],
-        availability: "online",
-        currentCapacity: 90,
+        nome: "IPSS Solidariedade Social",
+        localizacao: "Porto",
+        contacto: "225 073 300",
+        email: "geral@solidariedadesocial.pt",
+        especialidade: [
+          "grupos_apoio",
+          "atividades_sociais",
+          "estagios_inclusao",
+        ],
+        tempo_resposta: "1-2 semanas",
+        adequado_felisbina: true,
+        pontos: 8,
+        // Enhanced escape room properties
+        position: { x: 20, y: 70 },
+        status: "online",
+        services: ["Grupos Apoio", "Atividades Sociais", "Estágios"],
+        avatar: "🤝",
+        connectionCode: "IPSS2025",
       },
       {
         id: "centro_formacao_digital",
-        name: "Centro de Formação Digital",
-        icon: "💻",
-        specialties: ["Competências Digitais"],
-        position: { angle: 180, distance: 180 }, // Bottom
-        responseTime: "1 semana",
-        adequate: false,
-        points: 2,
-        services: ["formacao_digital"],
-        availability: "online",
-        currentCapacity: 100,
-      },
-      {
-        id: "camara_municipal",
-        name: "Câmara Municipal",
-        icon: "🏛️",
-        specialties: ["Trabalho Social"],
-        position: { angle: 240, distance: 180 }, // Bottom-left
-        responseTime: "1-2 semanas",
-        adequate: false,
-        points: 1,
-        services: ["trabalho_necessario"],
-        availability: "offline",
-        currentCapacity: 50,
-      },
-      {
-        id: "banco_alimentar",
-        name: "Banco Alimentar",
-        icon: "🍽️",
-        specialties: ["Apoio Alimentar"],
-        position: { angle: 300, distance: 180 }, // Top-left
-        responseTime: "1 semana",
-        adequate: false,
-        points: 3,
-        services: ["apoio_alimentar"],
-        availability: "online",
-        currentCapacity: 80,
+        nome: "Centro de Formação Digital",
+        localizacao: "Porto",
+        contacto: "225 073 400",
+        email: "formacao@digitalporto.pt",
+        especialidade: ["competencias_digitais", "formacao_modular"],
+        tempo_resposta: "1 semana",
+        adequado_felisbina: false,
+        pontos: -3,
+        // Enhanced escape room properties
+        position: { x: 80, y: 80 },
+        status: "offline",
+        services: ["Formação Digital", "Competências TIC"],
+        avatar: "💻",
+        connectionCode: "DIGITAL2025",
       },
     ];
 
-    // Advanced Activities Data for timeline orchestration
+    // Enhanced Activities Data - EXACTLY from fase3.html to maintain compliance
     this.activitiesData = [
       {
         id: "consulta_psicologia_inicial",
-        name: "Primeira consulta psicologia",
-        icon: "🩺",
+        nome: "Primeira consulta de psicologia",
+        mes: 1,
+        pontos: 3,
+        // Enhanced escape room properties
         category: "psicossocial",
-        entity: "centro_saude",
-        duration: 1, // hours
-        frequency: "Única",
-        priority: "high",
-        correctMonth: 1,
-        correctWeek: 1,
+        entity: "centro_saude_ramalde",
+        duration: 2,
         prerequisites: [],
-        points: 4,
+        icon: "🧠",
+        difficulty: "medium",
+        secretCode: "PRIM1",
       },
       {
         id: "avaliacao_iefp",
-        name: "Avaliação inicial IEFP",
-        icon: "📋",
-        category: "psicossocial",
-        entity: "iefp",
-        duration: 2,
-        frequency: "Única",
-        priority: "high",
-        correctMonth: 1,
-        correctWeek: 2,
+        nome: "Avaliação inicial no IEFP",
+        mes: 1,
+        pontos: 3,
+        // Enhanced escape room properties
+        category: "emprego",
+        entity: "iefp_porto",
+        duration: 1,
         prerequisites: [],
-        points: 4,
+        icon: "📋",
+        difficulty: "easy",
+        secretCode: "AVAL1",
       },
       {
         id: "inicio_qualifica",
-        name: "Início Programa Qualifica",
-        icon: "💼",
-        category: "emprego_formacao",
-        entity: "iefp",
-        duration: 20, // weekly
-        frequency: "Contínua",
-        priority: "high",
-        correctMonth: 2,
-        correctWeek: 1,
+        nome: "Início do Programa Qualifica",
+        mes: 2,
+        pontos: 4,
+        // Enhanced escape room properties
+        category: "emprego",
+        entity: "iefp_porto",
+        duration: 4,
         prerequisites: ["avaliacao_iefp"],
-        points: 5,
+        icon: "🎯",
+        difficulty: "hard",
+        secretCode: "QUAL2",
       },
       {
         id: "grupos_apoio_inicio",
-        name: "Integração grupos apoio",
+        nome: "Integração em grupos de apoio social",
+        mes: 2,
+        pontos: 3,
+        // Enhanced escape room properties
+        category: "social",
+        entity: "ipss_solidariedade",
+        duration: 3,
+        prerequisites: ["consulta_psicologia_inicial"],
         icon: "👥",
-        category: "apoio_social",
-        entity: "ipss",
-        duration: 2,
-        frequency: "Semanal",
-        priority: "medium",
-        correctMonth: 2,
-        correctWeek: 3,
-        prerequisites: [],
-        points: 4,
+        difficulty: "medium",
+        secretCode: "GRUP2",
       },
       {
         id: "consultas_regulares",
-        name: "Consultas psicologia regulares",
-        icon: "🧠",
+        nome: "Consultas de psicologia quinzenais",
+        mes: 2,
+        pontos: 3,
+        // Enhanced escape room properties
         category: "psicossocial",
-        entity: "centro_saude",
-        duration: 1,
-        frequency: "Quinzenal",
-        priority: "high",
-        correctMonth: 2,
-        correctWeek: 4,
+        entity: "centro_saude_ramalde",
+        duration: 6,
         prerequisites: ["consulta_psicologia_inicial"],
-        points: 4,
+        icon: "🔄",
+        difficulty: "easy",
+        secretCode: "CONS2",
       },
       {
         id: "rvcc_desenvolvimento",
-        name: "Desenvolvimento RVCC 12º",
-        icon: "📚",
-        category: "emprego_formacao",
-        entity: "iefp",
-        duration: 4,
-        frequency: "Semanal",
-        priority: "medium",
-        correctMonth: 3,
-        correctWeek: 1,
+        nome: "Desenvolvimento do RVCC 12º ano",
+        mes: 3,
+        pontos: 4,
+        // Enhanced escape room properties
+        category: "emprego",
+        entity: "iefp_porto",
+        duration: 3,
         prerequisites: ["inicio_qualifica"],
-        points: 4,
+        icon: "📚",
+        difficulty: "hard",
+        secretCode: "RVCC3",
       },
       {
         id: "acompanhamento_grupo_apoio",
-        name: "Acompanhamento grupos apoio",
-        icon: "🤝",
-        category: "apoio_social",
-        entity: "ipss",
-        duration: 2,
-        frequency: "Semanal",
-        priority: "medium",
-        correctMonth: 3,
-        correctWeek: 2,
+        nome: "Acompanhamento em grupos de apoio",
+        mes: 3,
+        pontos: 3,
+        // Enhanced escape room properties
+        category: "social",
+        entity: "ipss_solidariedade",
+        duration: 4,
         prerequisites: ["grupos_apoio_inicio"],
-        points: 3,
+        icon: "🤝",
+        difficulty: "medium",
+        secretCode: "ACOM3",
       },
       {
-        id: "formacao_competencias",
-        name: "Formação competências profissionais",
-        icon: "🛠️",
-        category: "emprego_formacao",
-        entity: "iefp",
-        duration: 4,
-        frequency: "Semanal",
-        priority: "medium",
-        correctMonth: 4,
-        correctWeek: 1,
+        id: "formacao_competencias_profissionais",
+        nome: "Formação em competências profissionais",
+        mes: 4,
+        pontos: 4,
+        // Enhanced escape room properties
+        category: "emprego",
+        entity: "iefp_porto",
+        duration: 2,
         prerequisites: ["rvcc_desenvolvimento"],
-        points: 4,
+        icon: "⚙️",
+        difficulty: "hard",
+        secretCode: "COMP4",
       },
       {
         id: "avaliacao_intermedia",
-        name: "Avaliação intermédia progresso",
-        icon: "📊",
-        category: "psicossocial",
-        entity: "centro_saude",
+        nome: "Avaliação intermédia do progresso",
+        mes: 4,
+        pontos: 3,
+        // Enhanced escape room properties
+        category: "avaliacao",
+        entity: "centro_saude_ramalde",
         duration: 1,
-        frequency: "Única",
-        priority: "medium",
-        correctMonth: 4,
-        correctWeek: 3,
-        prerequisites: ["consultas_regulares"],
-        points: 3,
+        prerequisites: ["consultas_regulares", "acompanhamento_grupo_apoio"],
+        icon: "📊",
+        difficulty: "medium",
+        secretCode: "INTER4",
       },
       {
         id: "estagio_profissional",
-        name: "Estágio profissional",
-        icon: "👔",
-        category: "emprego_formacao",
-        entity: "iefp",
-        duration: 35, // weekly
-        frequency: "Contínua",
-        priority: "high",
-        correctMonth: 5,
-        correctWeek: 1,
-        prerequisites: ["formacao_competencias"],
-        points: 5,
+        nome: "Estágio profissional (Qualifica)",
+        mes: 5,
+        pontos: 4,
+        // Enhanced escape room properties
+        category: "emprego",
+        entity: "iefp_porto",
+        duration: 4,
+        prerequisites: ["formacao_competencias_profissionais"],
+        icon: "💼",
+        difficulty: "hard",
+        secretCode: "ESTAG5",
       },
       {
         id: "preparacao_autonomia",
-        name: "Preparação para autonomia",
-        icon: "🌟",
-        category: "apoio_social",
-        entity: "ipss",
+        nome: "Preparação para autonomia",
+        mes: 6,
+        pontos: 3,
+        // Enhanced escape room properties
+        category: "psicossocial",
+        entity: "centro_saude_ramalde",
         duration: 2,
-        frequency: "Quinzenal",
-        priority: "medium",
-        correctMonth: 6,
-        correctWeek: 1,
-        prerequisites: ["acompanhamento_grupo_apoio"],
-        points: 3,
+        prerequisites: ["avaliacao_intermedia"],
+        icon: "🚀",
+        difficulty: "medium",
+        secretCode: "AUTON6",
       },
       {
         id: "avaliacao_final",
-        name: "Avaliação final processo",
-        icon: "🎯",
-        category: "psicossocial",
-        entity: "centro_saude",
+        nome: "Avaliação final do processo",
+        mes: 7,
+        pontos: 2,
+        // Enhanced escape room properties
+        category: "avaliacao",
+        entity: "centro_saude_ramalde",
         duration: 1,
-        frequency: "Única",
-        priority: "low",
-        correctMonth: 7,
-        correctWeek: 1,
-        prerequisites: ["avaliacao_intermedia", "preparacao_autonomia"],
-        points: 2,
+        prerequisites: ["preparacao_autonomia", "estagio_profissional"],
+        icon: "🏆",
+        difficulty: "easy",
+        secretCode: "FINAL7",
       },
     ];
-
-    this.months = [
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-    ];
-    this.entities = ["Centro de Saúde", "IEFP", "IPSS"];
   }
 
-  // ===== PUZZLE 1: ENHANCED PROGRAM SELECTION MATRIX =====
-  initializePuzzle1() {
-    console.log("Initializing Puzzle 1: Enhanced Program Selection");
-    this.createProgramsCards();
+  // =====================================================
+  // PUZZLE 1: ENHANCED PROGRAM SELECTION MATRIX
+  // =====================================================
 
-    showToast(
-      "🎯 Analise cada programa e selecione os mais adequados para a Felisbina!",
-      "info",
-      4000
-    );
+  initializePuzzle1() {
+    console.log("🎯 Initializing Puzzle 1: Enhanced Program Selection Matrix");
+    this.createProgramsCards();
+    this.updateSelectionSummary();
+
+    // Show hidden code hint
+    setTimeout(() => {
+      showToast(
+        "🔍 Dica: Procure códigos ocultos nos programas adequados para desbloquear funcionalidades especiais!",
+        "info",
+        5000
+      );
+    }, 2000);
   }
 
   createProgramsCards() {
     const container = document.getElementById("programs-container");
+    if (!container) return;
+
     container.innerHTML = "";
 
     this.programsData.forEach((program) => {
@@ -443,79 +480,84 @@ class EscapeRoomPhase3 {
       card.className = "program-card";
       card.dataset.programId = program.id;
 
+      // Calculate adequacy color
       const adequacyColor =
-        program.adequacyScore >= 70
+        program.adequacyScore >= 80
           ? "#4caf50"
           : program.adequacyScore >= 50
           ? "#ff9800"
           : "#f44336";
 
       card.innerHTML = `
-                <div class="program-header">
-                    <div style="display: flex; align-items: center;">
-                        <div class="program-icon">${program.icon}</div>
-                        <h4 class="program-title">${program.name}</h4>
-                    </div>
-                    <div class="adequacy-meter">
-                        <div class="meter-fill" style="--adequacy-width: ${
-                          program.adequacyScore
-                        }%"></div>
-                        <span class="meter-label">${
-                          program.adequacyScore
-                        }% adequado</span>
-                    </div>
-                </div>
+        <div class="program-header">
+          <div style="display: flex; align-items: center;">
+            <div class="program-icon">${program.icone}</div>
+            <div class="program-title">${program.nome}</div>
+          </div>
+          <div class="adequacy-meter">
+            <div class="meter-label">${program.adequacyScore}% adequação</div>
+            <div class="meter-fill" style="--adequacy-width: ${
+              program.adequacyScore
+            }%"></div>
+          </div>
+        </div>
 
-                <div class="compatibility-analysis">
-                    ${program.requirements
-                      .map(
-                        (req) => `
-                        <div class="requirement ${
-                          req.met ? "met" : req.warning ? "warning" : "not-met"
-                        }">
-                            <span class="req-icon">${
-                              req.met ? "✅" : req.warning ? "⚠️" : "❌"
-                            }</span>
-                            <span class="req-text">${req.text}</span>
-                        </div>
-                    `
-                      )
-                      .join("")}
-                </div>
+        <div class="compatibility-analysis">
+          ${program.requirements
+            .map(
+              (req) => `
+            <div class="requirement ${
+              req.met ? "met" : req.warning ? "warning" : "not-met"
+            }">
+              <span class="req-icon">${
+                req.met ? "✅" : req.warning ? "⚠️" : "❌"
+              }</span>
+              <span>${req.text}</span>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
 
-                <div class="program-impact-preview">
-                    <h5>Impacto Esperado:</h5>
-                    <div class="impact-metrics">
-                        ${Object.entries(program.impactMetrics)
-                          .map(
-                            ([key, value]) => `
-                            <div class="metric">
-                                <span class="metric-label">${this.translateMetric(
-                                  key
-                                )}</span>
-                                <div class="metric-bar">
-                                    <div class="bar-fill" style="width: ${value}%">+${value}%</div>
-                                </div>
-                            </div>
-                        `
-                          )
-                          .join("")}
-                    </div>
+        <div class="program-impact-preview">
+          <h5>📊 Impacto Previsto</h5>
+          <div class="impact-metrics">
+            ${Object.entries(program.impactMetrics)
+              .map(
+                ([key, value]) => `
+              <div class="metric">
+                <span class="metric-label">${this.translateMetric(key)}</span>
+                <div class="metric-bar">
+                  <div class="bar-fill" style="width: ${value}%">${value}%</div>
                 </div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+          <div style="margin-top: 10px;">
+            <strong>Orçamento:</strong> €${program.budgetCost}
+            <span style="float: right; font-size: 0.8rem; color: #666;">
+              Código: <span class="hidden-code" style="cursor: pointer;" onclick="window.escapeRoom.revealCode('${
+                program.hiddenCode
+              }')">${program.hiddenCode}</span>
+            </span>
+          </div>
+        </div>
 
-                <div class="selection-controls">
-                    <button class="btn-select-program" onclick="selectProgram('${
-                      program.id
-                    }', true)">
-                        ✅ Selecionar
-                    </button>
-                    <button class="btn-reject-program" onclick="selectProgram('${
-                      program.id
-                    }', false)">
-                        ❌ Rejeitar
-                    </button>
-                </div>
-            `;
+        <div class="selection-controls">
+          <button class="btn-select-program" onclick="window.escapeRoom.selectProgram('${
+            program.id
+          }', true)">
+            ✅ Selecionar
+          </button>
+          <button class="btn-reject-program" onclick="window.escapeRoom.selectProgram('${
+            program.id
+          }', false)">
+            ❌ Rejeitar
+          </button>
+        </div>
+      `;
 
       container.appendChild(card);
     });
@@ -526,13 +568,13 @@ class EscapeRoomPhase3 {
       employability: "Empregabilidade",
       qualification: "Qualificação",
       mentalHealth: "Saúde Mental",
-      autonomy: "Autonomia",
       socialIntegration: "Integração Social",
-      selfEsteem: "Autoestima",
       digitalSkills: "Competências Digitais",
-      income: "Rendimento",
-      dignity: "Dignidade",
-      workExperience: "Experiência",
+      employment: "Emprego",
+      independence: "Independência",
+      selfEsteem: "Auto-estima",
+      socialInclusion: "Inclusão Social",
+      workExperience: "Experiência Profissional",
     };
     return translations[key] || key;
   }
@@ -540,6 +582,8 @@ class EscapeRoomPhase3 {
   selectProgram(programId, selected) {
     const program = this.programsData.find((p) => p.id === programId);
     const card = document.querySelector(`[data-program-id="${programId}"]`);
+
+    if (!program || !card) return;
 
     // Remove from both arrays first
     this.gameState.puzzle1.selectedPrograms =
@@ -551,45 +595,51 @@ class EscapeRoomPhase3 {
     card.classList.remove("selected", "rejected");
 
     if (selected) {
-      // Select the program
+      // SELECT the program
       this.gameState.puzzle1.selectedPrograms.push(programId);
       card.classList.add("selected");
 
-      if (program.adequateForFelisbina) {
-        this.gameState.puzzle1.score += program.pointsIfSelected;
-        showToast(
-          `✅ ${program.name} SELECIONADO (+${program.pointsIfSelected} pontos)`,
-          "success",
-          2500
-        );
-      } else {
-        this.gameState.puzzle1.score += program.pointsIfSelected; // Usually negative
-        showToast(
-          `⚠️ ${program.name} selecionado (adequação baixa: ${program.adequacyScore}%)`,
-          "warning",
-          3000
-        );
+      // Award points based on adequacy - MAX 25 POINTS TOTAL
+      const points = program.adequado_felisbina
+        ? program.pontos_se_selecionado
+        : program.pontos_se_rejeitado;
+      this.gameState.puzzle1.score = Math.min(
+        25,
+        Math.max(0, this.gameState.puzzle1.score + points)
+      );
+
+      showToast(
+        `✅ ${program.nome} SELECIONADO (+${points} pontos)`,
+        "success",
+        2000
+      );
+
+      // Check for hidden code
+      if (
+        program.adequado_felisbina &&
+        !this.unlockedCodes.includes(program.hiddenCode)
+      ) {
+        this.revealCode(program.hiddenCode);
       }
     } else {
-      // Reject the program
+      // REJECT the program
       this.gameState.puzzle1.rejectedPrograms.push(programId);
       card.classList.add("rejected");
 
-      if (!program.adequateForFelisbina) {
-        this.gameState.puzzle1.score += program.pointsIfRejected;
-        showToast(
-          `✅ ${program.name} REJEITADO corretamente (+${program.pointsIfRejected} pontos)`,
-          "success",
-          2500
-        );
-      } else {
-        this.gameState.puzzle1.score += program.pointsIfRejected; // Usually negative
-        showToast(
-          `❌ ${program.name} rejeitado (era adequado!)`,
-          "error",
-          3000
-        );
-      }
+      // Award points based on adequacy - MAX 25 POINTS TOTAL
+      const points = !program.adequado_felisbina
+        ? program.pontos_se_rejeitado
+        : program.pontos_se_selecionado;
+      this.gameState.puzzle1.score = Math.min(
+        25,
+        Math.max(0, this.gameState.puzzle1.score + points)
+      );
+
+      showToast(
+        `❌ ${program.nome} REJEITADO (+${points} pontos)`,
+        "warning",
+        2000
+      );
     }
 
     this.updateSelectionSummary();
@@ -598,68 +648,78 @@ class EscapeRoomPhase3 {
   }
 
   updateSelectionSummary() {
-    // Update selected programs list
     const selectedList = document.getElementById("selected-programs-list");
+    const avgAdequacy = document.getElementById("avg-adequacy");
+    const problemCoverage = document.getElementById("problem-coverage");
+    const budgetViability = document.getElementById("budget-viability");
+
+    if (!selectedList) return;
+
+    // Update selected programs list
     selectedList.innerHTML = "";
+    let totalAdequacy = 0;
+    let totalBudget = 0;
+    let problemsCovered = new Set();
 
     this.gameState.puzzle1.selectedPrograms.forEach((programId) => {
       const program = this.programsData.find((p) => p.id === programId);
-      const badge = document.createElement("div");
-      badge.className = "selected-program-badge";
-      badge.textContent = `${program.icon} ${program.name}`;
-      selectedList.appendChild(badge);
+      if (program) {
+        const badge = document.createElement("div");
+        badge.className = "selected-program-badge";
+        badge.textContent = `${program.icone} ${program.nome}`;
+        selectedList.appendChild(badge);
+
+        totalAdequacy += program.adequacyScore;
+        totalBudget += program.budgetCost;
+        program.problemsCovered.forEach((problem) =>
+          problemsCovered.add(problem)
+        );
+      }
     });
 
-    // Calculate and update metrics
-    const selectedPrograms = this.gameState.puzzle1.selectedPrograms.map((id) =>
-      this.programsData.find((p) => p.id === id)
-    );
-
-    // Average adequacy
-    const avgAdequacy =
-      selectedPrograms.length > 0
-        ? selectedPrograms.reduce((sum, p) => sum + p.adequacyScore, 0) /
-          selectedPrograms.length
+    // Update metrics
+    const avgAdequacyValue =
+      this.gameState.puzzle1.selectedPrograms.length > 0
+        ? Math.round(
+            totalAdequacy / this.gameState.puzzle1.selectedPrograms.length
+          )
         : 0;
-    this.gameState.puzzle1.avgAdequacy = avgAdequacy;
-    document.getElementById("avg-adequacy").textContent =
-      Math.round(avgAdequacy) + "%";
 
-    // Problem coverage
-    const coveredProblems = new Set();
-    selectedPrograms.forEach((program) => {
-      program.problemsCovered.forEach((problem) =>
-        coveredProblems.add(problem)
-      );
-    });
-    const problemCoverage = (coveredProblems.size / 4) * 100; // 4 main problems
-    this.gameState.puzzle1.problemCoverage = problemCoverage;
-    document.getElementById("problem-coverage").textContent =
-      Math.round(problemCoverage) + "%";
-
-    // Budget viability
-    const totalCost = selectedPrograms.reduce(
-      (sum, p) => sum + p.budgetCost,
-      0
-    );
-    const budgetViability = Math.max(0, 100 - totalCost / 100); // Simplified calculation
-    this.gameState.puzzle1.budgetViability = budgetViability;
-    document.getElementById("budget-viability").textContent =
-      Math.round(budgetViability) + "%";
+    if (avgAdequacy) avgAdequacy.textContent = avgAdequacyValue + "%";
+    if (problemCoverage)
+      problemCoverage.textContent =
+        Math.min(100, problemsCovered.size * 33) + "%";
+    if (budgetViability)
+      budgetViability.textContent =
+        totalBudget <= 8000
+          ? "100%"
+          : Math.max(0, 100 - (totalBudget - 8000) / 100) + "%";
 
     // Update progress
-    this.gameState.puzzle1.progress =
-      this.gameState.puzzle1.selectedPrograms.length;
     document.getElementById("puzzle1-progress").textContent =
-      this.gameState.puzzle1.progress;
+      this.gameState.puzzle1.selectedPrograms.length;
+
+    // Store metrics for final calculation
+    this.gameState.puzzle1.avgAdequacy = avgAdequacyValue;
+    this.gameState.puzzle1.problemCoverage = Math.min(
+      100,
+      problemsCovered.size * 33
+    );
+    this.gameState.puzzle1.budgetViability =
+      totalBudget <= 8000 ? 100 : Math.max(0, 100 - (totalBudget - 8000) / 100);
   }
 
   checkPuzzle1Completion() {
-    // Completion criteria: at least 3 programs selected with average adequacy >85%
-    if (
-      this.gameState.puzzle1.selectedPrograms.length >= 3 &&
-      this.gameState.puzzle1.avgAdequacy >= 85
-    ) {
+    // Check completion criteria: at least 3 adequate programs selected and 2 inadequate rejected
+    const adequateSelected = this.gameState.puzzle1.selectedPrograms.filter(
+      (id) => this.programsData.find((p) => p.id === id).adequado_felisbina
+    ).length;
+
+    const inadequateRejected = this.gameState.puzzle1.rejectedPrograms.filter(
+      (id) => !this.programsData.find((p) => p.id === id).adequado_felisbina
+    ).length;
+
+    if (adequateSelected >= 3 && inadequateRejected >= 2) {
       this.completePuzzle1();
     }
   }
@@ -668,71 +728,117 @@ class EscapeRoomPhase3 {
     this.gameState.puzzle1.completed = true;
     document.getElementById("btn-continue-puzzle2").style.display = "block";
 
-    const bonus = Math.floor((this.gameState.puzzle1.avgAdequacy - 85) / 5) * 2; // Bonus for high adequacy
-    this.gameState.puzzle1.score += bonus;
-
     showToast(
-      `🎉 Puzzle 1 Concluído! Adequação: ${Math.round(
-        this.gameState.puzzle1.avgAdequacy
-      )}% (+${bonus} bónus)`,
+      "🎯 Puzzle 1 Completado! Seleção de programas adequada. Pode continuar para o próximo desafio!",
       "success",
       4000
     );
+
+    // Bonus points for high adequacy
+    if (this.gameState.puzzle1.avgAdequacy >= 85) {
+      const bonus = Math.min(5, 25 - this.gameState.puzzle1.score);
+      this.gameState.puzzle1.score = Math.min(
+        25,
+        this.gameState.puzzle1.score + bonus
+      );
+      showToast(`🌟 Bónus de adequação: +${bonus} pontos!`, "success", 3000);
+    }
+
     updateScore();
   }
 
-  // ===== PUZZLE 2: DYNAMIC ENTITY COORDINATION HUB =====
+  revealCode(code) {
+    if (!this.unlockedCodes.includes(code)) {
+      this.unlockedCodes.push(code);
+      showToast(
+        `🔓 Código descoberto: ${code}! Funcionalidade especial desbloqueada!`,
+        "info",
+        4000
+      );
+
+      // Special effects based on code
+      if (
+        code.includes("ADQ") ||
+        code.includes("PSI") ||
+        code.includes("SOC")
+      ) {
+        // Highlight adequate programs
+        document.querySelectorAll(".program-card").forEach((card) => {
+          const programId = card.dataset.programId;
+          const program = this.programsData.find((p) => p.id === programId);
+          if (program && program.adequado_felisbina) {
+            card.style.boxShadow = "0 0 20px rgba(76, 175, 80, 0.5)";
+            setTimeout(() => (card.style.boxShadow = ""), 3000);
+          }
+        });
+      }
+    }
+  }
+
+  // =====================================================
+  // PUZZLE 2: DYNAMIC ENTITY COORDINATION HUB
+  // =====================================================
+
   initializePuzzle2() {
-    console.log("Initializing Puzzle 2: Dynamic Entity Coordination");
+    console.log("🤝 Initializing Puzzle 2: Dynamic Entity Coordination Hub");
     this.createEntityNodes();
     this.updateCoordinationMetrics();
+    this.updateCoordinationTimeline();
 
-    showToast(
-      "🤝 Conecte entidades para estabelecer coordenação eficaz!",
-      "info",
-      4000
-    );
+    // Show coordination challenge
+    setTimeout(() => {
+      showToast(
+        "🔗 Desafio: Estabeleça conexões estratégicas entre entidades. Procure códigos de conexão!",
+        "info",
+        5000
+      );
+    }, 1500);
   }
 
   createEntityNodes() {
     const container = document.getElementById("entity-nodes-container");
+    if (!container) return;
+
     container.innerHTML = "";
 
-    this.entitiesData.forEach((entity) => {
+    this.entitiesData.forEach((entity, index) => {
       const node = document.createElement("div");
-      node.className = "entity-node";
+      node.className = `entity-node ${entity.status}`;
       node.dataset.entityId = entity.id;
 
-      // Position nodes in a circle around Felisbina
-      const centerX = 50; // Percentage
+      // Position nodes around Felisbina
+      const angle = (index / this.entitiesData.length) * 2 * Math.PI;
+      const radius = 200;
+      const centerX = 50; // Center of the visualization
       const centerY = 50;
-      const radius = 35; // Percentage
-      const angle = (entity.position.angle * Math.PI) / 180;
-      const x = centerX + radius * Math.cos(angle);
-      const y = centerY + radius * Math.sin(angle);
+      const x = centerX + (radius * Math.cos(angle)) / 4; // Adjust for percentage
+      const y = centerY + (radius * Math.sin(angle)) / 4;
 
-      node.style.left = x + "%";
-      node.style.top = y + "%";
-      node.onclick = () => this.contactEntity(entity.id);
+      node.style.left = `${x}%`;
+      node.style.top = `${y}%`;
 
       node.innerHTML = `
-                <div class="entity-avatar">${entity.icon}</div>
-                <div class="entity-info">
-                    <h4>${entity.name}</h4>
-                    <div class="services-list">
-                        ${entity.specialties
-                          .map((s) => `<span class="service">${s}</span>`)
-                          .join("")}
-                    </div>
-                    <div class="entity-status ${entity.availability}">${
-        entity.availability === "online" ? "Disponível" : "Indisponível"
+        <div class="entity-avatar">${entity.avatar}</div>
+        <div class="entity-name">${entity.nome.split(" ")[0]}</div>
+        <div class="entity-status ${entity.status}">${
+        entity.status === "online" ? "Disponível" : "Ocupado"
       }</div>
-                    <div style="font-size: 0.7rem; margin-top: 5px;">
-                        Capacidade: ${entity.currentCapacity}%
-                    </div>
-                </div>
-                <button class="btn-contact-entity">📞 Contactar</button>
-            `;
+        <div class="services-list">
+          ${entity.services
+            .map((service) => `<span class="service">${service}</span>`)
+            .join("")}
+        </div>
+        <div style="font-size: 0.7rem; margin: 5px 0;">
+          Código: <span class="connection-code" style="cursor: pointer;" onclick="window.escapeRoom.enterConnectionCode('${
+            entity.connectionCode
+          }')">${entity.connectionCode}</span>
+        </div>
+        <button class="btn-contact-entity" onclick="window.escapeRoom.contactEntity('${
+          entity.id
+        }')">
+          Contactar
+        </button>
+      `;
 
       container.appendChild(node);
     });
@@ -741,166 +847,178 @@ class EscapeRoomPhase3 {
   contactEntity(entityId) {
     const entity = this.entitiesData.find((e) => e.id === entityId);
     const node = document.querySelector(`[data-entity-id="${entityId}"]`);
-    const button = node.querySelector(".btn-contact-entity");
 
-    if (this.gameState.puzzle2.connectedEntities.includes(entityId)) {
-      // Already connected, disconnect
-      this.gameState.puzzle2.connectedEntities =
-        this.gameState.puzzle2.connectedEntities.filter(
-          (id) => id !== entityId
-        );
-      node.classList.remove("contacted");
-      button.textContent = "📞 Contactar";
-      button.disabled = false;
-      this.gameState.puzzle2.progress--;
+    if (!entity || !node) return;
 
-      if (entity.adequate) {
-        this.gameState.puzzle2.score -= entity.points;
-      }
-
-      // Remove connection line
-      this.removeConnectionLine(entityId);
-
-      showToast(`➖ ${entity.name} desconectado`, "info", 2000);
-    } else {
-      // Connect entity
+    if (!this.gameState.puzzle2.connectedEntities.includes(entityId)) {
       this.gameState.puzzle2.connectedEntities.push(entityId);
       node.classList.add("contacted");
-      button.textContent = "✅ Conectado";
-      button.disabled = true;
-      this.gameState.puzzle2.progress++;
 
-      if (entity.adequate) {
-        this.gameState.puzzle2.score += entity.points;
-        showToast(
-          `✅ ${entity.name} conectado! (+${entity.points} pontos)`,
-          "success",
-          2500
-        );
-      } else {
-        this.gameState.puzzle2.score += entity.points; // Usually lower points
-        showToast(
-          `⚠️ ${entity.name} conectado (não prioritário)`,
-          "warning",
-          3000
-        );
-      }
+      const button = node.querySelector(".btn-contact-entity");
+      button.textContent = "Contactado ✓";
+      button.disabled = true;
+
+      // Award points - MAX 25 POINTS TOTAL
+      const points = entity.adequado_felisbina
+        ? entity.pontos
+        : Math.abs(entity.pontos);
+      this.gameState.puzzle2.score = Math.min(
+        25,
+        Math.max(0, this.gameState.puzzle2.score + points)
+      );
+
+      showToast(
+        `🤝 ${entity.nome} contactado! (+${points} pontos)`,
+        "success",
+        3000
+      );
 
       // Create connection line
       this.createConnectionLine(entityId);
+
+      // Update metrics
+      this.updateCoordinationMetrics();
+      this.updateCoordinationTimeline();
+
+      // Check completion
+      if (this.gameState.puzzle2.connectedEntities.length >= 3) {
+        this.completePuzzle2();
+      }
+
+      updateScore();
     }
+  }
 
-    this.updateCoordinationMetrics();
-    this.updateCoordinationTimeline();
+  enterConnectionCode(code) {
+    showToast(
+      `🔑 Código de conexão: ${code}. Use este código para estabelecer conexões prioritárias!`,
+      "info",
+      3000
+    );
 
-    // Update progress
-    document.getElementById("puzzle2-progress").textContent =
-      this.gameState.puzzle2.progress;
-
-    // Check completion
-    if (this.gameState.puzzle2.progress >= 5) {
-      this.completePuzzle2();
+    // Special connection bonus
+    if (!this.unlockedCodes.includes(code)) {
+      this.unlockedCodes.push(code);
+      const bonus = 2;
+      this.gameState.puzzle2.score = Math.min(
+        25,
+        this.gameState.puzzle2.score + bonus
+      );
+      showToast(
+        `🌟 Bónus de conexão especial: +${bonus} pontos!`,
+        "success",
+        2000
+      );
+      updateScore();
     }
-
-    updateScore();
   }
 
   createConnectionLine(entityId) {
-    const entity = this.entitiesData.find((e) => e.id === entityId);
-    const felisbinaNode = document.querySelector(".felisbina-node");
-    const entityNode = document.querySelector(`[data-entity-id="${entityId}"]`);
     const container = document.getElementById("connection-lines-container");
+    const entityNode = document.querySelector(`[data-entity-id="${entityId}"]`);
+    const felisbinaNode = document.querySelector(".felisbina-node");
 
-    if (!container) {
-      // Create container if it doesn't exist
-      const newContainer = document.createElement("div");
-      newContainer.id = "connection-lines-container";
-      document
-        .querySelector(".entity-network-visualization")
-        .appendChild(newContainer);
-    }
+    if (!container || !entityNode || !felisbinaNode) return;
 
-    // Create SVG line (simplified implementation)
     const line = document.createElement("div");
     line.className = "connection-line active";
-    line.dataset.connection = entityId;
-    line.id = `connection-${entityId}`;
+    line.dataset.entityId = entityId;
 
-    // Calculate line position and rotation (simplified)
-    const angle = (entity.position.angle * Math.PI) / 180;
-    const distance = 120; // pixels
+    // Calculate line position and rotation
+    const entityRect = entityNode.getBoundingClientRect();
+    const felisbinaRect = felisbinaNode.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
 
-    line.style.position = "absolute";
-    line.style.left = "50%";
-    line.style.top = "50%";
-    line.style.width = distance + "px";
-    line.style.height = "3px";
-    line.style.transformOrigin = "left center";
-    line.style.transform = `rotate(${entity.position.angle}deg)`;
-    line.style.zIndex = "1";
+    const x1 =
+      felisbinaRect.left + felisbinaRect.width / 2 - containerRect.left;
+    const y1 = felisbinaRect.top + felisbinaRect.height / 2 - containerRect.top;
+    const x2 = entityRect.left + entityRect.width / 2 - containerRect.left;
+    const y2 = entityRect.top + entityRect.height / 2 - containerRect.top;
 
-    document.getElementById("connection-lines-container").appendChild(line);
+    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+
+    line.style.left = x1 + "px";
+    line.style.top = y1 + "px";
+    line.style.width = length + "px";
+    line.style.transform = `rotate(${angle}deg)`;
+
+    container.appendChild(line);
+    this.connectionLines.push(line);
   }
 
   removeConnectionLine(entityId) {
-    const line = document.getElementById(`connection-${entityId}`);
+    const line = document.querySelector(`[data-entity-id="${entityId}"]`);
     if (line) {
       line.remove();
+      this.connectionLines = this.connectionLines.filter((l) => l !== line);
     }
   }
 
   updateCoordinationMetrics() {
-    // Update active entities
-    document.getElementById(
-      "active-entities"
-    ).textContent = `${this.gameState.puzzle2.connectedEntities.length}/6`;
+    const activeEntities = document.getElementById("active-entities");
+    const coordinationScore = document.getElementById("coordination-score");
+    const avgResponseTime = document.getElementById("avg-response-time");
 
-    // Calculate coordination score
-    const adequateConnected = this.gameState.puzzle2.connectedEntities.filter(
-      (id) => this.entitiesData.find((e) => e.id === id).adequate
-    ).length;
-    const coordinationScore = Math.round((adequateConnected / 3) * 100); // 3 adequate entities = 100%
-    this.gameState.puzzle2.coordinationScore = coordinationScore;
-    document.getElementById("coordination-score").textContent =
-      coordinationScore + "%";
+    if (activeEntities) {
+      activeEntities.textContent = `${this.gameState.puzzle2.connectedEntities.length}/${this.entitiesData.length}`;
+    }
 
-    // Calculate average response time
-    const connectedEntities = this.gameState.puzzle2.connectedEntities.map(
-      (id) => this.entitiesData.find((e) => e.id === id)
-    );
-    const avgResponseTime =
-      connectedEntities.length > 0
-        ? connectedEntities.reduce(
-            (sum, e) => sum + parseInt(e.responseTime),
-            0
-          ) / connectedEntities.length
-        : 0;
-    document.getElementById("avg-response-time").textContent =
-      Math.round(avgResponseTime) + " dias";
+    if (coordinationScore) {
+      const score = Math.round(
+        (this.gameState.puzzle2.connectedEntities.length /
+          this.entitiesData.length) *
+          100
+      );
+      coordinationScore.textContent = score + "%";
+      this.gameState.puzzle2.coordinationScore = score;
+    }
+
+    if (avgResponseTime) {
+      const connectedEntities = this.gameState.puzzle2.connectedEntities
+        .map((id) => this.entitiesData.find((e) => e.id === id))
+        .filter(Boolean);
+
+      if (connectedEntities.length > 0) {
+        const avgTime =
+          connectedEntities.reduce((sum, entity) => {
+            const days = parseInt(entity.tempo_resposta.split("-")[0]) || 1;
+            return sum + days;
+          }, 0) / connectedEntities.length;
+        avgResponseTime.textContent = Math.round(avgTime) + " dias";
+        this.gameState.puzzle2.avgResponseTime = avgTime;
+      }
+    }
+
+    // Update progress
+    document.getElementById("puzzle2-progress").textContent =
+      this.gameState.puzzle2.connectedEntities.length;
   }
 
   updateCoordinationTimeline() {
-    const timeline = document.getElementById("coordination-timeline-viz");
-    timeline.innerHTML = "";
+    const container = document.getElementById("coordination-timeline-viz");
+    if (!container) return;
 
-    this.gameState.puzzle2.connectedEntities.forEach((entityId, index) => {
+    container.innerHTML = "";
+
+    this.gameState.puzzle2.connectedEntities.forEach((entityId) => {
       const entity = this.entitiesData.find((e) => e.id === entityId);
+      if (!entity) return;
 
       const track = document.createElement("div");
       track.className = "timeline-track";
       track.innerHTML = `
-                <div class="track-header">
-                    <span class="entity-name">${entity.name}</span>
-                    <span class="track-status">Resposta em ${entity.responseTime}</span>
-                </div>
-                <div class="timeline-events">
-                    <div class="timeline-event">Contacto inicial</div>
-                    <div class="timeline-event">Agendamento</div>
-                    <div class="timeline-event">Início serviços</div>
-                </div>
-            `;
-
-      timeline.appendChild(track);
+        <div class="track-header">
+          <span class="entity-name">${entity.avatar} ${entity.nome}</span>
+          <span class="track-status">Ativo</span>
+        </div>
+        <div class="timeline-events">
+          <div class="timeline-event">Contacto inicial</div>
+          <div class="timeline-event">Articulação estabelecida</div>
+          <div class="timeline-event">Programas coordenados</div>
+        </div>
+      `;
+      container.appendChild(track);
     });
   }
 
@@ -908,193 +1026,219 @@ class EscapeRoomPhase3 {
     this.gameState.puzzle2.completed = true;
     document.getElementById("btn-continue-puzzle3").style.display = "block";
 
-    // Bonus for efficient coordination
-    const efficiencyBonus = Math.floor(
-      this.gameState.puzzle2.coordinationScore / 20
-    );
-    this.gameState.puzzle2.score += efficiencyBonus;
-
     showToast(
-      `🎉 Puzzle 2 Concluído! Coordenação: ${this.gameState.puzzle2.coordinationScore}% (+${efficiencyBonus} bónus)`,
+      "🤝 Puzzle 2 Completado! Rede de coordenação estabelecida com sucesso!",
       "success",
       4000
     );
+
+    // Bonus for high coordination
+    if (this.gameState.puzzle2.coordinationScore >= 75) {
+      const bonus = Math.min(3, 25 - this.gameState.puzzle2.score);
+      this.gameState.puzzle2.score = Math.min(
+        25,
+        this.gameState.puzzle2.score + bonus
+      );
+      showToast(
+        `🌟 Bónus de coordenação eficaz: +${bonus} pontos!`,
+        "success",
+        3000
+      );
+    }
+
     updateScore();
   }
 
-  // ===== PUZZLE 3: ADVANCED TIMELINE ORCHESTRATOR =====
+  // =====================================================
+  // PUZZLE 3: ADVANCED TIMELINE ORCHESTRATOR
+  // =====================================================
+
   initializePuzzle3() {
-    console.log("Initializing Puzzle 3: Advanced Timeline Orchestrator");
+    console.log("📅 Initializing Puzzle 3: Advanced Timeline Orchestrator");
     this.createActivityCategories();
     this.createTimelineGrid();
     this.setupAdvancedDragAndDrop();
 
-    showToast(
-      "📅 Organize atividades na timeline. Use as ferramentas para otimizar!",
-      "info",
-      4000
-    );
+    setTimeout(() => {
+      showToast(
+        "⏰ Desafio: Organize as atividades respeitando pré-requisitos e evitando conflitos!",
+        "info",
+        5000
+      );
+    }, 1500);
   }
 
   createActivityCategories() {
     const container = document.getElementById("activity-categories");
-    container.innerHTML = "";
+    if (!container) return;
 
     const categories = {
-      psicossocial: { name: "🧠 Apoio Psicossocial", color: "#e91e63" },
-      emprego_formacao: { name: "💼 Emprego e Formação", color: "#2196f3" },
-      apoio_social: { name: "👥 Apoio Social", color: "#ff9800" },
+      psicossocial: {
+        name: "Apoio Psicossocial",
+        color: "#e91e63",
+        icon: "🧠",
+      },
+      emprego: { name: "Emprego e Formação", color: "#2196f3", icon: "💼" },
+      social: { name: "Integração Social", color: "#ff9800", icon: "👥" },
+      avaliacao: { name: "Avaliação", color: "#4caf50", icon: "📊" },
     };
+
+    container.innerHTML = "";
 
     Object.entries(categories).forEach(([categoryId, category]) => {
       const categoryDiv = document.createElement("div");
       categoryDiv.className = "category";
 
-      const activitiesInCategory = this.activitiesData.filter(
+      const activities = this.activitiesData.filter(
         (a) => a.category === categoryId
       );
 
       categoryDiv.innerHTML = `
-                <h5 style="background: ${category.color}">${category.name}</h5>
-                <div class="activities-list">
-                    ${activitiesInCategory
-                      .map(
-                        (activity) => `
-                        <div class="activity-item" draggable="true" data-activity-id="${
-                          activity.id
-                        }">
-                            <div style="display: flex; align-items: center;">
-                                <span class="activity-icon">${
-                                  activity.icon
-                                }</span>
-                                <div class="activity-info">
-                                    <h6>${activity.name}</h6>
-                                    <div class="activity-metadata">
-                                        <span class="duration">${
-                                          activity.duration
-                                        }h</span>
-                                        <span class="frequency">${
-                                          activity.frequency
-                                        }</span>
-                                        <span class="priority ${
-                                          activity.priority
-                                        }">${activity.priority.toUpperCase()}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `
-                      )
-                      .join("")}
+        <h5 style="background: ${category.color};">${category.icon} ${
+        category.name
+      }</h5>
+        <div class="activities-list">
+          ${activities
+            .map(
+              (activity) => `
+            <div class="activity-item" draggable="true" data-activity-id="${activity.id}">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="activity-icon">${activity.icon}</span>
+                <div class="activity-info">
+                  <h6>${activity.nome}</h6>
+                  <div class="activity-metadata">
+                    <span class="duration">${activity.duration}sem</span>
+                    <span class="frequency">Mês ${activity.mes}</span>
+                    <span class="priority ${activity.difficulty}">${activity.difficulty}</span>
+                  </div>
                 </div>
-            `;
+              </div>
+              <div style="font-size: 0.7rem; color: #666; margin-top: 5px;">
+                Código: ${activity.secretCode}
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
 
       container.appendChild(categoryDiv);
     });
   }
 
   createTimelineGrid() {
+    const container = document.getElementById("timeline-grid-advanced");
+    if (!container) return;
+
     // Create month labels
     const monthLabels = document.getElementById("month-labels");
-    monthLabels.innerHTML = "";
-
-    for (let month = 1; month <= 7; month++) {
-      const label = document.createElement("div");
-      label.className = "month-label";
-      label.innerHTML = `
-                <span class="month-name">${this.months[month - 1]}</span>
-                <div class="month-capacity">
-                    <span class="used">0</span>/<span class="max">20</span>h
-                </div>
-            `;
-      monthLabels.appendChild(label);
+    if (monthLabels) {
+      const months = ["Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago"];
+      monthLabels.innerHTML = months
+        .map(
+          (month, index) => `
+        <div class="month-label">
+          <span class="month-name">Mês ${index + 1}</span>
+          <span class="month-name">${month}</span>
+          <div class="month-capacity">Cap: 4 atividades</div>
+        </div>
+      `
+        )
+        .join("");
     }
 
-    // Create timeline grid
-    const grid = document.getElementById("timeline-grid-advanced");
-    grid.innerHTML = "";
+    // Create timeline rows for each entity
+    const entities = ["IEFP", "Centro Saúde", "IPSS", "Geral"];
+    container.innerHTML = "";
 
-    this.entities.forEach((entityName) => {
+    entities.forEach((entityName) => {
       const row = document.createElement("div");
       row.className = "timeline-row";
-      row.dataset.entity = entityName.toLowerCase().replace(/\s+/g, "_");
 
       row.innerHTML = `
-                <div class="row-header">
-                    <div class="entity-info">
-                        <div class="entity-name">${entityName}</div>
-                        <div class="availability-indicator">
-                            <span class="available-slots">20</span> slots livres
-                        </div>
-                    </div>
-                </div>
-                <div class="timeline-slots">
-                    ${Array(7)
-                      .fill(0)
-                      .map(
-                        (_, month) => `
-                        <div class="time-slot" data-month="${
-                          month + 1
-                        }" data-entity="${entityName
-                          .toLowerCase()
-                          .replace(/\s+/g, "_")}"></div>
-                    `
-                      )
-                      .join("")}
-                </div>
-            `;
+        <div class="row-header">
+          <div class="entity-info">
+            <div class="entity-name">${entityName}</div>
+            <div class="availability-indicator">
+              <span class="available-slots">4/4</span> slots disponíveis
+            </div>
+          </div>
+        </div>
+        <div class="timeline-slots">
+          ${Array.from(
+            { length: 7 },
+            (_, month) => `
+            <div class="time-slot" data-month="${
+              month + 1
+            }" data-entity="${entityName.toLowerCase().replace(" ", "_")}">
+              <!-- Activities will be dropped here -->
+            </div>
+          `
+          ).join("")}
+        </div>
+      `;
 
-      grid.appendChild(row);
+      container.appendChild(row);
     });
   }
 
   setupAdvancedDragAndDrop() {
-    // Setup drag events for activities
-    document.querySelectorAll(".activity-item").forEach((item) => {
-      item.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", item.dataset.activityId);
-        item.classList.add("dragging");
-      });
-
-      item.addEventListener("dragend", () => {
-        item.classList.remove("dragging");
-      });
+    // Enhanced drag and drop with conflict detection
+    document.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("activity-item")) {
+        e.dataTransfer.setData("text/plain", e.target.dataset.activityId);
+        e.target.classList.add("dragging");
+      }
     });
 
-    // Setup drop zones
-    document.querySelectorAll(".time-slot").forEach((slot) => {
-      slot.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        slot.classList.add("drop-target");
-      });
+    document.addEventListener("dragend", (e) => {
+      if (e.target.classList.contains("activity-item")) {
+        e.target.classList.remove("dragging");
+      }
+    });
 
-      slot.addEventListener("dragleave", () => {
-        slot.classList.remove("drop-target");
-      });
-
-      slot.addEventListener("drop", (e) => {
+    document.addEventListener("dragover", (e) => {
+      if (e.target.classList.contains("time-slot")) {
         e.preventDefault();
-        slot.classList.remove("drop-target");
+        e.target.classList.add("drop-target");
+      }
+    });
+
+    document.addEventListener("dragleave", (e) => {
+      if (e.target.classList.contains("time-slot")) {
+        e.target.classList.remove("drop-target");
+      }
+    });
+
+    document.addEventListener("drop", (e) => {
+      if (e.target.classList.contains("time-slot")) {
+        e.preventDefault();
+        e.target.classList.remove("drop-target");
 
         const activityId = e.dataTransfer.getData("text/plain");
-        const month = parseInt(slot.dataset.month);
-        const entity = slot.dataset.entity;
+        const month = parseInt(e.target.dataset.month);
+        const entity = e.target.dataset.entity;
 
-        this.placeActivityAdvanced(activityId, month, entity, slot);
-      });
+        this.placeActivityAdvanced(activityId, month, entity, e.target);
+      }
     });
   }
 
   placeActivityAdvanced(activityId, month, entity, slot) {
     const activity = this.activitiesData.find((a) => a.id === activityId);
-    const activityItem = document.querySelector(
-      `[data-activity-id="${activityId}"]`
-    );
+    if (!activity) return;
+
+    // Check if activity is already placed
+    if (this.gameState.puzzle3.placedActivities[activityId]) {
+      showToast("⚠️ Atividade já foi colocada no cronograma!", "warning", 2000);
+      return;
+    }
 
     // Check prerequisites
     if (!this.checkPrerequisitesAdvanced(activity, month)) {
       showToast(
-        `❌ Pré-requisitos não cumpridos para ${activity.name}`,
+        "❌ Pré-requisitos não cumpridos! Verifique dependências.",
         "error",
         3000
       );
@@ -1103,631 +1247,750 @@ class EscapeRoomPhase3 {
 
     // Check entity compatibility
     const activityEntity = this.getActivityEntity(activity.entity);
-    const slotEntity = entity.replace(/_/g, " ");
-    if (activityEntity.toLowerCase() !== slotEntity.toLowerCase()) {
-      showToast(
-        `⚠️ ${activity.name} deve ser executado por ${activityEntity}`,
-        "warning",
-        3000
-      );
+    if (entity !== "geral" && entity !== activityEntity) {
+      showToast("⚠️ Entidade incorreta para esta atividade!", "warning", 2000);
       return;
     }
 
-    // Check slot availability
-    if (slot.children.length > 0) {
-      showToast("⚠️ Slot já ocupado!", "warning", 2000);
+    // Check correct month
+    if (month !== activity.mes) {
+      showToast(
+        `⏰ Atividade deve ser colocada no mês ${activity.mes}!`,
+        "warning",
+        2000
+      );
       return;
     }
 
     // Place activity
     const placedActivity = document.createElement("div");
     placedActivity.className = "placed-activity";
-    placedActivity.innerHTML = `${activity.icon} ${activity.name}`;
+    placedActivity.dataset.activityId = activityId;
+    placedActivity.innerHTML = `
+      <div>${activity.icon} ${activity.nome}</div>
+      <div style="font-size: 0.6rem; margin-top: 2px;">${activity.secretCode}</div>
+    `;
     placedActivity.onclick = () => this.removeActivity(activityId, slot);
 
     slot.appendChild(placedActivity);
     slot.classList.add("occupied");
 
-    // Mark original as placed
-    activityItem.classList.add("placed");
-    activityItem.draggable = false;
+    // Update game state
+    this.gameState.puzzle3.placedActivities[activityId] = {
+      month,
+      entity,
+      slot,
+    };
 
-    // Record placement
-    this.gameState.puzzle3.placedActivities[activityId] = { month, entity };
-    this.gameState.puzzle3.progress++;
+    // Award points - MAX 30 POINTS TOTAL
+    this.gameState.puzzle3.score = Math.min(
+      30,
+      this.gameState.puzzle3.score + activity.pontos
+    );
 
-    // Evaluate placement
-    this.evaluateActivityPlacement(activityId, month);
+    // Mark original activity as placed
+    const originalActivity = document.querySelector(
+      `[data-activity-id="${activityId}"]`
+    );
+    if (originalActivity) {
+      originalActivity.classList.add("placed");
+    }
 
-    // Update progress and metrics
-    document.getElementById("puzzle3-progress").textContent =
-      this.gameState.puzzle3.progress;
+    showToast(
+      `✅ ${activity.nome} colocada! (+${activity.pontos} pontos)`,
+      "success",
+      2000
+    );
+
+    // Update metrics
     this.updateResourceUtilization();
     this.updateLogicalSequencing();
+
+    // Check completion
+    if (Object.keys(this.gameState.puzzle3.placedActivities).length >= 8) {
+      this.completePuzzle3();
+    }
 
     updateScore();
   }
 
   checkPrerequisitesAdvanced(activity, month) {
-    if (activity.prerequisites.length === 0) return true;
+    if (!activity.prerequisites || activity.prerequisites.length === 0)
+      return true;
 
     return activity.prerequisites.every((prereqId) => {
-      const placement = this.gameState.puzzle3.placedActivities[prereqId];
-      return placement && placement.month < month;
+      const placedPrereq = this.gameState.puzzle3.placedActivities[prereqId];
+      return placedPrereq && placedPrereq.month < month;
     });
   }
 
   getActivityEntity(entityCode) {
     const entityMap = {
-      centro_saude: "Centro de Saúde",
-      iefp: "IEFP",
-      ipss: "IPSS",
+      iefp_porto: "iefp",
+      centro_saude_ramalde: "centro_saude",
+      ipss_solidariedade: "ipss",
     };
-    return entityMap[entityCode] || entityCode;
+    return entityMap[entityCode] || "geral";
   }
 
   removeActivity(activityId, slot) {
-    const placedActivity = slot.querySelector(".placed-activity");
-    const originalItem = document.querySelector(
+    const placedActivity = slot.querySelector(
       `[data-activity-id="${activityId}"]`
     );
+    if (placedActivity) {
+      placedActivity.remove();
+      slot.classList.remove("occupied");
 
-    slot.removeChild(placedActivity);
-    slot.classList.remove("occupied");
+      // Update game state
+      const activity = this.activitiesData.find((a) => a.id === activityId);
+      if (activity) {
+        this.gameState.puzzle3.score = Math.max(
+          0,
+          this.gameState.puzzle3.score - activity.pontos
+        );
+      }
+      delete this.gameState.puzzle3.placedActivities[activityId];
 
-    originalItem.classList.remove("placed");
-    originalItem.draggable = true;
-
-    delete this.gameState.puzzle3.placedActivities[activityId];
-    this.gameState.puzzle3.progress--;
-
-    document.getElementById("puzzle3-progress").textContent =
-      this.gameState.puzzle3.progress;
-    this.updateResourceUtilization();
-    this.updateLogicalSequencing();
-  }
-
-  evaluateActivityPlacement(activityId, month) {
-    const activity = this.activitiesData.find((a) => a.id === activityId);
-
-    if (month === activity.correctMonth) {
-      this.gameState.puzzle3.score += activity.points;
-      showToast(
-        `✅ ${activity.name} - Mês IDEAL! (+${activity.points} pontos)`,
-        "success",
-        2500
+      // Unmark original activity
+      const originalActivity = document.querySelector(
+        `[data-activity-id="${activityId}"]`
       );
-    } else if (Math.abs(month - activity.correctMonth) === 1) {
-      const partialPoints = Math.floor(activity.points * 0.7);
-      this.gameState.puzzle3.score += partialPoints;
-      showToast(
-        `🟡 ${activity.name} - Mês aceitável (+${partialPoints} pontos)`,
-        "warning",
-        2500
-      );
-    } else {
-      showToast(
-        `❌ ${activity.name} - Mês subótimo (ideal: ${activity.correctMonth})`,
-        "error",
-        3000
-      );
+      if (originalActivity) {
+        originalActivity.classList.remove("placed");
+      }
+
+      showToast("🔄 Atividade removida do cronograma", "info", 1500);
+      updateScore();
     }
   }
 
   updateResourceUtilization() {
-    const totalSlots = 7 * 3; // 7 months, 3 entities
+    const totalSlots = 7 * 4; // 7 months * 4 entities
     const usedSlots = Object.keys(
       this.gameState.puzzle3.placedActivities
     ).length;
-    const utilization = (usedSlots / totalSlots) * 100;
+    const utilization = Math.round((usedSlots / totalSlots) * 100);
 
     this.gameState.puzzle3.resourceUtilization = utilization;
-    document.getElementById("resource-utilization").style.width =
-      utilization + "%";
-    document.querySelector("#metrics-panel .metric .value").textContent =
-      Math.round(utilization) + "%";
+
+    const utilizationBar = document.getElementById("resource-utilization");
+    if (utilizationBar) {
+      utilizationBar.style.width = utilization + "%";
+      utilizationBar.nextElementSibling.textContent = utilization + "%";
+    }
+
+    document.getElementById("puzzle3-progress").textContent = usedSlots;
   }
 
   updateLogicalSequencing() {
     let correctSequences = 0;
-    let totalDependencies = 0;
+    let totalSequences = 0;
 
-    Object.entries(this.gameState.puzzle3.placedActivities).forEach(
-      ([activityId, placement]) => {
-        const activity = this.activitiesData.find((a) => a.id === activityId);
+    this.activitiesData.forEach((activity) => {
+      if (activity.prerequisites && activity.prerequisites.length > 0) {
+        totalSequences++;
+        const placedActivity =
+          this.gameState.puzzle3.placedActivities[activity.id];
 
-        activity.prerequisites.forEach((prereqId) => {
-          totalDependencies++;
-          const prereqPlacement =
-            this.gameState.puzzle3.placedActivities[prereqId];
-          if (prereqPlacement && prereqPlacement.month < placement.month) {
-            correctSequences++;
-          }
-        });
+        if (placedActivity) {
+          const allPrereqsBefore = activity.prerequisites.every((prereqId) => {
+            const placedPrereq =
+              this.gameState.puzzle3.placedActivities[prereqId];
+            return placedPrereq && placedPrereq.month < placedActivity.month;
+          });
+
+          if (allPrereqsBefore) correctSequences++;
+        }
       }
-    );
+    });
 
-    const sequencingScore =
-      totalDependencies > 0
-        ? (correctSequences / totalDependencies) * 100
+    const sequencing =
+      totalSequences > 0
+        ? Math.round((correctSequences / totalSequences) * 100)
         : 100;
-    this.gameState.puzzle3.logicalSequencing = sequencingScore;
+    this.gameState.puzzle3.logicalSequencing = sequencing;
 
-    const sequencingBar = document.querySelectorAll(
-      "#metrics-panel .metric .progress-fill"
-    )[1];
-    const sequencingValue = document.querySelectorAll(
-      "#metrics-panel .metric .value"
-    )[1];
-    if (sequencingBar) sequencingBar.style.width = sequencingScore + "%";
-    if (sequencingValue)
-      sequencingValue.textContent = Math.round(sequencingScore) + "%";
-
-    // Check completion
-    if (
-      this.gameState.puzzle3.progress >= 8 &&
-      this.gameState.puzzle3.resourceUtilization >= 80
-    ) {
-      this.completePuzzle3();
+    const sequencingBar = document.getElementById("logical-sequencing");
+    if (sequencingBar) {
+      sequencingBar.style.width = sequencing + "%";
+      sequencingBar.nextElementSibling.textContent = sequencing + "%";
     }
   }
 
-  // Puzzle 3 Tool Functions
   autoSequence() {
     showToast(
-      "🤖 Aplicando sequenciamento automático baseado em dependências...",
+      "🤖 Sequenciamento automático ativado! Organizando atividades...",
       "info",
       3000
     );
 
-    // Simple auto-placement based on prerequisites
-    this.activitiesData.forEach((activity) => {
-      if (!this.gameState.puzzle3.placedActivities[activity.id]) {
-        const targetMonth = activity.correctMonth;
-        const targetEntity = this.getActivityEntity(activity.entity)
-          .toLowerCase()
-          .replace(/\s+/g, "_");
-        const slot = document.querySelector(
-          `[data-month="${targetMonth}"][data-entity="${targetEntity}"]`
-        );
-
-        if (slot && slot.children.length === 0) {
-          this.placeActivityAdvanced(
-            activity.id,
-            targetMonth,
-            targetEntity,
-            slot
-          );
-        }
+    // Clear existing placements
+    Object.keys(this.gameState.puzzle3.placedActivities).forEach(
+      (activityId) => {
+        const placement = this.gameState.puzzle3.placedActivities[activityId];
+        this.removeActivity(activityId, placement.slot);
       }
-    });
+    );
+
+    // Auto-place activities in correct order
+    setTimeout(() => {
+      this.activitiesData.slice(0, 6).forEach((activity, index) => {
+        setTimeout(() => {
+          const entity = this.getActivityEntity(activity.entity);
+          const slot = document.querySelector(
+            `[data-month="${activity.mes}"][data-entity="${entity}"]`
+          );
+          if (slot && !slot.classList.contains("occupied")) {
+            this.placeActivityAdvanced(activity.id, activity.mes, entity, slot);
+          }
+        }, index * 500);
+      });
+    }, 1000);
   }
 
   detectConflicts() {
     const conflicts = [];
+    const conflictsList = document.getElementById("conflicts-list");
 
-    // Check for capacity conflicts
-    const monthlyCapacity = {};
+    // Check for scheduling conflicts
     Object.entries(this.gameState.puzzle3.placedActivities).forEach(
       ([activityId, placement]) => {
         const activity = this.activitiesData.find((a) => a.id === activityId);
-        const key = `${placement.month}-${placement.entity}`;
-        monthlyCapacity[key] = (monthlyCapacity[key] || 0) + activity.duration;
 
-        if (monthlyCapacity[key] > 20) {
-          // 20h monthly capacity
-          conflicts.push(
-            `Mês ${placement.month} - ${placement.entity}: Sobrecarga (${monthlyCapacity[key]}h)`
-          );
+        // Check prerequisites
+        if (activity.prerequisites) {
+          activity.prerequisites.forEach((prereqId) => {
+            const prereqPlacement =
+              this.gameState.puzzle3.placedActivities[prereqId];
+            if (!prereqPlacement || prereqPlacement.month >= placement.month) {
+              conflicts.push(
+                `${activity.nome}: Pré-requisito ${prereqId} não cumprido`
+              );
+            }
+          });
         }
       }
     );
 
-    // Update conflicts display
-    const conflictsList = document.getElementById("conflicts-list");
-    if (conflicts.length > 0) {
-      conflictsList.innerHTML = conflicts
-        .map((conflict) => `<div class="conflict-item">${conflict}</div>`)
-        .join("");
-    } else {
-      conflictsList.innerHTML =
-        '<p style="text-align: center; color: #4caf50;">✅ Nenhum conflito detetado</p>';
+    this.gameState.puzzle3.conflicts = conflicts;
+
+    if (conflictsList) {
+      if (conflicts.length === 0) {
+        conflictsList.innerHTML =
+          '<p style="text-align: center; color: #4caf50;">✅ Nenhum conflito detetado</p>';
+      } else {
+        conflictsList.innerHTML = conflicts
+          .map((conflict) => `<div class="conflict-item">⚠️ ${conflict}</div>`)
+          .join("");
+      }
     }
 
     showToast(
-      `⚠️ Deteção completa: ${conflicts.length} conflitos encontrados`,
+      `🔍 Análise completa: ${conflicts.length} conflitos detetados`,
       conflicts.length > 0 ? "warning" : "success",
       3000
     );
   }
 
   optimizeIntelligent() {
-    showToast(
-      "⚡ Aplicando otimização inteligente da timeline...",
-      "info",
-      3000
-    );
+    showToast("⚡ Otimização inteligente iniciada...", "info", 2000);
 
-    // Generate optimization suggestions
     const suggestions = [
-      "Agrupar atividades do mesmo tipo no mesmo período",
-      "Balancear carga entre entidades",
-      "Otimizar sequência para reduzir tempo de espera",
-      "Priorizar atividades críticas nos primeiros meses",
+      "Priorize atividades de avaliação no início de cada mês",
+      "Mantenha continuidade nas consultas psicológicas",
+      "Coordene atividades do IEFP em sequência lógica",
+      "Reserve tempo para preparação entre atividades intensivas",
     ];
 
-    const suggestionsList = document.getElementById("optimization-suggestions");
-    suggestionsList.innerHTML = suggestions
-      .map((suggestion) => `<div class="suggestion-item">${suggestion}</div>`)
-      .join("");
+    const suggestionsContainer = document.getElementById(
+      "optimization-suggestions"
+    );
+    if (suggestionsContainer) {
+      suggestionsContainer.innerHTML = suggestions
+        .map(
+          (suggestion) => `<div class="suggestion-item">💡 ${suggestion}</div>`
+        )
+        .join("");
+    }
 
-    // Apply some optimizations automatically
-    this.updateResourceUtilization();
-    this.updateLogicalSequencing();
+    // Bonus for using optimization
+    const bonus = 2;
+    this.gameState.puzzle3.score = Math.min(
+      30,
+      this.gameState.puzzle3.score + bonus
+    );
+    showToast(`🌟 Bónus de otimização: +${bonus} pontos!`, "success", 2000);
+    updateScore();
   }
 
   completePuzzle3() {
     this.gameState.puzzle3.completed = true;
     document.getElementById("btn-continue-puzzle4").style.display = "block";
 
-    // Bonus for high efficiency
-    const efficiencyBonus = Math.floor(
-      (this.gameState.puzzle3.resourceUtilization +
-        this.gameState.puzzle3.logicalSequencing) /
-        40
-    );
-    this.gameState.puzzle3.score += efficiencyBonus;
-
     showToast(
-      `🎉 Puzzle 3 Concluído! Eficiência: ${Math.round(
-        (this.gameState.puzzle3.resourceUtilization +
-          this.gameState.puzzle3.logicalSequencing) /
-          2
-      )}% (+${efficiencyBonus} bónus)`,
+      "📅 Puzzle 3 Completado! Cronograma organizado com eficiência!",
       "success",
       4000
     );
+
+    // Bonus for high efficiency
+    if (
+      this.gameState.puzzle3.resourceUtilization >= 80 &&
+      this.gameState.puzzle3.logicalSequencing >= 90
+    ) {
+      const bonus = Math.min(5, 30 - this.gameState.puzzle3.score);
+      this.gameState.puzzle3.score = Math.min(
+        30,
+        this.gameState.puzzle3.score + bonus
+      );
+      showToast(
+        `🌟 Bónus de eficiência máxima: +${bonus} pontos!`,
+        "success",
+        3000
+      );
+    }
+
     updateScore();
   }
 
-  // ===== PUZZLE 4: COMPREHENSIVE VALIDATION & APPROVAL =====
+  // =====================================================
+  // PUZZLE 4: COMPREHENSIVE VALIDATION & APPROVAL SYSTEM
+  // =====================================================
+
   initializePuzzle4() {
-    console.log("Initializing Puzzle 4: Comprehensive Validation");
+    console.log(
+      "✅ Initializing Puzzle 4: Comprehensive Validation & Approval System"
+    );
     this.createApprovalCards();
     this.updateValidationProgress();
 
-    showToast(
-      "✅ Complete todas as validações para finalizar o plano!",
-      "info",
-      4000
-    );
+    setTimeout(() => {
+      showToast(
+        "🔍 Desafio final: Complete todas as validações e obtenha aprovações necessárias!",
+        "info",
+        5000
+      );
+    }, 1500);
   }
 
   createApprovalCards() {
-    const grid = document.getElementById("approvals-grid");
-    grid.innerHTML = "";
+    const container = document.getElementById("approvals-grid");
+    if (!container) return;
 
-    const entities = [
+    const approvalEntities = [
       {
         id: "iefp",
         name: "IEFP Porto",
-        icon: "🏢",
-        programs: ["Programa Qualifica"],
+        logo: "🏢",
+        programs: ["Programa Qualifica", "RVCC 12º ano"],
+        timeline: [
+          { step: "Pedido submetido", status: "pending" },
+          { step: "Análise técnica", status: "pending" },
+          { step: "Aprovação final", status: "pending" },
+        ],
       },
       {
         id: "saude",
         name: "Centro de Saúde",
-        icon: "🏥",
-        programs: ["Apoio Psicossocial"],
+        logo: "🏥",
+        programs: ["Apoio Psicossocial", "Consultas Regulares"],
+        timeline: [
+          { step: "Referenciação médica", status: "pending" },
+          { step: "Avaliação psicológica", status: "pending" },
+          { step: "Plano aprovado", status: "pending" },
+        ],
       },
       {
         id: "ipss",
         name: "IPSS Local",
-        icon: "🤝",
-        programs: ["Grupos de Apoio"],
+        logo: "🤝",
+        programs: ["Grupos de Apoio Social"],
+        timeline: [
+          { step: "Avaliação social", status: "pending" },
+          { step: "Integração aprovada", status: "pending" },
+        ],
       },
     ];
 
-    entities.forEach((entity) => {
+    container.innerHTML = "";
+
+    approvalEntities.forEach((entity) => {
       const card = document.createElement("div");
       card.className = "approval-card";
-      card.id = `approval-card-${entity.id}`;
+      card.dataset.entityId = entity.id;
 
       card.innerHTML = `
-                <div class="entity-header">
-                    <div style="display: flex; align-items: center;">
-                        <div class="entity-logo">${entity.icon}</div>
-                        <h5>${entity.name}</h5>
-                    </div>
-                    <div class="approval-status pending">Aguardando</div>
-                </div>
+        <div class="entity-header">
+          <div style="display: flex; align-items: center;">
+            <div class="entity-logo">${entity.logo}</div>
+            <div class="entity-name">${entity.name}</div>
+          </div>
+          <div class="approval-status pending">Pendente</div>
+        </div>
+        
+        <div class="approval-details">
+          <h5>Programas a Aprovar:</h5>
+          <div class="programs-list">
+            ${entity.programs
+              .map(
+                (program) => `
+              <div class="program-item">
+                <span class="program-name">${program}</span>
+                <span class="program-status">Aguarda</span>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+        
+        <div class="approval-timeline">
+          ${entity.timeline
+            .map(
+              (step, index) => `
+            <div class="timeline-step ${step.status}" data-step="${index}">
+              <span class="step-label">${step.step}</span>
+              <span class="step-time">--</span>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+        
+        <div class="approval-actions">
+          <button class="btn-request-approval" onclick="window.escapeRoom.requestApproval('${
+            entity.id
+          }')">
+            📋 Solicitar Aprovação
+          </button>
+          <button class="btn-follow-up" onclick="window.escapeRoom.followUpApproval('${
+            entity.id
+          }')" disabled>
+            📞 Fazer Follow-up
+          </button>
+        </div>
+      `;
 
-                <div class="approval-details">
-                    <div class="programs-list">
-                        ${entity.programs
-                          .map(
-                            (program) => `
-                            <div class="program-item">
-                                <span class="program-name">${program}</span>
-                                <span class="program-status">Pré-aprovado</span>
-                            </div>
-                        `
-                          )
-                          .join("")}
-                    </div>
-
-                    <div class="approval-timeline">
-                        <div class="timeline-step completed">
-                            <span class="step-label">Pedido Enviado</span>
-                            <span class="step-time">Há 2 min</span>
-                        </div>
-                        <div class="timeline-step active">
-                            <span class="step-label">Em Análise</span>
-                            <span class="step-time">3-5 dias</span>
-                        </div>
-                        <div class="timeline-step pending">
-                            <span class="step-label">Aprovação Final</span>
-                            <span class="step-time">Pendente</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="approval-actions">
-                    <button class="btn-request-approval" onclick="requestApproval('${
-                      entity.id
-                    }')">
-                        📤 Solicitar Aprovação
-                    </button>
-                    <button class="btn-follow-up" onclick="followUpApproval('${
-                      entity.id
-                    }')" disabled>
-                        📞 Follow-up
-                    </button>
-                </div>
-            `;
-
-      grid.appendChild(card);
+      container.appendChild(card);
     });
   }
 
-  // Validation Functions
   validateObjectives() {
     const result = document.getElementById("objectives-result");
 
-    // Check if programs were selected
-    if (this.gameState.puzzle1.selectedPrograms.length >= 3) {
-      result.className = "validation-result success";
-      result.innerHTML =
-        "✅ Objetivos SMART definidos com base na seleção de programas";
-      this.gameState.puzzle4.validationStages.coherence = true;
-      this.gameState.puzzle4.score += 5;
-
-      showToast("✅ Objetivos validados com sucesso!", "success", 2500);
-    } else {
-      result.className = "validation-result error";
-      result.innerHTML =
-        "❌ Objetivos insuficientes - selecione mais programas no Puzzle 1";
-
-      showToast("❌ Validação de objetivos falhada", "error", 3000);
-    }
-
-    this.checkCoherenceCompletion();
-    updateScore();
-  }
-
-  validateSchedule() {
-    const result = document.getElementById("schedule-result");
-
-    // Check if timeline was built
-    if (this.gameState.puzzle3.progress >= 6) {
-      result.className = "validation-result success";
-      result.innerHTML = "✅ Cronograma realista e sequencial validado";
-      this.gameState.puzzle4.score += 5;
-
-      showToast("✅ Cronograma validado com sucesso!", "success", 2500);
-    } else {
-      result.className = "validation-result error";
-      result.innerHTML =
-        "❌ Cronograma incompleto - organize mais atividades no Puzzle 3";
-
-      showToast("❌ Validação de cronograma falhada", "error", 3000);
-    }
-
-    this.checkCoherenceCompletion();
-    updateScore();
-  }
-
-  validateResources() {
-    const result = document.getElementById("resources-result");
-
-    // Check if entities were coordinated
-    if (this.gameState.puzzle2.progress >= 3) {
-      result.className = "validation-result success";
-      result.innerHTML =
-        "✅ Recursos humanos e financeiros adequados identificados";
-      this.gameState.puzzle4.score += 5;
-
-      showToast("✅ Recursos validados com sucesso!", "success", 2500);
-    } else {
-      result.className = "validation-result error";
-      result.innerHTML =
-        "❌ Recursos insuficientes - conecte mais entidades no Puzzle 2";
-
-      showToast("❌ Validação de recursos falhada", "error", 3000);
-    }
-
-    this.checkCoherenceCompletion();
-    updateScore();
-  }
-
-  checkCoherenceCompletion() {
-    const objectives = document.getElementById("objectives-result");
-    const schedule = document.getElementById("schedule-result");
-    const resources = document.getElementById("resources-result");
-
-    if (
-      objectives.classList.contains("success") &&
-      schedule.classList.contains("success") &&
-      resources.classList.contains("success")
-    ) {
-      const stage = document.getElementById("stage-coherence");
-      stage.classList.add("completed");
-      stage.querySelector(".stage-status").textContent = "Completo";
-      stage.querySelector(".stage-status").classList.add("completed");
-
-      this.gameState.puzzle4.validationStages.coherence = true;
-      this.gameState.puzzle4.progress++;
-
-      this.updateValidationProgress();
-    }
-  }
-
-  requestApproval(entityId) {
-    const card = document.getElementById(`approval-card-${entityId}`);
-    const button = card.querySelector(".btn-request-approval");
-    const status = card.querySelector(".approval-status");
-    const followUpBtn = card.querySelector(".btn-follow-up");
-
-    button.disabled = true;
-    button.textContent = "⏳ Processando...";
-
-    // Simulate approval process
+    // Simulate validation process
     setTimeout(() => {
-      card.classList.add("approved");
-      status.textContent = "Aprovado";
-      status.classList.remove("pending");
-      status.classList.add("approved");
-      button.textContent = "✅ Aprovado";
-      followUpBtn.disabled = false;
+      const isValid =
+        this.gameState.puzzle1.completed &&
+        this.gameState.puzzle1.avgAdequacy >= 70;
 
-      this.gameState.puzzle4.approvalStatus[entityId] = true;
-      this.gameState.puzzle4.score += 3;
+      if (isValid) {
+        result.className = "validation-result success";
+        result.textContent =
+          "✅ Objetivos validados: Claros, específicos e alinhados com as necessidades da Felisbina.";
 
-      showToast(
-        `✅ ${entityId.toUpperCase()} aprovou o plano!`,
-        "success",
-        2500
-      );
+        this.gameState.puzzle4.validationStages.coherence = true;
+        this.gameState.puzzle4.score = Math.min(
+          20,
+          this.gameState.puzzle4.score + 5
+        );
 
-      // Check if all approvals are complete
-      if (Object.keys(this.gameState.puzzle4.approvalStatus).length >= 3) {
-        this.completeApprovals();
+        document.getElementById("btn-validate-objectives").disabled = true;
+        document.getElementById("btn-validate-objectives").textContent =
+          "✅ Validado";
+
+        this.checkCoherenceCompletion();
+      } else {
+        result.className = "validation-result error";
+        result.textContent =
+          "❌ Objetivos necessitam refinamento. Revise a seleção de programas.";
       }
 
       updateScore();
     }, 2000);
   }
 
+  validateSchedule() {
+    const result = document.getElementById("schedule-result");
+
+    setTimeout(() => {
+      const isValid =
+        this.gameState.puzzle3.completed &&
+        this.gameState.puzzle3.logicalSequencing >= 80;
+
+      if (isValid) {
+        result.className = "validation-result success";
+        result.textContent =
+          "✅ Cronograma validado: Sequência lógica respeitada e prazos realistas.";
+
+        this.gameState.puzzle4.validationStages.coherence = true;
+        this.gameState.puzzle4.score = Math.min(
+          20,
+          this.gameState.puzzle4.score + 5
+        );
+
+        document.getElementById("btn-validate-schedule").disabled = true;
+        document.getElementById("btn-validate-schedule").textContent =
+          "✅ Validado";
+
+        this.checkCoherenceCompletion();
+      } else {
+        result.className = "validation-result error";
+        result.textContent =
+          "❌ Cronograma necessita ajustes. Verifique sequência e dependências.";
+      }
+
+      updateScore();
+    }, 2000);
+  }
+
+  validateResources() {
+    const result = document.getElementById("resources-result");
+
+    setTimeout(() => {
+      const isValid =
+        this.gameState.puzzle2.completed &&
+        this.gameState.puzzle2.coordinationScore >= 60;
+
+      if (isValid) {
+        result.className = "validation-result success";
+        result.textContent =
+          "✅ Recursos validados: Entidades coordenadas e recursos adequados identificados.";
+
+        this.gameState.puzzle4.validationStages.coherence = true;
+        this.gameState.puzzle4.score = Math.min(
+          20,
+          this.gameState.puzzle4.score + 5
+        );
+
+        document.getElementById("btn-validate-resources").disabled = true;
+        document.getElementById("btn-validate-resources").textContent =
+          "✅ Validado";
+
+        this.checkCoherenceCompletion();
+      } else {
+        result.className = "validation-result error";
+        result.textContent =
+          "❌ Recursos insuficientes. Estabeleça mais coordenações.";
+      }
+
+      updateScore();
+    }, 2000);
+  }
+
+  checkCoherenceCompletion() {
+    const objectives = document.getElementById(
+      "btn-validate-objectives"
+    ).disabled;
+    const schedule = document.getElementById("btn-validate-schedule").disabled;
+    const resources = document.getElementById(
+      "btn-validate-resources"
+    ).disabled;
+
+    if (objectives && schedule && resources) {
+      const stage = document.getElementById("stage-coherence");
+      stage.classList.add("completed");
+      stage.querySelector(".stage-status").textContent = "Completo";
+      stage.querySelector(".stage-status").classList.remove("pending");
+      stage.querySelector(".stage-status").classList.add("completed");
+
+      showToast("🔍 Validação de coerência completada!", "success", 3000);
+      this.updateValidationProgress();
+    }
+  }
+
+  requestApproval(entityId) {
+    const card = document.querySelector(`[data-entity-id="${entityId}"]`);
+    const button = card.querySelector(".btn-request-approval");
+    const followUpButton = card.querySelector(".btn-follow-up");
+
+    button.disabled = true;
+    button.textContent = "⏳ Processando...";
+
+    // Simulate approval process
+    setTimeout(() => {
+      this.gameState.puzzle4.approvalStatus[entityId] = "approved";
+
+      card.classList.add("approved");
+      card.querySelector(".approval-status").textContent = "Aprovado";
+      card.querySelector(".approval-status").classList.remove("pending");
+      card.querySelector(".approval-status").classList.add("approved");
+
+      // Update timeline
+      const steps = card.querySelectorAll(".timeline-step");
+      steps.forEach((step, index) => {
+        setTimeout(() => {
+          step.classList.remove("pending");
+          step.classList.add("completed");
+          step.querySelector(".step-time").textContent = "Concluído";
+        }, index * 500);
+      });
+
+      button.textContent = "✅ Aprovado";
+      followUpButton.disabled = false;
+
+      // Award points
+      this.gameState.puzzle4.score = Math.min(
+        20,
+        this.gameState.puzzle4.score + 3
+      );
+
+      showToast(
+        `✅ Aprovação obtida: ${entityId.toUpperCase()}`,
+        "success",
+        3000
+      );
+
+      // Check if all approvals obtained
+      if (Object.keys(this.gameState.puzzle4.approvalStatus).length >= 3) {
+        this.completeApprovals();
+      }
+
+      updateScore();
+    }, 3000);
+  }
+
   followUpApproval(entityId) {
     showToast(
-      `📞 Follow-up enviado para ${entityId.toUpperCase()}`,
+      `📞 Follow-up realizado com ${entityId.toUpperCase()}. Processo acelerado!`,
       "info",
       2000
     );
   }
 
   completeApprovals() {
+    this.gameState.puzzle4.validationStages.approvals = true;
+
     const stage = document.getElementById("stage-approvals");
     stage.classList.add("completed");
     stage.querySelector(".stage-status").textContent = "Completo";
+    stage.querySelector(".stage-status").classList.remove("pending");
     stage.querySelector(".stage-status").classList.add("completed");
 
-    this.gameState.puzzle4.validationStages.approvals = true;
-    this.gameState.puzzle4.progress++;
-
+    showToast("📋 Todas as aprovações obtidas!", "success", 3000);
     this.updateValidationProgress();
-    showToast("🎉 Todas as aprovações obtidas!", "success", 3000);
   }
 
-  // Consent Functions
   explainPrograms() {
-    this.gameState.puzzle4.comprehensionLevel += 25;
+    this.gameState.puzzle4.comprehensionLevel = Math.min(
+      100,
+      this.gameState.puzzle4.comprehensionLevel + 25
+    );
     this.updateConsentInterface();
-
-    showToast("📚 Programas explicados à Felisbina", "success", 2000);
+    showToast(
+      "📚 Programas explicados à Felisbina. Compreensão aumentada!",
+      "success",
+      2000
+    );
   }
 
   showTimeline() {
-    this.gameState.puzzle4.comprehensionLevel += 25;
+    this.gameState.puzzle4.comprehensionLevel = Math.min(
+      100,
+      this.gameState.puzzle4.comprehensionLevel + 20
+    );
     this.updateConsentInterface();
-
-    showToast("📅 Cronograma apresentado à Felisbina", "success", 2000);
+    showToast(
+      "📅 Cronograma apresentado à Felisbina. Expectativas alinhadas!",
+      "success",
+      2000
+    );
   }
 
   addressConcerns() {
-    this.gameState.puzzle4.comprehensionLevel += 30;
+    this.gameState.puzzle4.comprehensionLevel = Math.min(
+      100,
+      this.gameState.puzzle4.comprehensionLevel + 30
+    );
     this.updateConsentInterface();
-
-    showToast("💭 Dúvidas esclarecidas com a Felisbina", "success", 2000);
+    showToast(
+      "💭 Dúvidas esclarecidas. Felisbina mais confiante!",
+      "success",
+      2000
+    );
   }
 
   updateConsentInterface() {
-    const level = Math.min(this.gameState.puzzle4.comprehensionLevel, 100);
-    document.getElementById("comprehension-level").textContent = level + "%";
-
-    // Update mood indicator
     const moodIndicator = document.getElementById("mood-indicator");
-    if (level >= 80) {
-      moodIndicator.textContent = "😊";
-    } else if (level >= 50) {
-      moodIndicator.textContent = "🙂";
-    } else if (level >= 25) {
-      moodIndicator.textContent = "😐";
+    const comprehensionLevel = document.getElementById("comprehension-level");
+    const dialogueBubble = document.getElementById("dialogue-bubble");
+
+    const level = this.gameState.puzzle4.comprehensionLevel;
+
+    if (comprehensionLevel) {
+      comprehensionLevel.textContent = level + "%";
     }
 
-    // Update dialogue
-    const dialogue = document.getElementById("dialogue-bubble");
-    if (level >= 80) {
-      dialogue.innerHTML =
-        '<p>"Agora compreendo tudo! Estou preparada para começar."</p>';
-    } else if (level >= 50) {
-      dialogue.innerHTML =
-        '<p>"Está a ficar mais claro... pode explicar mais alguns detalhes?"</p>';
-    } else if (level >= 25) {
-      dialogue.innerHTML =
-        '<p>"Compreendo melhor agora, mas ainda tenho algumas dúvidas..."</p>';
+    if (moodIndicator) {
+      if (level >= 80) moodIndicator.textContent = "😊";
+      else if (level >= 50) moodIndicator.textContent = "🙂";
+      else if (level >= 25) moodIndicator.textContent = "😐";
+      else moodIndicator.textContent = "😟";
     }
 
-    // Update consent items
-    if (level >= 30) {
-      document.getElementById("understanding-status").textContent = "✅";
-      document.getElementById("understanding-status").style.color = "#4caf50";
+    if (dialogueBubble) {
+      const messages = [
+        "Preciso entender melhor o que vai acontecer...",
+        "Estou a começar a perceber o plano...",
+        "Acho que estou a compreender melhor...",
+        "Sim, agora faz sentido! Estou preparada!",
+      ];
+      const messageIndex = Math.floor(level / 25);
+      dialogueBubble.innerHTML = `<p>"${
+        messages[Math.min(messageIndex, messages.length - 1)]
+      }"</p>`;
     }
-    if (level >= 60) {
-      document.getElementById("consent-status").textContent = "✅";
-      document.getElementById("consent-status").style.color = "#4caf50";
-    }
-    if (level >= 80) {
-      document.getElementById("expectations-status").textContent = "✅";
-      document.getElementById("expectations-status").style.color = "#4caf50";
-      document.getElementById("btn-finalize-consent").disabled = false;
+
+    // Update consent checklist
+    const items = [
+      "understanding-status",
+      "consent-status",
+      "expectations-status",
+    ];
+    items.forEach((itemId, index) => {
+      const element = document.getElementById(itemId);
+      if (element && level >= (index + 1) * 30) {
+        element.textContent = "✅";
+      }
+    });
+
+    // Enable finalize button when ready
+    const finalizeButton = document.getElementById("btn-finalize-consent");
+    if (finalizeButton && level >= 80) {
+      finalizeButton.disabled = false;
     }
   }
 
   finalizeConsent() {
     if (this.gameState.puzzle4.comprehensionLevel >= 80) {
+      this.gameState.puzzle4.validationStages.consent = true;
+      this.gameState.puzzle4.score = Math.min(
+        20,
+        this.gameState.puzzle4.score + 5
+      );
+
       const stage = document.getElementById("stage-consent");
       stage.classList.add("completed");
       stage.querySelector(".stage-status").textContent = "Completo";
+      stage.querySelector(".stage-status").classList.remove("pending");
       stage.querySelector(".stage-status").classList.add("completed");
 
-      this.gameState.puzzle4.validationStages.consent = true;
-      this.gameState.puzzle4.progress++;
-      this.gameState.puzzle4.score += 5;
+      document.getElementById("btn-finalize-consent").textContent =
+        "✅ Consentimento Obtido";
+      document.getElementById("btn-finalize-consent").disabled = true;
+
+      showToast(
+        "👤 Consentimento informado obtido com sucesso!",
+        "success",
+        3000
+      );
 
       this.updateValidationProgress();
-
-      showToast("✅ Consentimento informado obtido!", "success", 3000);
-
-      // Check if all stages are complete
-      if (this.gameState.puzzle4.progress >= 3) {
-        this.completePuzzle4();
-      }
-
+      this.completePuzzle4();
       updateScore();
     } else {
       showToast(
-        "⚠️ Compreensão insuficiente. Continue a explicar o plano.",
+        "⚠️ Felisbina precisa compreender melhor o plano antes de dar consentimento!",
         "warning",
         3000
       );
@@ -1735,47 +1998,59 @@ class EscapeRoomPhase3 {
   }
 
   updateValidationProgress() {
-    const percentage = (this.gameState.puzzle4.progress / 3) * 100;
-    document.getElementById("validation-percentage").textContent =
-      Math.round(percentage) + "%";
+    const completed = Object.values(
+      this.gameState.puzzle4.validationStages
+    ).filter(Boolean).length;
+    const total = Object.keys(this.gameState.puzzle4.validationStages).length;
+    const percentage = Math.round((completed / total) * 100);
 
-    // Update progress ring
     const circle = document.getElementById("validation-progress-circle");
-    const circumference = 314; // 2 * PI * 50
-    const offset = circumference - (percentage / 100) * circumference;
-    circle.style.strokeDashoffset = offset;
+    const percentageText = document.getElementById("validation-percentage");
+
+    if (circle) {
+      const circumference = 2 * Math.PI * 50; // radius = 50
+      const offset = circumference - (percentage / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+    }
+
+    if (percentageText) {
+      percentageText.textContent = percentage + "%";
+    }
+
+    document.getElementById("puzzle4-progress").textContent = completed;
   }
 
   completePuzzle4() {
-    this.gameState.puzzle4.completed = true;
-    document.getElementById("btn-finalize-phase").style.display = "block";
+    const allStagesComplete = Object.values(
+      this.gameState.puzzle4.validationStages
+    ).every(Boolean);
 
-    showToast(
-      "🎉 Puzzle 4 Concluído! Plano totalmente validado e aprovado!",
-      "success",
-      4000
-    );
+    if (allStagesComplete) {
+      this.gameState.puzzle4.completed = true;
+      document.getElementById("btn-finalize-phase").style.display = "block";
+
+      showToast(
+        "✅ Puzzle 4 Completado! Todas as validações e aprovações obtidas!",
+        "success",
+        4000
+      );
+
+      // Final bonus for complete validation
+      const bonus = Math.min(2, 20 - this.gameState.puzzle4.score);
+      this.gameState.puzzle4.score = Math.min(
+        20,
+        this.gameState.puzzle4.score + bonus
+      );
+      showToast(
+        `🌟 Bónus de validação completa: +${bonus} pontos!`,
+        "success",
+        3000
+      );
+
+      updateScore();
+    }
   }
 }
 
-// Global functions for HTML onclick handlers
-window.selectProgram = function (programId, selected) {
-  if (window.escapeRoom) {
-    window.escapeRoom.selectProgram(programId, selected);
-  }
-};
-
-window.requestApproval = function (entityId) {
-  if (window.escapeRoom) {
-    window.escapeRoom.requestApproval(entityId);
-  }
-};
-
-window.followUpApproval = function (entityId) {
-  if (window.escapeRoom) {
-    window.escapeRoom.followUpApproval(entityId);
-  }
-};
-
-// Make it globally available
+// Make the class globally available
 window.EscapeRoomPhase3 = EscapeRoomPhase3;
